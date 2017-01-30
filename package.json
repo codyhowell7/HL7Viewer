@@ -53,6 +53,7 @@
     "karma-remap-istanbul": "^0.2.1",
     "mocha": "^3.2.0",
     "mocha-webpack": "^0.7.0",
+    "node-sass": "^4.4.0",
     "protractor": "~4.0.13",
     "sinon": "^1.17.7",
     "ts-node": "1.2.1",

@@ -1,0 +1,25 @@
+$medium: 1200px;
+
+*:first-child {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    * {
+        height: 100%;
+    }
+
+    hls-menu {
+        background-color: #bbb;
+        flex: 1 1 10%;
+        margin-right: 10px;
+    }
+
+    hls-workspace {
+        background-color: #bbb;
+        flex: 1 1 90%;
+        display: flex;
+        flex-direction: column;
+    }
+}

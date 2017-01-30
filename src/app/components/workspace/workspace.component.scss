@@ -1,0 +1,12 @@
+*:last-child {
+    height: 100%;
+    display: flex;
+}
+
+hls-toolbar, hls-message, hls-output {
+    background-color: #fff;
+}
+
+hls-message, hls-output {
+    flex: 1 1 50%;
+}

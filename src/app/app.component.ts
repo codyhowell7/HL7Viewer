@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MultiMessage } from '../parser/multiMessage';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app works!';
+  rawHL7: string;
+  msg: MultiMessage;
+
+   Parse() {
+     this.msg = new MultiMessage(this.rawHL7);
+     console.log(this.msg);
+   }
 }

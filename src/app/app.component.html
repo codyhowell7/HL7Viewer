@@ -1,3 +1,8 @@
-<h1>
-  {{title}}
-</h1>
+<div class="container maincont">
+    <div class="jumbotron header">
+        <h1 class="text-center"></h1>
+    </div>
+
+    <textarea class="hl7box" rows="9" [(ngModel)] = "rawHL7"></textarea>
+    <button class="btn btn-primary btn-lg pretty" (click)="Parse()" >Parse</button>
+</div>

@@ -7,15 +7,16 @@ export class Component {
     HasSubComponents: boolean;
     isHighlighted: boolean;
 
-    constructor(component: string) {
-        this.Parse(component);
+    constructor(component: string, componentIndex: number) {
+        this.Parse(component, componentIndex);
         this.Value = component;
     }
 
-    Parse(component: string) {
+    Parse(component: string, componentIndex: number) {
+        this.Index = componentIndex;
         let subComponentArray = component.split(/[&]/);
-        subComponentArray.forEach((element, index) => {
-            this.SubComponents.push(new SubComponent(element));
+        subComponentArray.forEach((subComponentElement, subComponentIndex) => {
+            this.SubComponents.push(new SubComponent(subComponentElement, subComponentIndex + 1));
         });
         this.HasSubComponents = this.SubComponents.length > 1;
     }

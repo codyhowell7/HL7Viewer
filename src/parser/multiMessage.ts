@@ -1,7 +1,10 @@
 import {Message} from './message';
+import { IHighlighted } from '../interfaces/IHighlighted';
 
-export class MultiMessage {
+
+export class MultiMessage implements IHighlighted {
 Messages: Message[] = [];
+isHighlighted: boolean;
 
     constructor(fullmessage: string) {
         this.Parse(fullmessage);

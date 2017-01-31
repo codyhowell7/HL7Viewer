@@ -21,9 +21,9 @@ export class Message {
 
     Parse(message: string) {
         let segmentArray = message.split(/[\s](?=[A-Z][A-Z][A-Z,0-9][|])/);
-        segmentArray.forEach((element, index) => {
-            element = element.trim();
-            this.Segments.push(new Segment(element));
+        segmentArray.forEach((segmentElement, segmentIndex) => {
+            segmentElement = segmentElement.trim();
+            this.Segments.push(new Segment(segmentElement));
         });
     }
 }

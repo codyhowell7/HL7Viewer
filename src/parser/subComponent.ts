@@ -3,7 +3,8 @@ export class SubComponent {
     Value: string;
     isHighlighted: boolean;
 
-    constructor(subComponent: string) {
+    constructor(subComponent: string, subComponentIndex: number) {
         this.Value = subComponent;
+        this.Index = subComponentIndex;
     }
 }

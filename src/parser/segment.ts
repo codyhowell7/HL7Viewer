@@ -18,8 +18,8 @@ export class Segment {
             fieldArray = fieldArray.filter((element, index) => { return index > 0; });
             fieldArray.unshift('|');
         }
-        fieldArray.forEach((element, index) => {
-            this.Fields.push(new Field(element));
+        fieldArray.forEach((fieldElement, fieldIndex) => {
+            this.Fields.push(new Field(fieldElement, fieldIndex + 1));
         });
     }
 }

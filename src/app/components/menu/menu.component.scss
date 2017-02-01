@@ -1,0 +1,15 @@
+hls-menu-item, hls-menu-toolbar {
+    background-color: #fff;
+}
+
+hls-menu-toolbar {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-around;
+}
+
+hls-menu-item {
+    border-bottom: 1px solid #aaa;
+    cursor: pointer;
+    padding: 10px;
+}

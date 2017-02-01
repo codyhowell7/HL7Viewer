@@ -1,0 +1,15 @@
+hls-message, hls-output-container {
+    flex: 1 1 50%;
+}
+
+hls-message {
+    background-color: #fff;
+    margin-right: 5px;
+    padding: 10px;
+}
+
+hls-output-container {
+    margin-left: 5px;
+    display: flex;
+    flex-direction: column;
+}

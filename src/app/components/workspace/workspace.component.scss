@@ -1,12 +1,10 @@
-*:last-child {
-    height: 100%;
+hls-workspace-container {
     display: flex;
+    height: 100%;
 }
 
-hls-toolbar, hls-message, hls-output {
-    background-color: #fff;
-}
-
-hls-message, hls-output {
-    flex: 1 1 50%;
+[md-fab] {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
 }

@@ -11,16 +11,8 @@ export class HL7Field {
     HasHL7Components: boolean;
     isHighlighted: boolean;
 
-    constructor(hl7Field: string, hl7FieldIndex: number, hl7SubFields: any[], repeat?: boolean) {
+    constructor(hl7Field: string, hl7FieldIndex: number) {
         this.Value = hl7Field;
         this.Index = hl7FieldIndex;
-        if (repeat === true) {
-            this.HL7Components = hl7SubFields;
-        } else {
-            this.HL7RepeatedFields = hl7SubFields;
-        }
-        this.HasRepetition = this.HL7RepeatedFields.length > 0;
-        this.HasHL7Components = this.HL7Components.length > 0;
     }
-
 }

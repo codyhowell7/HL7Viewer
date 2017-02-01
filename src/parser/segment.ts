@@ -7,9 +7,7 @@ export class HL7Segment {
     Name: string;
     isHighlighted: boolean;
 
-    constructor(hl7Segment: string, hl7Fields: HL7Field[]) {
+    constructor(hl7Segment: string) {
         this.Value = hl7Segment;
-        this.Name = hl7Segment.substring(0, 3);
-        this.HL7Fields = hl7Fields;
     }
 }

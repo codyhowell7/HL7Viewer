@@ -11,11 +11,14 @@ export class HL7Field {
     HasHL7Components: boolean;
     isHighlighted: boolean;
 
-    constructor(hl7Field: string, hl7FieldIndex: number, messageEncodingChars: string) {
+    constructor(hl7Field: string, hl7FieldIndex: number, hl7SubFields: any[], repeat?: boolean) {
         this.Value = hl7Field;
         this.Index = hl7FieldIndex;
-        let hl7FieldParser = new Parser();
-        hl7FieldParser.hl7ComponentParse(hl7Field, hl7FieldIndex, messageEncodingChars, this.HL7RepeatedFields, this.HL7Components);
+        if (repeat === true) {
+            this.HL7Components = hl7SubFields;
+        } else {
+            this.HL7RepeatedFields = hl7SubFields;
+        }
         this.HasRepetition = this.HL7RepeatedFields.length > 0;
         this.HasHL7Components = this.HL7Components.length > 0;
     }

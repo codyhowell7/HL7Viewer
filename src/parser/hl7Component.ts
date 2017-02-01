@@ -8,9 +8,8 @@ export class HL7Component {
     HasSubComponents: boolean;
     isHighlighted: boolean;
 
-    constructor(hl7Component: string, hl7ComponentIndex: number, messageEncodingChars: string) {
-        let hl7ComponentParser = new Parser();
-        hl7ComponentParser.hl7SubComponentParse(hl7Component, hl7ComponentIndex, messageEncodingChars, this.HL7SubComponents);
+    constructor(hl7Component: string, hl7ComponentIndex: number, hl7SubComponents: HL7SubComponent[]) {
+        this.HL7SubComponents = hl7SubComponents;
         this.Value = hl7Component;
         this.Index = hl7ComponentIndex;
         this.HasSubComponents = this.HL7SubComponents.length > 1;

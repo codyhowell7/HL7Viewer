@@ -12,6 +12,6 @@ export class AppComponent {
 
    Parse() {
      this.msg = new HL7MultiMessage(this.rawHL7);
-     console.log(this.msg);
+     console.log(this.msg.HL7Messages);
    }
 }

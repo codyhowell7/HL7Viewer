@@ -7,10 +7,9 @@ export class HL7Segment {
     Name: string;
     isHighlighted: boolean;
 
-    constructor(hl7Segment: string, messageEncodingChars: string) {
-        let hl7SegmentParser = new Parser();
-        hl7SegmentParser.fieldParse(hl7Segment, this.HL7Fields, messageEncodingChars);
+    constructor(hl7Segment: string, hl7Fields: HL7Field[]) {
         this.Value = hl7Segment;
         this.Name = hl7Segment.substring(0, 3);
+        this.HL7Fields = hl7Fields;
     }
 }

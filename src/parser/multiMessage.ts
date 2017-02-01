@@ -6,9 +6,13 @@ export class HL7MultiMessage {
     isHighlighted: boolean;
 
     constructor(hl7Fullmessage: string) {
+        let messageParser;
         if (hl7Fullmessage != null) {
-            let hl7MultiMessageParser = new Parser();
-            hl7MultiMessageParser.messageParse(hl7Fullmessage, this.HL7Messages);
+            let hl7MessageArray = hl7Fullmessage.split(/[\s](?=MSH)/);
+            hl7MessageArray.forEach(element => {
+                messageParser = new Parser(element.substr(3, 5));
+                this.HL7Messages.push(messageParser.hl7MessageParse(element));
+            });
         }
     }
 }

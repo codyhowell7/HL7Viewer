@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MultiMessage } from '../parser/multiMessage';
+import { HL7MultiMessage } from '../parser/multiMessage';
 
 @Component({
   selector: 'app-root',
@@ -8,10 +8,10 @@ import { MultiMessage } from '../parser/multiMessage';
 })
 export class AppComponent {
   rawHL7: string;
-  msg: MultiMessage;
+  msg: HL7MultiMessage;
 
    Parse() {
-     this.msg = new MultiMessage(this.rawHL7);
+     this.msg = new HL7MultiMessage(this.rawHL7);
      console.log(this.msg);
    }
 }

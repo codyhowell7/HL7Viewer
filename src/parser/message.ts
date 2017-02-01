@@ -1,29 +1,27 @@
-import { Segment } from './segment';
+import { HL7Segment } from './segment';
 import { ConvertTime } from './convertTime';
+import { Parser } from './parse';
+import * as moment from 'moment';
 
-export class Message {
-    Segments: Segment[] = [];
-    MessageType: string;
-    MessageControllerId: string;
-    MessageDateTime: Date;
+
+export class HL7Message {
+    HL7Segments: HL7Segment[] = [];
+    HL7MessageType: string;
+    HL7MessageControllerId: string;
+    HL7MessageDateTime: Date;
+    messageEncodingChars: string;
     isHighlighted: boolean;
 
-    constructor(hl7message: string) {
-        if (typeof(hl7message) !== 'undefined') { // TODO: Run message through validation before parsing.
-            this.Parse(hl7message);
-            if (this.Segments.length > 0 && this.Segments[0].Name === 'MSH') {
-                this.MessageType = this.Segments[0].Fields[8].Value;
-                this.MessageControllerId = this.Segments[0].Fields[9].Value;
-                this.MessageDateTime = ConvertTime(this.Segments[0].Fields[6].Value);
+    constructor(hl7Message: string) {
+        if (hl7Message.substr(0, 3) === 'MSH') { // TODO: Run message through validation before parsing.
+            this.messageEncodingChars = hl7Message.substr(3, 5);
+            let hl7MessageParser = new Parser();
+            hl7MessageParser.segmentParse(hl7Message, this.messageEncodingChars, this.HL7Segments);
+            if (this.HL7Segments.length > 0 && this.HL7Segments[0].Name === 'MSH') {
+                this.HL7MessageType = this.HL7Segments[0].HL7Fields[8].Value;
+                this.HL7MessageControllerId = this.HL7Segments[0].HL7Fields[9].Value;
+                this.HL7MessageDateTime = ConvertTime(this.HL7Segments[0].HL7Fields[6].Value);
             }
         }
-    }
-
-    Parse(message: string) {
-        let segmentArray = message.split(/[\s](?=[A-Z][A-Z][A-Z,0-9][|])/);
-        segmentArray.forEach((segmentElement, segmentIndex) => {
-            segmentElement = segmentElement.trim();
-            this.Segments.push(new Segment(segmentElement));
-        });
     }
 }

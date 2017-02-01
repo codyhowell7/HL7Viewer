@@ -1,19 +1,14 @@
-import {Message} from './message';
-import { IHighlighted } from '../interfaces/IHighlighted';
+import { HL7Message } from './message';
+import { Parser } from './parse';
 
+export class HL7MultiMessage {
+    HL7Messages: HL7Message[] = [];
+    isHighlighted: boolean;
 
-export class MultiMessage implements IHighlighted {
-Messages: Message[] = [];
-isHighlighted: boolean;
-
-    constructor(fullmessage: string) {
-        this.Parse(fullmessage);
-    }
-
-    Parse(fullmessage: string) {
-        let messageArray = fullmessage.split(/[\s](?=MSH)/);
-        messageArray.forEach(element => {
-            this.Messages.push(new Message(element));
-        });
+    constructor(hl7Fullmessage: string) {
+        if (hl7Fullmessage != null) {
+            let hl7MultiMessageParser = new Parser();
+            hl7MultiMessageParser.messageParse(hl7Fullmessage, this.HL7Messages);
+        }
     }
 }

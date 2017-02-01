@@ -1,32 +1,23 @@
-import { Component } from './component';
+import { HL7Component } from './hl7Component';
+import { Parser } from './parse';
 
-export class Field {
-    Components: Component[] = [];
-    RepeatedFields: Field[] = [];
+
+export class HL7Field {
+    HL7Components: HL7Component[] = [];
+    HL7RepeatedFields: HL7Field[] = [];
     Index: number;
     Value: string;
     HasRepetition: boolean;
-    HasComponents: boolean;
+    HasHL7Components: boolean;
     isHighlighted: boolean;
 
-    constructor(field: string, fieldIndex: number) {
-        this.Parse(field, fieldIndex);
-        this.Value = field;
+    constructor(hl7Field: string, hl7FieldIndex: number, messageEncodingChars: string) {
+        this.Value = hl7Field;
+        this.Index = hl7FieldIndex;
+        let hl7FieldParser = new Parser();
+        hl7FieldParser.hl7ComponentParse(hl7Field, hl7FieldIndex, messageEncodingChars, this.HL7RepeatedFields, this.HL7Components);
+        this.HasRepetition = this.HL7RepeatedFields.length > 0;
+        this.HasHL7Components = this.HL7Components.length > 0;
     }
 
-    Parse(field: string, fieldIndex: number) {
-        this.Index = fieldIndex;
-        let repeatArray = field.split(/[~]/);
-        if (repeatArray.length > 1) { // Only pushes to repeatArray when a ~ is found.
-            repeatArray.forEach((repeatElement, repeatIndex) => {
-                this.RepeatedFields.push(new Field(repeatElement, fieldIndex));
-            });
-        }
-        let componentArray = field.split(/[\^]/);
-        componentArray.forEach((componentElement, componentIndex) => {
-            this.Components.push(new Component(componentElement, componentIndex + 1));
-        });
-        this.HasRepetition = this.RepeatedFields.length > 0;
-        this.HasComponents = this.Components.length > 0;
-    }
 }

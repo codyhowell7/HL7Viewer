@@ -1,25 +1,16 @@
-import { Field } from './field';
+import { HL7Field } from './field';
+import { Parser } from './parse';
 
-export class Segment {
-    Fields: Field[] = [];
+export class HL7Segment {
+    HL7Fields: HL7Field[] = [];
     Value: string;
     Name: string;
     isHighlighted: boolean;
 
-    constructor(segment: string) {
-        this.Parse(segment);
-        this.Value = segment;
-        this.Name = segment.substring(0, 3);
-    }
-
-    Parse(segment: string) {
-        let fieldArray = segment.split(/[|]/);
-        if (segment.substring(0, 3) === 'MSH') {
-            fieldArray = fieldArray.filter((element, index) => { return index > 0; });
-            fieldArray.unshift('|');
-        }
-        fieldArray.forEach((fieldElement, fieldIndex) => {
-            this.Fields.push(new Field(fieldElement, fieldIndex + 1));
-        });
+    constructor(hl7Segment: string, messageEncodingChars: string) {
+        let hl7SegmentParser = new Parser();
+        hl7SegmentParser.fieldParse(hl7Segment, this.HL7Fields, messageEncodingChars);
+        this.Value = hl7Segment;
+        this.Name = hl7Segment.substring(0, 3);
     }
 }

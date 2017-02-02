@@ -1,4 +1,4 @@
-import { HL7Field } from './field';
+import { HL7Field } from './hl7Field';
 import { Parser } from './parse';
 
 export class HL7Segment {

@@ -1,4 +1,4 @@
-import { HL7Segment } from './segment';
+import { HL7Segment } from './hl7Segment';
 
 
 export class HL7Message {

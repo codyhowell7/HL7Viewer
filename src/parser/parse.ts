@@ -4,7 +4,6 @@ import { HL7Field } from './hl7Field';
 import { HL7Component } from './hl7Component';
 import { HL7SubComponent } from './hl7SubComponent';
 import { ConvertTime } from './convertTime';
-import * as moment from 'moment';
 
 
 export class Parser {
@@ -54,7 +53,7 @@ export class Parser {
 
     // Creates a new message then splits it by segment.
     // We then pass each segment to the parseHL7Segment function.
-    // Parse order: Message -> Segment -> Field -> [RepeatingField]? - > Component -> subcomponentSeparator
+    // Parse order: Message -> Segment -> Field -> [RepeatingField]? -> Component -> Subcomponent
 
     public parseHL7Message(strMessage: string) {
         let hl7Message: HL7Message = new HL7Message(strMessage);
@@ -63,15 +62,14 @@ export class Parser {
 
         let segmentSplitter = new RegExp('[\\s](?=[A-Z][A-Z][A-Z,0-9][\\' + this.fieldSeparator + '])');
         let segmentArray = strMessage.split(segmentSplitter);
-        segmentArray.forEach(segmentElement => {
+        segmentArray.forEach((segmentElement, segmentIndex) => {
             segmentElement = segmentElement.trim();
-            hl7Message.HL7Segments.push(this.parseHL7Segment(segmentElement));
+            hl7Message.hl7Segments.push(this.parseHL7Segment(segmentElement));
         });
-
-        if (hl7Message.HL7Segments.length > 0 && hl7Message.HL7Segments[0].Name === 'MSH') {
-            hl7Message.HL7MessageType = hl7Message.HL7Segments[0].HL7Fields[8].Value;
-            hl7Message.HL7MessageControllerId = hl7Message.HL7Segments[0].HL7Fields[9].Value;
-            hl7Message.HL7MessageDateTime = ConvertTime(hl7Message.HL7Segments[0].HL7Fields[6].Value);
+        if (hl7Message.hl7Segments.length > 0 && hl7Message.hl7Segments[0].segmentName === 'MSH') {
+            hl7Message.hl7MessageType = hl7Message.hl7Segments[0].hl7Fields[8].value;
+            hl7Message.hl7MessageControllerId = hl7Message.hl7Segments[0].hl7Fields[9].value;
+            hl7Message.hl7MessageDateTime = ConvertTime(hl7Message.hl7Segments[0].hl7Fields[6].value);
         }
 
         return hl7Message;
@@ -79,15 +77,14 @@ export class Parser {
 
     private parseHL7Segment(segmentValue: string) {
         let hl7Segment: HL7Segment = new HL7Segment(segmentValue);
-        hl7Segment.Name = segmentValue.substr(0, 3);
-
+        hl7Segment.segmentName = segmentValue.substr(0, 3);
         let fieldSplitter = new RegExp('[\\' + this.fieldSeparator + ']');
         let fieldArray = segmentValue.split(fieldSplitter).slice(1);
         if (segmentValue.substring(0, 3) === 'MSH') {
             fieldArray.unshift(this.fieldSeparator);
         }
         fieldArray.forEach((fieldElement, fieldIndex) => {
-            hl7Segment.HL7Fields.push(this.parseHL7Field(fieldElement, fieldIndex + 1));
+            hl7Segment.hl7Fields.push(this.parseHL7Field(fieldElement, fieldIndex + 1));
         });
 
         return hl7Segment;
@@ -104,7 +101,7 @@ export class Parser {
             if (fieldValue !== this.componentSeparator + this.fieldRepetitionSeparator +
                 this.escapeCharacter + this.subcomponentSeparator) {
                 repetitionArray.forEach((repeatElement, repeatIndex) => {
-                    hl7Field.HL7RepeatedFields.push(this.parseHL7Field(repeatElement, repeatIndex + 1));
+                    hl7Field.hl7RepeatedFields.push(this.parseHL7Field(repeatElement, repeatIndex + 1));
                     // Recurssively calls parseHL7Field as each repeatition is it's own field with it's own components etc.
                 });
             }
@@ -113,12 +110,12 @@ export class Parser {
             let hl7ComponentArray = fieldValue.split(componentSplitter);
             if (hl7ComponentArray.length > 1) {
                 hl7ComponentArray.forEach((hl7ComponentElement, hl7ComponentIndex) => {
-                    hl7Field.HL7Components.push(this.parseHL7Component(hl7ComponentElement, hl7ComponentIndex + 1));
+                    hl7Field.hl7Components.push(this.parseHL7Component(hl7ComponentElement, hl7ComponentIndex + 1));
                 });
             }
         }
-        hl7Field.HasRepetition = hl7Field.HL7RepeatedFields.length > 0;
-        hl7Field.HasHL7Components = hl7Field.HL7Components.length > 0;
+        hl7Field.hasRepetition = hl7Field.hl7RepeatedFields.length > 0;
+        hl7Field.hasHL7Components = hl7Field.hl7Components.length > 0;
         return hl7Field;
     }
 
@@ -134,10 +131,10 @@ export class Parser {
                 if (hl7SubComponentElement.match(this.escapeCharactersRegex)) {
                     hl7SubComponentElement = this.convertEscapeSequences(hl7SubComponentElement);
                 }
-                hl7Component.HL7SubComponents.push(new HL7SubComponent(hl7SubComponentElement, hl7SubComponentIndex + 1));
+                hl7Component.hl7SubComponents.push(new HL7SubComponent(hl7SubComponentElement, hl7SubComponentIndex + 1));
             });
         }
-        hl7Component.HasSubComponents = hl7Component.HL7SubComponents.length > 1;
+        hl7Component.hasSubComponents = hl7Component.hl7SubComponents.length > 1;
         return hl7Component;
     }
 }

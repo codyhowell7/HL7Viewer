@@ -1,13 +1,11 @@
 import { HL7Field } from './hl7Field';
 import { Parser } from './parse';
+import { List } from 'linqts';
 
 export class HL7Segment {
-    HL7Fields: HL7Field[] = [];
-    Value: string;
-    Name: string;
+    hl7Fields: HL7Field[] = [];
+    segmentName: string;
     isHighlighted: boolean;
 
-    constructor(hl7Segment: string) {
-        this.Value = hl7Segment;
-    }
+    constructor(private value: string) { }
 }

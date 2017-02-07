@@ -1,0 +1,11 @@
+:host {
+    background-color: #bbb;
+    flex: 1 1 10%;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: column;
+
+    button {
+        margin-bottom: 10px;
+    }
+}

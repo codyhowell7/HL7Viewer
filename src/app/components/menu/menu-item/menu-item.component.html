@@ -1,0 +1,5 @@
+<div [routerLink]="['/workspace', message.id, 'quick']" routerLinkActive="active">
+    <span>Message {{message.id + 1}}</span>
+    <md-icon *ngIf="isMessages$ | async" (click)="removeItem()">clear</md-icon>
+    <input *ngIf="isCompare$ | async" type="checkbox" />
+</div>

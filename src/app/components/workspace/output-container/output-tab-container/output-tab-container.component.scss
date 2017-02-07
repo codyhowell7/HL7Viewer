@@ -1,0 +1,17 @@
+:host {
+    display: flex;
+
+    .active {
+        color: #000;
+        border-bottom: 2px solid #000;
+    }
+
+    div {
+        background-color: white;
+        border-bottom: 1px solid #aaa;
+        padding: 10px;
+        color: #aaa;
+        cursor: pointer;
+        text-align: center;
+    }
+}

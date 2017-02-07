@@ -1,0 +1,11 @@
+:host{
+    height: 100%;
+    width: 100%;
+    display: flex;
+
+    div {
+        background-color: #bbb;
+        flex: 1 1 90%;
+        display: flex;
+    }
+}

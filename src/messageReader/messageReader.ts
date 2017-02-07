@@ -20,7 +20,7 @@ export class MessageReader {
         });
     }
 
-    public specificDesignatorSearch(messages: HL7Message[], specificDesignator: string): Object[] {
+    public compareDesignatorSearch(messages: HL7Message[], specificDesignator: string): Object[] {
         let resultsArray: Object[] = [];
         messages.forEach((message, messageIndex) => {
             let objectToAdd = this.parseDesignator(message, specificDesignator);

@@ -12,9 +12,9 @@ export class HL7MultiMessage {
         let messageParser;
         if (hl7Fullmessage != null) {
             let hl7MessageArray = hl7Fullmessage.split(/[\s](?=MSH)/);
-            hl7MessageArray.forEach(element => {
+            hl7MessageArray.forEach((element, index) => {
                 messageParser = new Parser();
-                this.hl7Messages.push(messageParser.parseHL7Message(element));
+                this.hl7Messages.push(messageParser.parseHL7Message(element, index));
             });
         }
     }

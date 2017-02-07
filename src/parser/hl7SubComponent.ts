@@ -1,5 +1,5 @@
 export class HL7SubComponent {
-    isHighlighted: boolean;
+    isInQuickView: boolean = false;
 
     constructor(private value: string, private index: number) {}
 }

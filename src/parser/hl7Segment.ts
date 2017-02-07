@@ -5,7 +5,8 @@ import { List } from 'linqts';
 export class HL7Segment {
     hl7Fields: HL7Field[] = [];
     segmentName: string;
-    isHighlighted: boolean;
+    segmentDesc: string;
+    isInQuickView: boolean = false;
 
     constructor(private value: string) { }
 }

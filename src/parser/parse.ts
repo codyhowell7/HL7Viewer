@@ -4,7 +4,7 @@ import { HL7Field } from './hl7Field';
 import { HL7Component } from './hl7Component';
 import { HL7SubComponent } from './hl7SubComponent';
 import { ConvertTime } from './convertTime';
-
+let HL7Dict = require('hl7-dictionary');
 
 export class Parser {
     fieldSeparator: string;
@@ -13,6 +13,7 @@ export class Parser {
     subcomponentSeparator: string;
     escapeCharacter: string;
     escapeCharactersRegex: RegExp;
+    messageVersion: string;
 
     private setSeparators(messageEncodingChars: string) {
         this.fieldSeparator = messageEncodingChars.substr(0, 1);
@@ -55,9 +56,10 @@ export class Parser {
     // We then pass each segment to the parseHL7Segment function.
     // Parse order: Message -> Segment -> Field -> [RepeatingField]? -> Component -> Subcomponent
 
-    public parseHL7Message(strMessage: string) {
+    public parseHL7Message(strMessage: string, messageIndex: number) {
         let hl7Message: HL7Message = new HL7Message(strMessage);
         let separators: string = strMessage.substr(3, 5);
+        hl7Message.hl7MessageId = messageIndex + 1;
         this.setSeparators(separators);
 
         let segmentSplitter = new RegExp('[\\s](?=[A-Z][A-Z][A-Z,0-9][\\' + this.fieldSeparator + '])');
@@ -70,24 +72,37 @@ export class Parser {
             hl7Message.hl7MessageType = hl7Message.hl7Segments[0].hl7Fields[8].value;
             hl7Message.hl7MessageControllerId = hl7Message.hl7Segments[0].hl7Fields[9].value;
             hl7Message.hl7MessageDateTime = ConvertTime(hl7Message.hl7Segments[0].hl7Fields[6].value);
+            hl7Message.hl7Version = hl7Message.hl7Segments[0].hl7Fields[11].value;
+            this.messageVersion = hl7Message.hl7Version;
         }
 
         return hl7Message;
     }
 
     private parseHL7Segment(segmentValue: string) {
+        let segName = segmentValue.substr(0, 3);
+        let segDesc = this.segmentDesc(segName);
         let hl7Segment: HL7Segment = new HL7Segment(segmentValue);
-        hl7Segment.segmentName = segmentValue.substr(0, 3);
+        hl7Segment.segmentName = segName;
+        hl7Segment.segmentDesc = segDesc;
         let fieldSplitter = new RegExp('[\\' + this.fieldSeparator + ']');
         let fieldArray = segmentValue.split(fieldSplitter).slice(1);
         if (segmentValue.substring(0, 3) === 'MSH') {
-            fieldArray.unshift(this.fieldSeparator);
+            fieldArray.unshift(this.fieldSeparator); // The field seperator is counted as index 1 so we need to put it back in.
         }
         fieldArray.forEach((fieldElement, fieldIndex) => {
             hl7Segment.hl7Fields.push(this.parseHL7Field(fieldElement, fieldIndex + 1));
         });
 
         return hl7Segment;
+    }
+
+    private segmentDesc(segmentHead: string): string {
+        if (typeof HL7Dict.definitions['2.7.1'].segments[segmentHead] === 'undefined' ) {
+            throw `Segment name not found: ${segmentHead}`; // TODO: Create Custom
+        } else {
+            return HL7Dict.definitions['2.7.1'].segments[segmentHead].desc;
+        }
     }
 
     private parseHL7Field(fieldValue: string, fieldIndex: number) {

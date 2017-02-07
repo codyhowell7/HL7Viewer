@@ -1,2 +1,2 @@
-<hls-menu-toolbar-option [iconLabel]="'Messages'" [isHighlighted]="isMessages$ | async" (optionClick)="messageClicked()"></hls-menu-toolbar-option>
-<hls-menu-toolbar-option [iconLabel]="'Compare'" [isHighlighted]="isCompare$ | async" (optionClick)="compareClicked()"></hls-menu-toolbar-option>
+<span [routerLink]="['/workspace']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">Messages</span>
+<span [routerLink]="['/compare']" routerLinkActive="active">Compare</span>

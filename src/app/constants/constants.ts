@@ -1,2 +1,6 @@
-export const DEFAULT_STATE = "@@redux/INIT";
-export const MODE_CHANGED = "MODE_CHANGED";
+export const DEFAULT_STATE = '@@redux/INIT';
+export const MODE_CHANGED = 'MODE_CHANGED';
+export const SWITCH_MESSAGE = 'SWITCH_MESSAGE';
+export const ADD_MESSAGE = 'ADD_MESSAGE';
+export const REMOVE_MESSAGE = 'REMOVE_MESSAGE';
+export const MESSAGE_RECEIVED = 'MESSAGE_RECEIVED';

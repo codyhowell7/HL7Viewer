@@ -1,0 +1,12 @@
+:host {
+    flex: 1 1 50%;
+    background-color: #fff;
+    margin-right: 5px;
+    padding: 10px;
+
+    textarea {
+        height: 100%;
+        width: 100%;
+        resize: none;
+    }
+}

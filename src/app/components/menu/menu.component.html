@@ -1,4 +1,4 @@
 <hls-menu-toolbar></hls-menu-toolbar>
-<hls-menu-item></hls-menu-item>
-<hls-menu-item></hls-menu-item>
-<hls-menu-item></hls-menu-item>
+<button md-raised-button *ngIf="isMessages$ | async" (click)="addMessage()">Add Message</button>
+<button md-raised-button *ngIf="isCompare$ | async">Compare</button>
+<hls-menu-item *ngFor="let message of (getMessages() | async)" [message]="message"></hls-menu-item>

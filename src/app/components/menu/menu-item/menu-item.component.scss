@@ -1,0 +1,30 @@
+$iconHeight: 14px;
+
+:host {
+    border-bottom: 1px solid #aaa;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #fff;
+
+    div {
+        display: flex;
+        justify-content: space-between;
+
+        span {
+            line-height: $iconHeight;
+        }
+
+        input {
+            line-height: $iconHeight;
+            margin-top: 3px;
+            margin-bottom: 2px;
+        }
+
+        md-icon {
+            padding: 2px;
+            height: $iconHeight;
+            width: $iconHeight;
+            font-size: $iconHeight;
+        }
+    }
+}

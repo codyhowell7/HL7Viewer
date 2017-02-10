@@ -47,11 +47,10 @@ div.panel {
 
 div.fieldFlexItem {
      padding-right: 5px;
-     width: 200px;
+     min-width: 200px;
 }
 div.fieldFlexValue {
     padding-left: 50px;
-    width: 150px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

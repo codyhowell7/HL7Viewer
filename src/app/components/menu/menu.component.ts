@@ -26,14 +26,13 @@ export class MenuComponent implements OnInit {
   constructor(private ngRedux: NgRedux<IAppState>) { }
 
   ngOnInit() {
-
     this.messageCount$ = this.messages$.map(messages => messages.filter(message => !message.deleted).size);
 
     this.isMessages$ = combineLatest(this.mode$, this.messageCount$).map(([mode, messageCount]) => { return mode === WorkspaceMode.messages; });
     this.isCompare$ = combineLatest(this.mode$, this.messageCount$).map(([mode, messageCount]) => { return mode === WorkspaceMode.compare && messageCount > 1; });
   }
-
-  getMessages = () => this.messages$.map(messages => messages.filter(message => !message.deleted).toList().toJS());
+  
+  getMessages = () => this.messages$.map( messages => messages.filter(message => !message.deleted).toList().toJS());
 
   addMessage = () => {
     this.ngRedux.dispatch({

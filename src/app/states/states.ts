@@ -22,3 +22,4 @@ export interface IMessage {
 export interface IWorkspaceState {
     workspaceMode: WorkspaceMode;
 }
+

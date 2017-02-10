@@ -58,6 +58,10 @@ export class StandardComponent implements OnInit {
     return this.message.message.hl7Segments[segmentIndex].hl7Fields;
   }
 
+  getComponents(segmentIndex: number, fieldIndex: number) {
+     return this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hasHL7Components;
+  }
+
   getState(segmentId: number) {
     let state;
     this.accordion$.subscribe(accordionSegmentState => state = accordionSegmentState.get(this.message.id).get(segmentId));

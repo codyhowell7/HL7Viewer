@@ -7,5 +7,5 @@ export class HL7Segment {
     segmentDesc: string;
     isInQuickView: boolean = false;
 
-    constructor(private value: string) { }
+    constructor(private value: string, private segmentIndex: number) { }
 }

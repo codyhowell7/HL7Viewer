@@ -1,0 +1,10 @@
+<div *ngFor='let segment of getSegments()'>
+    <button class='accordion' (click)='extendAccordion(segment.segmentIndex, getState(segment.segmentIndex))' >{{segment.segmentName}}</button>
+    <div *ngIf='getState(segment.segmentIndex)' >
+        <button class='flexContainer fieldaccordion' *ngFor='let field of getFields(segment.segmentIndex)'>
+            <div class='fieldFlexItem'> {{segment.segmentName}}.{{field.index}} </div>
+            <div class='fieldFlexItem'> {{field.fieldDesc}} </div>
+            <div class='fieldFlexValue'> {{field.value}} </div>
+        </button>
+    </div>
+</div>

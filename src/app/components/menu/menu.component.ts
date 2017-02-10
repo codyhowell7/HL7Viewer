@@ -37,7 +37,10 @@ export class MenuComponent implements OnInit {
 
   addMessage = () => {
     this.ngRedux.dispatch({
-      type: ADD_MESSAGE
+      type: ADD_MESSAGE,
+      payload: {
+        message: ''
+      }
     });
   }
 }

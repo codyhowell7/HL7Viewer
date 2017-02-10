@@ -1,4 +1,4 @@
-import { IWorkspaceModeChangedPayload, IMessageReceivedPayload, IIdPayload } from '../payloads/payloads';
+import { IWorkspaceModeChangedPayload, IMessageReceivedPayload, IIdPayload, IAccordionToggledPayload } from '../payloads/payloads';
 
 export interface IAction {
     type: string;
@@ -14,9 +14,13 @@ export interface IWorkspaceModeChangedAction extends IAction {
 }
 
 export interface IRemoveMessageAction extends IAction {
-    payload: IIdPayload
+    payload: IIdPayload;
 }
 
 export interface IMessageReceivedAction extends IAction {
-    payload: IMessageReceivedPayload
+    payload: IMessageReceivedPayload;
+}
+
+export interface IAccordionToggleAction extends IAction {
+    payload: IAccordionToggledPayload;
 }

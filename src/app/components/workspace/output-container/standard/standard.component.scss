@@ -1,0 +1,59 @@
+:host {
+    background-color: #fff;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+
+button.accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    transition: 0.4s;
+}
+button.fieldaccordion {
+    background-color: #f9f9f9;
+    color: #444;
+    cursor: pointer;
+    padding-left: 25px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 100%;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    transition: 0.4s; 
+    border-bottom-color: #fff;
+    border-bottom-width: 1px;
+    display: flex;
+}
+
+button.accordion.active, button.accordion:hover {
+    background-color: #ddd;
+}
+
+div.panel {
+    padding: 0 18px;
+    background-color: white;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+div.fieldFlexItem {
+     padding-right: 5px;
+     width: 200px;
+}
+div.fieldFlexValue {
+    padding-left: 50px;
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+

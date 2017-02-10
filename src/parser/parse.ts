@@ -62,11 +62,12 @@ export class Parser {
         hl7Message.hl7MessageId = messageIndex + 1;
         this.setSeparators(separators);
 
-        let segmentSplitter = new RegExp('[\\s](?=[A-Z][A-Z][A-Z,0-9][\\' + this.fieldSeparator + '])');
+        let segmentSplitter = new RegExp('[\\s](?=[A-Z][A-Z][A-Z,0-9][\\\\' + this.fieldSeparator + '])');
         let segmentArray = strMessage.split(segmentSplitter);
+        hl7Message.hl7CorrectedMessage = segmentArray.join('\n');
         segmentArray.forEach((segmentElement, segmentIndex) => {
             segmentElement = segmentElement.trim();
-            hl7Message.hl7Segments.push(this.parseHL7Segment(segmentElement));
+            hl7Message.hl7Segments.push(this.parseHL7Segment(segmentElement, segmentIndex));
         });
         if (hl7Message.hl7Segments.length > 0 && hl7Message.hl7Segments[0].segmentName === 'MSH') {
             hl7Message.hl7MessageType = hl7Message.hl7Segments[0].hl7Fields[8].value;
@@ -79,10 +80,10 @@ export class Parser {
         return hl7Message;
     }
 
-    private parseHL7Segment(segmentValue: string) {
+    private parseHL7Segment(segmentValue: string, segmentIndex: number) {
         let segName = segmentValue.substr(0, 3);
         let segDesc = this.segmentDesc(segName);
-        let hl7Segment: HL7Segment = new HL7Segment(segmentValue);
+        let hl7Segment: HL7Segment = new HL7Segment(segmentValue, segmentIndex);
         hl7Segment.segmentName = segName;
         hl7Segment.segmentDesc = segDesc;
         let fieldSplitter = new RegExp('[\\' + this.fieldSeparator + ']');
@@ -91,7 +92,7 @@ export class Parser {
             fieldArray.unshift(this.fieldSeparator); // The field seperator is counted as index 1 so we need to put it back in.
         }
         fieldArray.forEach((fieldElement, fieldIndex) => {
-            hl7Segment.hl7Fields.push(this.parseHL7Field(fieldElement, fieldIndex + 1));
+            hl7Segment.hl7Fields.push(this.parseHL7Field(fieldElement, fieldIndex + 1, segName));
         });
 
         return hl7Segment;
@@ -105,18 +106,19 @@ export class Parser {
         }
     }
 
-    private parseHL7Field(fieldValue: string, fieldIndex: number) {
+    private parseHL7Field(fieldValue: string, fieldIndex: number, currentSegmentName: string) {
         let repetitionSplitter = new RegExp('[\\' + this.fieldRepetitionSeparator + ']');
         let repetitionArray = fieldValue.split(repetitionSplitter);
         if (fieldValue.match(this.escapeCharactersRegex)) {
             fieldValue = this.convertEscapeSequences(fieldValue);
         }
         let hl7Field: HL7Field = new HL7Field(fieldValue, fieldIndex);
+        hl7Field.fieldDesc = HL7Dict.definitions['2.7.1'].segments[currentSegmentName].fields[fieldIndex - 1].desc;
         if (repetitionArray.length > 1) {
             if (fieldValue !== this.componentSeparator + this.fieldRepetitionSeparator +
                 this.escapeCharacter + this.subcomponentSeparator) {
                 repetitionArray.forEach((repeatElement, repeatIndex) => {
-                    hl7Field.hl7RepeatedFields.push(this.parseHL7Field(repeatElement, repeatIndex + 1));
+                    hl7Field.hl7RepeatedFields.push(this.parseHL7Field(repeatElement, repeatIndex + 1, currentSegmentName));
                     // Recurssively calls parseHL7Field as each repeatition is it's own field with it's own components etc.
                 });
             }

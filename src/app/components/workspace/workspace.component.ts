@@ -20,7 +20,7 @@ export class WorkspaceComponent implements OnInit {
   ngOnInit() {
 
     this.route.params.subscribe((params: Params) => {
-      
+
       this.ngRedux.dispatch({
         type: SWITCH_MESSAGE,
         payload: {
@@ -28,7 +28,7 @@ export class WorkspaceComponent implements OnInit {
         }
       });
     });
-    
+
     this.ngRedux.dispatch({
       type: MODE_CHANGED,
       payload: {

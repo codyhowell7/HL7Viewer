@@ -9,13 +9,5 @@ import { MessageReader } from '../messageReader/messageReader'
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    strHL7Messages: string;
 
-    parse() {
-        let messages = new HL7MultiMessage(this.strHL7Messages);
-        let mReader = new MessageReader;
-        mReader.setQuickView(messages.hl7Messages, ['PID.5.1.1', 'QRE', 'MSH.5[1].1'] );
-        console.log(mReader.compareDesignatorSearch(messages.hl7Messages, 'MSH.1'));
-        console.log(messages.hl7Messages);
-    }
 }

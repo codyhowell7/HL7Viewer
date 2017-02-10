@@ -4,10 +4,13 @@ import { FormControl } from '@angular/forms';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
+import { Parser } from '../../../../parser/parse';
+import { HL7MultiMessage } from '../../../../parser/hl7MultiMessage';
+import { HL7Message } from '../../../../parser/HL7Message';
 import 'rxjs/add/operator/debounceTime';
 
 import { IMessage, IAppState } from '../../../states/states';
-import { MESSAGE_RECEIVED } from '../../../constants/constants';
+import { MESSAGE_RECEIVED, ADD_MESSAGE } from '../../../constants/constants';
 
 @Component({
   selector: 'hls-message',
@@ -33,18 +36,32 @@ export class MessageComponent implements OnInit {
         this.messageId = currentMessage;
         return messages.get(currentMessage);
       })
-      .subscribe(message => { this.message = message.messageText; });
+      .subscribe(message => { this.message = message.message.hl7CorrectedMessage; });
+
+
 
     this.messageControl
       .valueChanges
       .debounceTime(200)
       .subscribe(value => {
+        let parsedMessage = new HL7MultiMessage(this.message);
+        parsedMessage.hl7Messages.forEach((message, messageIndexId) => {
 
-        this.ngRedux.dispatch({
-          type: MESSAGE_RECEIVED,
-          payload: {
-            id: this.messageId,
-            message: this.message
+          if (messageIndexId === 0) {
+            this.ngRedux.dispatch({
+              type: MESSAGE_RECEIVED,
+              payload: {
+                id: this.messageId,
+                message: message
+              }
+            });
+          } else {
+            this.ngRedux.dispatch({
+              type: ADD_MESSAGE,
+              payload: {
+                message: message
+              }
+            });
           }
         });
       });

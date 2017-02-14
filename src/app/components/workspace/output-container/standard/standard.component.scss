@@ -5,33 +5,39 @@
     overflow: auto;
 }
 
-button.accordion {
-    background-color: #eee;
+@mixin baseAccordion() {
     color: #444;
     cursor: pointer;
-    padding: 18px;
-    width: 100%;
-    border: none;
     text-align: left;
     outline: none;
     font-size: 15px;
     transition: 0.4s;
+    width: 100%;
 }
-button.fieldaccordion {
-    background-color: #f9f9f9;
-    color: #444;
-    cursor: pointer;
+@mixin sectionAccordion(){
     padding-left: 25px;
     padding-top: 5px;
     padding-bottom: 5px;
-    width: 100%;
-    text-align: left;
-    outline: none;
-    font-size: 15px;
-    transition: 0.4s; 
     border-bottom-color: #fff;
     border-bottom-width: 1px;
     display: flex;
+}
+button.accordion {
+    @include baseAccordion();
+    background-color: #eee;
+    padding: 18px;
+    border: none;
+    
+}
+button.fieldaccordion {
+    @include baseAccordion();
+    @include sectionAccordion();
+    background-color: #f9f9f9;
+}
+button.componentaccordion {
+    @include baseAccordion();
+    @include sectionAccordion();
+    background-color: #ebebeb;
 }
 
 button.accordion.active, button.accordion:hover {
@@ -50,6 +56,18 @@ div.fieldFlexItem {
      min-width: 200px;
 }
 div.fieldFlexValue {
+    padding-left: 50px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+div.componentFlexItem {
+    padding-left: 20px;
+     padding-right: 5px;
+     min-width: 200px;
+}
+div.componentFlexValue {
     padding-left: 50px;
     white-space: nowrap;
     overflow: hidden;

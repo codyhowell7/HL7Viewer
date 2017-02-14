@@ -20,7 +20,10 @@ import { OutputTabContainerComponent } from './components/workspace/output-conta
 import { IAppState } from './states/states';
 import { WorkspaceMode } from './enums/enums';
 import { IAction } from './actions/actions';
-import { reduceCurrentMessage, reduceMessages, reduceMenu, reduceWorkspace, reduceAccordion } from './reducers/reducers';
+import {
+  reduceCurrentMessage, reduceMessages, reduceMenu, reduceWorkspace, reduceAccordion,
+  reduceFieldOffset, reduceFieldAccordion, reduceSegmentOffset, reduceComponentOffset
+} from './reducers/reducers';
 import { ComparespaceComponent } from './components/comparespace/comparespace.component';
 import { QuickViewComponent } from './components/workspace/output-container/quick-view/quick-view.component';
 import { SearchComponent } from './components/workspace/output-container/search/search.component';
@@ -67,6 +70,10 @@ function rootReducer(state: IAppState, action: IAction): IAppState {
     messages: reduceMessages(state.messages, action),
     menu: reduceMenu(state.menu, action),
     workspace: reduceWorkspace(state.workspace, action),
-    accordion: reduceAccordion(state.accordion, action)
+    segmentOffset: reduceSegmentOffset(state.segmentOffset, action),
+    fieldOffset: reduceFieldOffset(state.fieldOffset, action),
+    componentOffset: reduceComponentOffset(state.componentOffset, action),
+    accordion: reduceAccordion(state.accordion, action),
+    fieldAccordion: reduceFieldAccordion(state.fieldAccordion, action)
   };
 }

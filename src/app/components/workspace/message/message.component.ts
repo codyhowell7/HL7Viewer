@@ -7,6 +7,9 @@ import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Parser } from '../../../../parser/parse';
 import { HL7MultiMessage } from '../../../../parser/hl7MultiMessage';
 import { HL7Message } from '../../../../parser/HL7Message';
+import { GetNextSegment } from '../../../services/get-next-segment-service';
+import { GetNextField } from '../../../services/get-next-field-service';
+import { Map } from 'immutable';
 import 'rxjs/add/operator/debounceTime';
 
 import { IMessage, IAppState } from '../../../states/states';
@@ -15,7 +18,8 @@ import { MESSAGE_RECEIVED, ADD_MESSAGE } from '../../../constants/constants';
 @Component({
   selector: 'hls-message',
   templateUrl: './message.component.html',
-  styleUrls: ['./message.component.scss']
+  styleUrls: ['./message.component.scss'],
+  providers: [GetNextSegment, GetNextField]
 })
 export class MessageComponent implements OnInit {
 
@@ -24,9 +28,11 @@ export class MessageComponent implements OnInit {
 
   messageId: number;
   message: string;
+  messages: Map<number, IMessage>;
   messageControl: FormControl = new FormControl();
 
-  constructor(private route: ActivatedRoute, private ngRedux: NgRedux<IAppState>) { }
+  constructor(private route: ActivatedRoute, private ngRedux: NgRedux<IAppState>,
+    private getNextSegment: GetNextSegment, private getNextField: GetNextField) { }
 
   ngOnInit() {
 
@@ -34,6 +40,7 @@ export class MessageComponent implements OnInit {
       .map(([messages, currentMessage]) => {
 
         this.messageId = currentMessage;
+        this.messages = messages;
         return messages.get(currentMessage);
       })
       .subscribe(message => { this.message = message.message.hl7CorrectedMessage; });
@@ -63,6 +70,8 @@ export class MessageComponent implements OnInit {
               }
             });
           }
+          this.getNextSegment.nextSegmentOffset(this.messages);
+          this.getNextField.nextFieldOffset(this.messages);
         });
       });
   }

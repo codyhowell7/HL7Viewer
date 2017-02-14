@@ -2,15 +2,18 @@ import { Map } from 'immutable';
 
 import { IMenuState, IMessage, IWorkspaceState } from '../states/states';
 import {
-    IAction, ISwitchMessageAction, IWorkspaceModeChangedAction,
-    IRemoveMessageAction, IMessageReceivedAction, IAccordionToggleAction, IDefaultSegments
+    IAction, ISwitchMessageAction, IWorkspaceModeChangedAction, IFieldAccordionToggleaction,
+    IRemoveMessageAction, IMessageReceivedAction, IAccordionToggleAction, IFieldOffsetAction,
+    ISegmentOffsetAction, IComponentOffsetAction
 } from '../actions/actions';
 import {
     DEFAULT_STATE, MODE_CHANGED, SWITCH_MESSAGE, ADD_MESSAGE, REMOVE_MESSAGE, MESSAGE_RECEIVED,
-    TOGGLE_ACCORDION, DEFAULT_ACCORDIONS_MESS, DEFAULT_ACCORDIONS_SEGS, NEW_MESSAGE
+    TOGGLE_ACCORDION, DEFAULT_ACCORDIONS, DEFAULT_FIELD_ACCORDIONS, TOGGLE_FIELD_ACCORDION, FIELD_OFFSET,
+    SEGMENT_OFFSET, COMPONENT_OFFSET
 } from '../constants/constants';
 import { WorkspaceMode } from '../enums/enums';
 import { HL7Message } from '../../parser/HL7Message';
+import { GetNextSegment } from '../services/get-next-segment-service';
 
 
 export function reduceCurrentMessage(state: number, action: IAction): number {
@@ -72,8 +75,6 @@ function removeMessage(state: Map<number, IMessage>, action: IRemoveMessageActio
 
     let current = state.get(action.payload.id);
 
-    console.log(current);
-
     return state.set(action.payload.id, {
         id: current.id,
         deleted: true,
@@ -133,29 +134,123 @@ function getWorkspaceOnModeChange(action: IWorkspaceModeChangedAction): IWorkspa
 export function reduceAccordion(state: Map<number, Map<number, boolean>>, action: IAction): Map<number, Map<number, boolean>> {
     switch (action.type) {
         case TOGGLE_ACCORDION:
-            return
-        case DEFAULT_ACCORDIONS_MESS:
-            return
-        case DEFAULT_ACCORDIONS_SEGS:
-            return;
+            return toggleAccordion(state, action as IAccordionToggleAction);
+        case DEFAULT_ACCORDIONS:
+            return setDefaultAccordions(state, action as IAccordionToggleAction);
         case DEFAULT_STATE:
-            return;
+            return defaultAccordion();
+        default:
+            return state;
+    }
+}
+function defaultAccordion(): Map<number, Map<number, boolean>> {
+    let stateSet = Map<number, Map<number, boolean>>().set(0, Map<number, boolean>().set(0, false));
+    return stateSet;
+}
+
+function setDefaultAccordions(state, action: IAccordionToggleAction): Map<number, Map<number, boolean>> {
+    if (state.get(action.payload.messageID) == null) {
+        return state.set(action.payload.messageID, Map<number, boolean>().set(action.payload.segmentID, false));
+    }
+    if (state.get(action.payload.messageID).get(action.payload.segmentID) != null) {
+        return state;
+    }
+    return state.set(action.payload.messageID, state.get(action.payload.messageID).set(action.payload.segmentID, false));
+}
+
+function toggleAccordion(state: Map<number, Map<number, boolean>>, action: IAccordionToggleAction): Map<number, Map<number, boolean>> {
+    let stateSet = state.set(action.payload.messageID,
+        state.get(action.payload.messageID).set(action.payload.segmentID, !action.payload.toggleState));
+    return stateSet;
+}
+
+export function reduceFieldAccordion(state: Map<number, Map<number, boolean>>, action: IAction): Map<number, Map<number, boolean>> {
+    switch (action.type) {
+        case DEFAULT_FIELD_ACCORDIONS:
+            return setDefaultFieldAccordions(state, action as IFieldAccordionToggleaction);
+        case TOGGLE_FIELD_ACCORDION:
+            return toggleFieldAccordion(state, action as IFieldAccordionToggleaction);
+        case DEFAULT_STATE:
+            return defaultFieldAccordion();
+        default:
+            return state;
+
+    }
+}
+function defaultFieldAccordion(): Map<number, Map<number, boolean>> {
+    return Map<number, Map<number, boolean>>().set(0, Map<number, boolean>().set(0, false));
+}
+
+function setDefaultFieldAccordions(state: Map<number, Map<number, boolean>>,
+    action: IFieldAccordionToggleaction): Map<number, Map<number, boolean>> {
+    if (state.get(action.payload.segmentID) == null) {
+        return state.set(action.payload.segmentID, Map<number, boolean>().set(action.payload.fieldID, false));
+    }
+    if (state.get(action.payload.segmentID).get(action.payload.fieldID) != null) {
+        return state;
+    }
+    return state.set(action.payload.segmentID, state.get(action.payload.segmentID).set(action.payload.fieldID, false));
+}
+
+function toggleFieldAccordion(state: Map<number, Map<number, boolean>>,
+    action: IFieldAccordionToggleaction): Map<number, Map<number, boolean>> {
+        return state.set(action.payload.segmentID,
+            state.get(action.payload.segmentID).set(action.payload.fieldID, !action.payload.toggleState));
+}
+
+export function reduceSegmentOffset(state: Map<number, number>, action: IAction) {
+    switch (action.type) {
+        case SEGMENT_OFFSET:
+            return setSegmentOffset(state, action as ISegmentOffsetAction);
+        case DEFAULT_STATE:
+            return defaultSegmentOffset();
+        default:
+            return state;
+
+    }
+}
+function defaultSegmentOffset(): Map<number, number> {
+    return Map<number, number>().set(0, 0);
+}
+
+ function setSegmentOffset(state: Map<number, number>, action: ISegmentOffsetAction) {
+    return state.set(action.payload.messageID, action.payload.segmentIdOffset);
+ }
+
+ export function reduceFieldOffset(state: Map<number, number>, action: IAction): Map<number, number> {
+    switch (action.type) {
+        case FIELD_OFFSET:
+            return setFieldOffset(state, action as IFieldOffsetAction);
+        case DEFAULT_STATE:
+            return defaultFieldOffset();
+        default:
+            return state;
+    }
+ }
+
+function defaultFieldOffset(): Map<number, number> {
+    return Map<number, number>().set(0, 0);
+}
+
+function setFieldOffset(state: Map<number, number>, action: IFieldOffsetAction): Map<number, number> {
+    return state.set(action.payload.segmentID, action.payload.fieldIdOffset);
+}
+
+export function reduceComponentOffset(state: Map<number, number>, action: IAction): Map<number, number> {
+    switch ( action.type) {
+        case COMPONENT_OFFSET:
+            return setComponentOffset(state, action as IComponentOffsetAction);
+        case DEFAULT_STATE:
+            return defaultComponentOffset();
         default:
             return state;
     }
 }
 
-export function reduceSegments(state: Map<number, number>, action: IAction): Map<number, number> {
-    switch (action.type) {
-        case NEW_MESSAGE:
-            defaultSegments(state, action as IDefaultSegments);
-    }
-    return;
+function defaultComponentOffset(): Map<number, number> {
+    return Map<number, number>().set(0, 0);
 }
 
-function defaultSegments(state: Map<number, number>, action: IDefaultSegments): Map<number, number> {
-    for (let i = 1; i <= action.payload.segments.length; i++) {
-        state.set(action.payload.id, i + action.payload.segmentOffset);
-    }
-    return state;
+function setComponentOffset(state: Map<number, number>, action: IComponentOffsetAction): Map<number, number> {
+    return state.set(action.payload.fieldID, action.payload.componentIdOffset);
 }

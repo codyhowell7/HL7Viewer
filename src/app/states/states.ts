@@ -8,7 +8,11 @@ export interface IAppState {
     messages: Map<number, IMessage>;
     menu: IMenuState;
     workspace: IWorkspaceState;
+    segmentOffset: Map<number, number>;
+    fieldOffset: Map<number, number>;
+    componentOffset: Map<number, number>;
     accordion: Map<number, Map<number, boolean>>;
+    fieldAccordion: Map<number, Map<number, boolean>>;
 }
 
 export interface IMenuState { }
@@ -22,4 +26,3 @@ export interface IMessage {
 export interface IWorkspaceState {
     workspaceMode: WorkspaceMode;
 }
-

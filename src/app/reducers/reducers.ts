@@ -1,8 +1,14 @@
 import { Map } from 'immutable';
 
 import { IMenuState, IMessage, IWorkspaceState } from '../states/states';
-import { IAction, ISwitchMessageAction, IWorkspaceModeChangedAction, IRemoveMessageAction, IMessageReceivedAction, IAccordionToggleAction } from '../actions/actions';
-import { DEFAULT_STATE, MODE_CHANGED, SWITCH_MESSAGE, ADD_MESSAGE, REMOVE_MESSAGE, MESSAGE_RECEIVED, TOGGLE_ACCORDION, DEFAULT_ACCORDIONS_MESS, DEFAULT_ACCORDIONS_SEGS } from '../constants/constants';
+import {
+    IAction, ISwitchMessageAction, IWorkspaceModeChangedAction,
+    IRemoveMessageAction, IMessageReceivedAction, IAccordionToggleAction, IDefaultSegments
+} from '../actions/actions';
+import {
+    DEFAULT_STATE, MODE_CHANGED, SWITCH_MESSAGE, ADD_MESSAGE, REMOVE_MESSAGE, MESSAGE_RECEIVED,
+    TOGGLE_ACCORDION, DEFAULT_ACCORDIONS_MESS, DEFAULT_ACCORDIONS_SEGS, NEW_MESSAGE
+} from '../constants/constants';
 import { WorkspaceMode } from '../enums/enums';
 import { HL7Message } from '../../parser/HL7Message';
 
@@ -127,40 +133,29 @@ function getWorkspaceOnModeChange(action: IWorkspaceModeChangedAction): IWorkspa
 export function reduceAccordion(state: Map<number, Map<number, boolean>>, action: IAction): Map<number, Map<number, boolean>> {
     switch (action.type) {
         case TOGGLE_ACCORDION:
-            return toggleAccordion(state, action as IAccordionToggleAction);
+            return
         case DEFAULT_ACCORDIONS_MESS:
-            return setDefaultAccordionsMess(state, action as IAccordionToggleAction)
+            return
         case DEFAULT_ACCORDIONS_SEGS:
-            return setDefaultAccordionsSegs(state, action as IAccordionToggleAction)
+            return;
         case DEFAULT_STATE:
-            return defaultAccordion();
+            return;
         default:
             return state;
     }
 }
-function defaultAccordion(): Map<number, Map<number, boolean>> {
-    let stateSet = Map<number, Map<number, boolean>>().set(0, Map<number, boolean>().set(0, false));
-    return stateSet;
-}
 
-function setDefaultAccordionsMess(state, action: IAccordionToggleAction): Map<number, Map<number, boolean>> {
-    if (state.get(action.payload.messageID) == null) {
-        return state.set(action.payload.messageID, Map<number, boolean>().set(0, false));
-    } else {
-        return state;
+export function reduceSegments(state: Map<number, number>, action: IAction): Map<number, number> {
+    switch (action.type) {
+        case NEW_MESSAGE:
+            defaultSegments(state, action as IDefaultSegments);
     }
+    return;
 }
 
-function setDefaultAccordionsSegs(state, action: IAccordionToggleAction): Map<number, Map<number, boolean>> {
-    if (state.get(action.payload.messageID).get(action.payload.segmentID) == null) {
-        return state.set(action.payload.messageID, state.get(action.payload.messageID).set(action.payload.segmentID, false));
-    } else {
-        return state;
+function defaultSegments(state: Map<number, number>, action: IDefaultSegments): Map<number, number> {
+    for (let i = 1; i <= action.payload.segments.length; i++) {
+        state.set(action.payload.id, i + action.payload.segmentOffset);
     }
-}
-
-function toggleAccordion(state: Map<number, Map<number, boolean>>, action: IAccordionToggleAction): Map<number, Map<number, boolean>> {
-    let stateSet = state.set(action.payload.messageID, state.get(action.payload.messageID).set(action.payload.segmentID, !action.payload.toggleState));
-    console.log(stateSet);
-    return stateSet;
+    return state;
 }

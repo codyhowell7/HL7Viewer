@@ -13,6 +13,29 @@ export interface IIdPayload {
 export interface IMessageReceivedPayload extends IIdPayload {
     message: HL7Message;
 }
+
+// export interface IAccordionToggledPayload {
+//     messageID: number;
+//     segment: Map<SegmentAccordion, boolean>;
+// }
+
+// export interface SegmentAccordion {
+//     segmentID: number;
+//     field: Map<FieldAccordion, boolean>;
+// }
+
+// export interface FieldAccordion {
+//     fieldID: number;
+//     component?: Map<ComponentAccordion, boolean>;
+// }
+
+// export interface ComponentAccordion {
+//     componentID: number;
+//     subComponent: boolean;
+// }
+
+
+
 export interface IAccordionToggledPayload extends IIdPayload {
     messageID: number;
     segmentID: number;
@@ -22,7 +45,13 @@ export interface IAccordionToggledPayload extends IIdPayload {
 export interface IFieldAccordionToggledPayload extends IIdPayload {
     segmentID: number;
     fieldID: number;
-    toggleState;
+    toggleState: boolean;
+}
+
+export interface IComponentAccordionToggledPayload {
+    fieldID: number;
+    componentID: number;
+    toggleState: boolean;
 }
 
 export interface ISegmentOffsetPayload {

@@ -9,6 +9,7 @@ import { HL7MultiMessage } from '../../../../parser/hl7MultiMessage';
 import { HL7Message } from '../../../../parser/HL7Message';
 import { GetNextSegment } from '../../../services/get-next-segment-service';
 import { GetNextField } from '../../../services/get-next-field-service';
+import { GetNextComponent } from '../../../services/get-next-component-service';
 import { Map } from 'immutable';
 import 'rxjs/add/operator/debounceTime';
 
@@ -19,7 +20,7 @@ import { MESSAGE_RECEIVED, ADD_MESSAGE } from '../../../constants/constants';
   selector: 'hls-message',
   templateUrl: './message.component.html',
   styleUrls: ['./message.component.scss'],
-  providers: [GetNextSegment, GetNextField]
+  providers: [GetNextSegment, GetNextField, GetNextComponent]
 })
 export class MessageComponent implements OnInit {
 
@@ -32,20 +33,18 @@ export class MessageComponent implements OnInit {
   messageControl: FormControl = new FormControl();
 
   constructor(private route: ActivatedRoute, private ngRedux: NgRedux<IAppState>,
-    private getNextSegment: GetNextSegment, private getNextField: GetNextField) { }
+    private getNextSegment: GetNextSegment, private getNextField: GetNextField,
+    private getNextComponent: GetNextComponent) { }
 
   ngOnInit() {
 
     combineLatest(this.messages$, this.currentMessage$)
       .map(([messages, currentMessage]) => {
-
         this.messageId = currentMessage;
         this.messages = messages;
         return messages.get(currentMessage);
       })
-      .subscribe(message => { this.message = message.message.hl7CorrectedMessage; });
-
-
+      .subscribe(message => { this.messageControl.setValue(message.message.hl7CorrectedMessage, {emitEvent: false}); });
 
     this.messageControl
       .valueChanges
@@ -53,7 +52,6 @@ export class MessageComponent implements OnInit {
       .subscribe(value => {
         let parsedMessage = new HL7MultiMessage(this.message);
         parsedMessage.hl7Messages.forEach((message, messageIndexId) => {
-
           if (messageIndexId === 0) {
             this.ngRedux.dispatch({
               type: MESSAGE_RECEIVED,
@@ -70,10 +68,12 @@ export class MessageComponent implements OnInit {
               }
             });
           }
-          this.getNextSegment.nextSegmentOffset(this.messages);
-          this.getNextField.nextFieldOffset(this.messages);
         });
+      this.getNextComponent.nextComponentOffset(this.messages);
       });
+
   }
+
+
 
 }

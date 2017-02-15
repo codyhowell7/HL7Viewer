@@ -22,7 +22,7 @@
     border-bottom-width: 1px;
     display: flex;
 }
-button.accordion {
+.accordion {
     @include baseAccordion();
     background-color: #eee;
     padding: 18px;
@@ -38,6 +38,11 @@ button.componentaccordion {
     @include baseAccordion();
     @include sectionAccordion();
     background-color: #ebebeb;
+}
+.subComponent {
+    @include baseAccordion();
+    @include sectionAccordion();
+    background-color: #e6e6e6;
 }
 
 button.accordion.active, button.accordion:hover {

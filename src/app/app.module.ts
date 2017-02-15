@@ -22,7 +22,8 @@ import { WorkspaceMode } from './enums/enums';
 import { IAction } from './actions/actions';
 import {
   reduceCurrentMessage, reduceMessages, reduceMenu, reduceWorkspace, reduceAccordion,
-  reduceFieldOffset, reduceFieldAccordion, reduceSegmentOffset, reduceComponentOffset
+  reduceFieldOffset, reduceFieldAccordion, reduceSegmentOffset, reduceComponentOffset,
+  reduceComponentAccordion
 } from './reducers/reducers';
 import { ComparespaceComponent } from './components/comparespace/comparespace.component';
 import { QuickViewComponent } from './components/workspace/output-container/quick-view/quick-view.component';
@@ -74,6 +75,7 @@ function rootReducer(state: IAppState, action: IAction): IAppState {
     fieldOffset: reduceFieldOffset(state.fieldOffset, action),
     componentOffset: reduceComponentOffset(state.componentOffset, action),
     accordion: reduceAccordion(state.accordion, action),
-    fieldAccordion: reduceFieldAccordion(state.fieldAccordion, action)
+    fieldAccordion: reduceFieldAccordion(state.fieldAccordion, action),
+    componentAccordion: reduceComponentAccordion(state.componentAccordion, action)
   };
 }

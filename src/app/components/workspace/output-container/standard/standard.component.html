@@ -9,13 +9,17 @@
             </button>
             <div *ngIf='getFieldState(segment.segmentIndex, field.index)'>
                 <div *ngFor='let component of getComponents(segment.segmentIndex, field.index)'>
-                    <button class='componentaccordion' >
+                    <button class='componentaccordion' (click)='extendComponentAccordion(segment.segmentIndex, field.index, component.index, getComponentState(segment.segmentIndex, field.index, component.index))' >
                         <div class='componentFlexItem'> {{segment.segmentName}}.{{field.index}}.{{component.index}} </div>
                         <div class='componentFlexValue'> {{component.value}} </div>
                     </button>
+                    <div *ngIf='getComponentState(segment.segmentIndex, field.index, component.index)'>
+                        <div *ngFor='let subComponent of getSubComponents(segment.segmentIndex, field.index, component.index)'>
+                            <div class='accordion'> {{subComponent.value}} </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

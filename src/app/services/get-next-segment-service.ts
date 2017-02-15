@@ -12,20 +12,6 @@ export class GetNextSegment {
 
     constructor(private ngRedux: NgRedux<IAppState>) { }
 
-    public nextSegmentOffset(messages: Map<number, IMessage>): number {
-        let segmentOffset = 0;
-        for (let i = 0; i < messages.size; i++) {
-            segmentOffset += messages.get(i).message.hl7Segments.length;
-        }
-        this.ngRedux.dispatch({
-            type: SEGMENT_OFFSET,
-            payload: {
-                messageID: messages.size,
-                segmentIdOffset: segmentOffset
-            }
-        });
-        return segmentOffset;
-    }
     public findSegmentOffset(messageID: number) {
         let segmentOffset: Map<number, number>;
         this.segmentOffset$.subscribe(messageId => segmentOffset = messageId);

@@ -3,7 +3,7 @@ import { Parser } from './parse';
 
 export class HL7Component {
     hl7SubComponents: HL7SubComponent[] = [];
-    hasSubComponents: boolean;
+    hasSubComponents: boolean = false;
     isInQuickView: boolean = false;
 
     constructor(private value: string, private index: number) {    }

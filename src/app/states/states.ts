@@ -13,6 +13,7 @@ export interface IAppState {
     componentOffset: Map<number, number>;
     accordion: Map<number, Map<number, boolean>>;
     fieldAccordion: Map<number, Map<number, boolean>>;
+    componentAccordion: Map<number, Map<number, boolean>>;
 }
 
 export interface IMenuState { }

@@ -11,25 +11,7 @@ export class GetNextField {
     @select(['fieldOffset']) fieldOffset$: Observable<Map<number, number>>;
 
     constructor(private ngRedux: NgRedux<IAppState>) { }
-
-    public nextFieldOffset(messages: Map<number, IMessage>): number {
-        let fieldOffset = 0;
-        let persistSegID = 0;
-        for (let i = 0; i < messages.size; i++) {
-            for (let j = 0; j < messages.get(i).message.hl7Segments.length; j++) {
-                persistSegID++;
-                fieldOffset += messages.get(i).message.hl7Segments[j].hl7Fields.length;
-                this.ngRedux.dispatch({
-                    type: FIELD_OFFSET,
-                    payload: {
-                        segmentID: persistSegID,
-                        fieldIdOffset: fieldOffset
-                    }
-                });
-            }
-        }
-        return fieldOffset;
-    }
+    
     public findFieldOffset(segmentID: number) {
         let fieldOffset: Map<number, number>;
         this.fieldOffset$.subscribe(segmentId => fieldOffset = segmentId);

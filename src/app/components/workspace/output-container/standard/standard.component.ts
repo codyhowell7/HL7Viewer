@@ -4,12 +4,9 @@ import { merge } from 'rxjs/observable/merge';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
 import { Map } from 'immutable';
-import { GetNextSegment } from '../../../../services/get-next-segment-service';
-import { GetNextField } from '../../../../services/get-next-field-service';
-import { GetNextComponent } from '../../../../services/get-next-component-service';
-import { IMessage, IAppState } from '../../../../states/states';
+import { IMessage, IAppState, IAccordion } from '../../../../states/states';
 import {
-  TOGGLE_ACCORDION, DEFAULT_ACCORDIONS, TOGGLE_FIELD_ACCORDION,
+  TOGGLE_SEGMENT_ACCORDION, DEFAULT_SEGMENT_ACCORDIONS, TOGGLE_FIELD_ACCORDION,
   DEFAULT_FIELD_ACCORDIONS, TOGGLE_COMPONENT_ACCORDION, DEFAULT_COMPONENT_ACCORDIONS
 } from '../../../../constants/constants';
 
@@ -17,64 +14,30 @@ import {
 @Component({
   selector: 'hls-standard',
   templateUrl: './standard.component.html',
-  styleUrls: ['./standard.component.scss'],
-  providers: [GetNextSegment, GetNextField, GetNextComponent]
+  styleUrls: ['./standard.component.scss']
 })
 export class StandardComponent implements OnInit {
 
   message: IMessage;
-  messages: Map<number, IMessage>;
+  messageId: number;
   theState: boolean;
 
   @select(['messages']) messages$: Observable<Map<number, IMessage>>;
   @select(['currentMessage']) currentMessage$: Observable<number>;
-  @select(['accordion']) accordion$: Observable<Map<number, Map<number, boolean>>>;
-  @select(['fieldAccordion']) fieldAccordion$: Observable<Map<number, Map<number, boolean>>>;
-  @select(['componentAccordion']) componentAccordion$: Observable<Map<number, Map<number, boolean>>>;
+  @select(['accordion']) accordion$: Observable<IAccordion>;
 
-  constructor(private ngRedux: NgRedux<IAppState>, private getNextSegment: GetNextSegment,
-    private getNextField: GetNextField, private getNextComponent: GetNextComponent) {  }
+  constructor(private ngRedux: NgRedux<IAppState>) { }
 
 
   ngOnInit() {
     combineLatest(this.messages$, this.currentMessage$)
       .map(([messages, currentMessage]) => {
-        this.messages = messages;
-        let segmentOffset = this.getNextSegment.findSegmentOffset(currentMessage);
-        messages.get(currentMessage).message.hl7Segments.forEach((segment, segmentIndex) => {
-          this.ngRedux.dispatch({
-            type: DEFAULT_ACCORDIONS,
-            payload: {
-              messageID: currentMessage,
-              segmentID: segmentIndex + segmentOffset
-            }
-          });
-          let fieldOffset = this.getNextField.findFieldOffset(segmentIndex + segmentOffset);
-          segment.hl7Fields.forEach((field, fieldIndex) => {
-            this.ngRedux.dispatch({
-              type: DEFAULT_FIELD_ACCORDIONS,
-              payload: {
-                segmentID: segmentIndex + segmentOffset,
-                fieldID: fieldIndex + fieldOffset
-              }
-            });
-            let componentOffset = this.getNextComponent.findComponentOffset(fieldOffset + fieldIndex);
-            field.hl7Components.forEach((component, componentIndex) => {
-              this.ngRedux.dispatch({
-                type: DEFAULT_COMPONENT_ACCORDIONS,
-                payload: {
-                  fieldID: fieldIndex + 1 + fieldOffset,
-                  componentID: componentIndex + componentOffset
-                }
-              });
-            });
-          });
-        });
-        return messages.get(currentMessage);
+        let message = messages.get(currentMessage);
+        this.messageId = currentMessage;
+        return message;
       })
       .subscribe(message => { this.message = message; });
   }
-
 
   getSegments() {
     return this.message.message.hl7Segments;
@@ -85,17 +48,17 @@ export class StandardComponent implements OnInit {
   }
 
   getComponents(segmentIndex: number, fieldIndex: number) {
-    if (this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex - 1].hasHL7Components) {
-      return this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex - 1].hl7Components;
+    if (this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hasHL7Components) {
+      return this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hl7Components;
     } else {
       return;
     }
   }
 
   getSubComponents(segmentIndex: number, fieldIndex: number, componentIndex: number) {
-    if (this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex - 1].hasHL7Components) {
-      if (this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex - 1].hl7Components[componentIndex -1].hasSubComponents) {
-        return this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex - 1].hl7Components[componentIndex -1].hl7SubComponents;
+    if (this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hasHL7Components) {
+      if (this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hl7Components[componentIndex - 1].hasSubComponents) {
+        return this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hl7Components[componentIndex - 1].hl7SubComponents;
       } else {
         return;
       }
@@ -104,75 +67,107 @@ export class StandardComponent implements OnInit {
     }
   }
 
-  getSegmentState(segmentId: number) {
+  getSegmentState(segmentId: number): boolean {
     let state;
-    this.accordion$.subscribe(accordionSegmentState => state =
-      accordionSegmentState.get(this.message.id).get(this.getNextSegment.findSegmentOffset(this.message.id) + segmentId));
+    this.accordion$.subscribe(accordionSegmentState => {
+      if (accordionSegmentState.segment.get(this.message.id).get(segmentId) != null) {
+        state = accordionSegmentState.segment.get(this.message.id).get(segmentId).segmentAccordionState;
+      } else {
+        state = false;
+      }
+    });
     return state;
   }
 
-  extendAccordion(segmentIndex: number, segmentAccoridonState: boolean) {
+  extendSegmentAccordion(segmentIndex: number, segmentAccoridonState: boolean): void {
     this.ngRedux.dispatch({
-      type: TOGGLE_ACCORDION,
+      type: TOGGLE_SEGMENT_ACCORDION,
       payload: {
-        id: this.message.id,
-        messageID: this.message.id,
-        segmentID: this.getNextSegment.findSegmentOffset(this.message.id) + segmentIndex,
-        toggleState: segmentAccoridonState
+        messageID: this.messageId,
+        segmentID: segmentIndex,
+        segmentToggleState: segmentAccoridonState
       }
     });
+    this.accordion$.subscribe(accordionState => {
+      this.message.message.hl7Segments[segmentIndex].hl7Fields.forEach((field, fieldIndex) => {
+        this.ngRedux.dispatch({
+          type: DEFAULT_FIELD_ACCORDIONS,
+          payload: {
+            messageID: this.messageId,
+            segmentID: segmentIndex,
+            fieldID: fieldIndex,
+            segmentToggleState: accordionState.segment.get(this.messageId).get(segmentIndex).segmentAccordionState
+          }
+        });
+      });
+    }).unsubscribe();
   }
 
   getFieldState(segmentId: number, fieldId: number) {
     let state;
-    let correctedSegmentId = this.getNextSegment.findSegmentOffset(this.message.id);
-    let correctedFieldId = this.getNextField.findFieldOffset(segmentId + correctedSegmentId);
-    this.fieldAccordion$.subscribe(accordionFieldState => {
-      return state =
-        accordionFieldState.get(segmentId + correctedSegmentId).get(fieldId + correctedFieldId);
-    });
+    this.accordion$.subscribe(accordionFieldState => {
+      if (accordionFieldState.segment.get(this.message.id).get(segmentId).field.get(fieldId) != null) {
+        state = accordionFieldState.segment.get(this.message.id).get(segmentId).field.get(fieldId).fieldAccordionState;
+      } else {
+        state = false;
+      }
+    }).unsubscribe();
     return state;
   }
 
-
   extendFieldAccordion(segmentId: number, fieldId: number, fieldAccordionState: boolean) {
-    let segmentOffset = this.getNextSegment.findSegmentOffset(this.message.id);
-    let fieldOffset = this.getNextField.findFieldOffset(segmentId + segmentOffset);
     this.ngRedux.dispatch({
       type: TOGGLE_FIELD_ACCORDION,
       payload: {
-        segmentID: segmentId + segmentOffset,
-        fieldID: fieldId + fieldOffset,
-        toggleState: fieldAccordionState
+        messageID: this.messageId,
+        segmentID: segmentId,
+        fieldID: fieldId,
+        fieldToggleState: fieldAccordionState,
+        segmentToggleState: true
       }
     });
+
+    this.accordion$.subscribe(accordionFieldState => {
+      this.message.message.hl7Segments[segmentId].hl7Fields[fieldId].hl7Components.forEach((component, componentIndex) => {
+        this.ngRedux.dispatch({
+          type: DEFAULT_COMPONENT_ACCORDIONS,
+          payload: {
+            messageID: this.messageId,
+            segmentID: segmentId,
+            fieldID: fieldId,
+            componentID: componentIndex,
+            segmentToggleState: accordionFieldState.segment.get(this.messageId).get(segmentId).segmentAccordionState,
+            fieldToggleState: accordionFieldState.segment.get(this.messageId).get(segmentId).field.get(fieldId).fieldAccordionState,
+          }
+        });
+      });
+    }).unsubscribe();
   }
 
   getComponentState(segmentId: number, fieldId: number, componentId: number) {
     let state;
-    let correctedSegmentId = this.getNextSegment.findSegmentOffset(this.message.id);
-    let correctedFieldId = this.getNextField.findFieldOffset(segmentId + correctedSegmentId);
-    let correctedComponentId = this.getNextComponent.findComponentOffset(fieldId + correctedFieldId);
-    this.componentAccordion$.subscribe(accordionComponentState => {
-      return state = accordionComponentState.get(fieldId + correctedFieldId).get(componentId + correctedComponentId);
-    });
+    this.accordion$.subscribe(accordionComponentState => {
+      if (accordionComponentState.segment.get(this.message.id).get(segmentId).field.get(fieldId).component.has(componentId)) {
+        state = accordionComponentState.segment.get(this.message.id).get(segmentId).field.get(fieldId).component.get(componentId);
+      } else {
+        state = false;
+      }
+    }).unsubscribe();
     return state;
   }
 
   extendComponentAccordion(segmentId: number, fieldId: number, componentId: number, componentAccordionState: boolean) {
-    let correctedSegmentId = this.getNextSegment.findSegmentOffset(this.message.id);
-    let correctedFieldId = this.getNextField.findFieldOffset(segmentId + correctedSegmentId);
-    let correctedComponentId = this.getNextComponent.findComponentOffset(fieldId + correctedFieldId);
     this.ngRedux.dispatch({
       type: TOGGLE_COMPONENT_ACCORDION,
       payload: {
-        fieldID: fieldId + correctedFieldId,
-        componentID: componentId + correctedComponentId,
-        toggleState: componentAccordionState
+        messageID: this.messageId,
+        segmentID: segmentId,
+        fieldID: fieldId,
+        componentID: componentId,
+        componentToggleState: componentAccordionState,
+        segmentToggleState: true,
+        fieldToggleState: true
       }
     });
   }
-
-
-
 }

@@ -1,7 +1,6 @@
 import {
     IWorkspaceModeChangedPayload, IMessageReceivedPayload,
-    IIdPayload, IAccordionToggledPayload, IFieldAccordionToggledPayload, IFieldOffsetPayload,
-    ISegmentOffsetPayload, IComponentOffsetPayload, IComponentAccordionToggledPayload
+    IIdPayload, IAccordionToggledPayload
 } from '../payloads/payloads';
 
 export interface IAction {
@@ -29,21 +28,21 @@ export interface IAccordionToggleAction extends IAction {
     payload: IAccordionToggledPayload;
 }
 
-export interface IFieldAccordionToggleaction extends IAction {
-    payload: IFieldAccordionToggledPayload;
-}
+// export interface IFieldAccordionToggleaction extends IAction {
+//     payload: IFieldAccordionToggledPayload;
+// }
 
-export interface IComponentAccordionToggleAction extends IAction {
-    payload: IComponentAccordionToggledPayload;
-}
+// export interface IComponentAccordionToggleAction extends IAction {
+//     payload: IComponentAccordionToggledPayload;
+// }
 
-export interface ISegmentOffsetAction extends IAction {
-    payload: ISegmentOffsetPayload;
-}
+// export interface ISegmentOffsetAction extends IAction {
+//     payload: ISegmentOffsetPayload;
+// }
 
-export interface IFieldOffsetAction extends IAction {
-    payload: IFieldOffsetPayload;
-}
-export interface IComponentOffsetAction extends IAction {
-    payload: IComponentOffsetPayload;
-}
+// export interface IFieldOffsetAction extends IAction {
+//     payload: IFieldOffsetPayload;
+// }
+// export interface IComponentOffsetAction extends IAction {
+//     payload: IComponentOffsetPayload;
+// }

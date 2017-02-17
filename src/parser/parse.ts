@@ -92,7 +92,7 @@ export class Parser {
             fieldArray.unshift(this.fieldSeparator); // The field seperator is counted as index 1 so we need to put it back in.
         }
         fieldArray.forEach((fieldElement, fieldIndex) => {
-            hl7Segment.hl7Fields.push(this.parseHL7Field(fieldElement, fieldIndex + 1, segName));
+            hl7Segment.hl7Fields.push(this.parseHL7Field(fieldElement, fieldIndex, segName));
         });
 
         return hl7Segment;
@@ -113,12 +113,12 @@ export class Parser {
             fieldValue = this.convertEscapeSequences(fieldValue);
         }
         let hl7Field: HL7Field = new HL7Field(fieldValue, fieldIndex);
-        hl7Field.fieldDesc = HL7Dict.definitions['2.7.1'].segments[currentSegmentName].fields[fieldIndex - 1].desc;
+        hl7Field.fieldDesc = HL7Dict.definitions['2.7.1'].segments[currentSegmentName].fields[fieldIndex].desc;
         if (repetitionArray.length > 1) {
             if (fieldValue !== this.componentSeparator + this.fieldRepetitionSeparator +
                 this.escapeCharacter + this.subcomponentSeparator) {
                 repetitionArray.forEach((repeatElement, repeatIndex) => {
-                    hl7Field.hl7RepeatedFields.push(this.parseHL7Field(repeatElement, repeatIndex + 1, currentSegmentName));
+                    hl7Field.hl7RepeatedFields.push(this.parseHL7Field(repeatElement, repeatIndex, currentSegmentName));
                     // Recurssively calls parseHL7Field as each repeatition is it's own field with it's own components etc.
                 });
             }
@@ -127,7 +127,7 @@ export class Parser {
             let hl7ComponentArray = fieldValue.split(componentSplitter);
             if (hl7ComponentArray.length > 1) {
                 hl7ComponentArray.forEach((hl7ComponentElement, hl7ComponentIndex) => {
-                    hl7Field.hl7Components.push(this.parseHL7Component(hl7ComponentElement, hl7ComponentIndex + 1));
+                    hl7Field.hl7Components.push(this.parseHL7Component(hl7ComponentElement, hl7ComponentIndex));
                 });
             }
         }

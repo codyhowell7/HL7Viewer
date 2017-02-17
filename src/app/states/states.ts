@@ -8,12 +8,7 @@ export interface IAppState {
     messages: Map<number, IMessage>;
     menu: IMenuState;
     workspace: IWorkspaceState;
-    segmentOffset: Map<number, number>;
-    fieldOffset: Map<number, number>;
-    componentOffset: Map<number, number>;
-    accordion: Map<number, Map<number, boolean>>;
-    fieldAccordion: Map<number, Map<number, boolean>>;
-    componentAccordion: Map<number, Map<number, boolean>>;
+    accordion: IAccordion;
 }
 
 export interface IMenuState { }
@@ -26,4 +21,18 @@ export interface IMessage {
 
 export interface IWorkspaceState {
     workspaceMode: WorkspaceMode;
+}
+
+export interface IAccordion {
+    segment: Map<number, Map<number, ISegmentAccordion>>;
+}
+
+export interface ISegmentAccordion {
+    segmentAccordionState: boolean;
+    field?: Map<number, IFieldAccordion>;
+}
+
+export interface IFieldAccordion {
+    fieldAccordionState: boolean;
+    component?: Map<number, boolean>;
 }

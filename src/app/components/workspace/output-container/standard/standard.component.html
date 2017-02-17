@@ -1,19 +1,19 @@
 <div *ngFor='let segment of getSegments()'>
-    <button class='accordion' (click)='extendAccordion(segment.segmentIndex, getSegmentState(segment.segmentIndex))'>{{segment.segmentName}}</button>
+    <button class='accordion' (click)='extendSegmentAccordion(segment.segmentIndex, getSegmentState(segment.segmentIndex))'>{{segment.segmentName}}</button>
     <div *ngIf='getSegmentState(segment.segmentIndex)'>
         <div *ngFor='let field of getFields(segment.segmentIndex)'>
             <button class='fieldaccordion' (click)='extendFieldAccordion(segment.segmentIndex, field.index, getFieldState(segment.segmentIndex, field.index))'> 
-                <div class='fieldFlexItem'> {{segment.segmentName}}.{{field.index}} </div>
+                <div class='fieldFlexItem'> {{segment.segmentName}}.{{field.index+1}} </div>
                 <div class='fieldFlexItem'> {{field.fieldDesc}} </div>
                 <div class='fieldFlexValue'> {{field.value}} </div>
             </button>
             <div *ngIf='getFieldState(segment.segmentIndex, field.index)'>
                 <div *ngFor='let component of getComponents(segment.segmentIndex, field.index)'>
                     <button class='componentaccordion' (click)='extendComponentAccordion(segment.segmentIndex, field.index, component.index, getComponentState(segment.segmentIndex, field.index, component.index))' >
-                        <div class='componentFlexItem'> {{segment.segmentName}}.{{field.index}}.{{component.index}} </div>
+                        <div class='componentFlexItem'> {{segment.segmentName}}.{{field.index+1}}.{{component.index+1}} </div>
                         <div class='componentFlexValue'> {{component.value}} </div>
                     </button>
-                    <div *ngIf='getComponentState(segment.segmentIndex, field.index, component.index)'>
+                    <div *ngIf='getComponentState(segment.segmentIndex, field.index, component.index)'>TEST
                         <div *ngFor='let subComponent of getSubComponents(segment.segmentIndex, field.index, component.index)'>
                             <div class='accordion'> {{subComponent.value}} </div>
                         </div>

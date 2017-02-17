@@ -7,44 +7,60 @@ import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Parser } from '../../../../parser/parse';
 import { HL7MultiMessage } from '../../../../parser/hl7MultiMessage';
 import { HL7Message } from '../../../../parser/HL7Message';
-import { GetNextSegment } from '../../../services/get-next-segment-service';
-import { GetNextField } from '../../../services/get-next-field-service';
-import { GetNextComponent } from '../../../services/get-next-component-service';
 import { Map } from 'immutable';
 import 'rxjs/add/operator/debounceTime';
 
-import { IMessage, IAppState } from '../../../states/states';
-import { MESSAGE_RECEIVED, ADD_MESSAGE } from '../../../constants/constants';
+import { IMessage, IAppState, IAccordion, ISegmentAccordion } from '../../../states/states';
+import { MESSAGE_RECEIVED, ADD_MESSAGE, DEFAULT_SEGMENT_ACCORDIONS, DEFAULT_MESSAGE_ACCORDIONS } from '../../../constants/constants';
 
 @Component({
   selector: 'hls-message',
   templateUrl: './message.component.html',
-  styleUrls: ['./message.component.scss'],
-  providers: [GetNextSegment, GetNextField, GetNextComponent]
+  styleUrls: ['./message.component.scss']
 })
 export class MessageComponent implements OnInit {
 
   @select(['messages']) messages$: Observable<Map<number, IMessage>>;
   @select(['currentMessage']) currentMessage$: Observable<number>;
+  @select(['accordion']) accordion$: Observable<IAccordion>;
 
   messageId: number;
   message: string;
   messages: Map<number, IMessage>;
   messageControl: FormControl = new FormControl();
 
-  constructor(private route: ActivatedRoute, private ngRedux: NgRedux<IAppState>,
-    private getNextSegment: GetNextSegment, private getNextField: GetNextField,
-    private getNextComponent: GetNextComponent) { }
+  constructor(private route: ActivatedRoute, private ngRedux: NgRedux<IAppState>) { }
 
   ngOnInit() {
+    combineLatest(this.accordion$,
+      combineLatest(this.messages$, this.currentMessage$)
+        .map(([messages, currentMessage]) => {
+          this.messageId = currentMessage;
+          this.messages = messages;
+          return messages.get(currentMessage);
+        })
+    )
+      .subscribe(([accordion, message]) => {
+          if (!accordion.segment.has(this.messageId)) {
+            this.ngRedux.dispatch({
+              type: DEFAULT_MESSAGE_ACCORDIONS,
+              payload: {
+                messageID: this.messageId,
+              }
+            });
+            this.messages.get(this.messageId).message.hl7Segments.forEach((segment, segmentIndex) => {
+              this.ngRedux.dispatch({
+                type: DEFAULT_SEGMENT_ACCORDIONS,
+                payload: {
+                  messageID: this.messageId,
+                  segmentID: segmentIndex
+                }
+              });
+            });
+          }
+        this.messageControl.setValue(message.message.hl7CorrectedMessage, { emitEvent: false });
+      });
 
-    combineLatest(this.messages$, this.currentMessage$)
-      .map(([messages, currentMessage]) => {
-        this.messageId = currentMessage;
-        this.messages = messages;
-        return messages.get(currentMessage);
-      })
-      .subscribe(message => { this.messageControl.setValue(message.message.hl7CorrectedMessage, {emitEvent: false}); });
 
     this.messageControl
       .valueChanges
@@ -69,11 +85,15 @@ export class MessageComponent implements OnInit {
             });
           }
         });
-      this.getNextComponent.nextComponentOffset(this.messages);
+        this.messages.get(this.messageId).message.hl7Segments.forEach((segment, segmentIndex) => {
+          this.ngRedux.dispatch({
+            type: DEFAULT_SEGMENT_ACCORDIONS,
+            payload: {
+              messageID: this.messageId,
+              segmentID: segmentIndex
+            }
+          });
+        });
       });
-
   }
-
-
-
 }

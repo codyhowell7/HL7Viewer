@@ -22,13 +22,18 @@
     border-bottom-width: 1px;
     display: flex;
 }
-.accordion {
+button.accordion {
     @include baseAccordion();
     background-color: #eee;
     padding: 18px;
-    border: none;
-    
+    border-bottom-color: white;
+    border-bottom-width: 1px;
 }
+
+div.afteraccordion {
+    margin-left: auto;
+}
+
 button.fieldaccordion {
     @include baseAccordion();
     @include sectionAccordion();
@@ -42,25 +47,26 @@ button.componentaccordion {
 .subComponent {
     @include baseAccordion();
     @include sectionAccordion();
-    background-color: #e6e6e6;
+    background-color: #d8d8d8;
+    border-bottom: 2px solid #ebebeb;
+    cursor: default;
+}
+.repeatField {
+    @include baseAccordion();
+    @include sectionAccordion();
+    background-color: #f4f4f4;
+
 }
 
-button.accordion.active, button.accordion:hover {
+button.accordion:hover {
     background-color: #ddd;
-}
-
-div.panel {
-    padding: 0 18px;
-    background-color: white;
-    overflow: hidden;
-    transition: max-height 0.2s ease-out;
 }
 
 div.fieldFlexItem {
      padding-right: 5px;
      min-width: 200px;
 }
-div.fieldFlexValue {
+div.accordionValue {
     padding-left: 50px;
     white-space: nowrap;
     overflow: hidden;
@@ -72,10 +78,20 @@ div.componentFlexItem {
      padding-right: 5px;
      min-width: 200px;
 }
-div.componentFlexValue {
-    padding-left: 50px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+
+div.subComponentFlexItem {
+     padding-left: 40px;
+     padding-right: 5px;
+     min-width: 200px;
 }
 
+div.repeatFieldFlexItem {
+    padding-left: 12px;
+    padding-right: 5px;
+    min-width: 200px;
+}
+
+div.plusAtTheEnd {
+    margin-left: auto;
+    padding-right: 5px;
+}

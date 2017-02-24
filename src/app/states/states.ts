@@ -1,5 +1,5 @@
 import { WorkspaceMode } from '../enums/enums';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import { HL7Message } from '../../parser/hl7Message';
 
 export interface IAppState {
@@ -9,6 +9,8 @@ export interface IAppState {
     menu: IMenuState;
     workspace: IWorkspaceState;
     accordion: IAccordion;
+    searchConditions: ISearchConditions;
+    searchConditionSize: Map<number, number>;
 }
 
 export interface IMenuState { }
@@ -35,4 +37,26 @@ export interface ISegmentAccordion {
 export interface IFieldAccordion {
     fieldAccordionState: boolean;
     component?: Map<number, boolean>;
+    repeatField?: Map<number, IRepeatFieldAccordion>;
+}
+export interface IRepeatFieldAccordion {
+    repeatFieldAccordionState: boolean;
+    repeatComponent?: Map<number, boolean>;
+}
+export interface ISearchConditions {
+    conditionGroups: Map<number, IConditionGroup>;
+    searchOperand: 'AND' | 'OR';
+}
+
+export interface IConditionGroup {
+    conditions: Map<number, ICondition>;
+    groupOperand: 'AND' | 'OR';
+    groupID: number;
+}
+
+export interface ICondition {
+    conditionID: number;
+    leftValue: string;
+    rightValue: string;
+    conditionOperand: '==' | '!=' | 'Like' | 'Contains' | '>' | '<' | '>=' | '<=';
 }

@@ -20,39 +20,23 @@ export interface IAccordionToggledPayload {
     segmentToggleState: boolean;
     fieldID: number;
     fieldToggleState: boolean;
+    fieldHasRepeat: boolean;
+    repeatID: number;
+    repeatToggleState: boolean;
     componentID: number;
     componentToggleState: boolean;
 }
 
-// export interface IAccordionToggledPayload extends IIdPayload {
-//     messageID: number;
-//     segmentID: number;
-//     toggleState: boolean;
-// }
+export interface IAddConditionPayload extends IIdPayload {
+    conditionID: number;
+    conditionGroupID: number;
+    conditionGroupOperand: 'AND' | 'OR';
+    searchOperand: 'AND' | 'OR';
+    leftValue: string;
+    rightValue: string;
+    conditionOperand: '==' | '!=' | 'Like' | 'Contains' | '>' | '<' | '>=' | '<=';
+}
 
-// export interface IFieldAccordionToggledPayload extends IIdPayload {
-//     segmentID: number;
-//     fieldID: number;
-//     toggleState: boolean;
-// }
-
-// export interface IComponentAccordionToggledPayload {
-//     fieldID: number;
-//     componentID: number;
-//     toggleState: boolean;
-// }
-
-// export interface ISegmentOffsetPayload {
-//     messageID: number;
-//     segmentIdOffset: number;
-// }
-
-// export interface IFieldOffsetPayload {
-//     segmentID: number;
-//     fieldIdOffset: number;
-// }
-
-// export interface IComponentOffsetPayload {
-//     fieldID: number;
-//     componentIdOffset: number;
-// }
+export interface IAddConditionGroupPayload extends IIdPayload {
+    groupOperand: 'AND' | 'OR';
+}

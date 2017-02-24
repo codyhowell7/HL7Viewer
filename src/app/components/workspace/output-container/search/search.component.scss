@@ -2,4 +2,71 @@
     background-color: #fff;
     height: 100%;
     width: 100%;
+    overflow: hidden;
+}
+button.searchButton {
+    padding: 8px;
+    font-size: 17px;
+    margin-right: 10px;
+}
+button.addConditionButton {
+    padding: 10px;
+    width: 35%;
+    font-size: 17px;
+}
+input.mainSearchInput {
+    width: 100%;
+    font-size: 20px;
+}
+div.mainForm {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    height: 100%;
+}
+div.searchForm {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px dashed grey;
+}
+div.addButtons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 10px;
+}
+div.conditionGroupClass {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+div.singleCondition {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 10px;
+    justify-content: space-around;
+}
+div.betweenGroup{
+    display: flex;
+    justify-content: center;
+}
+select.groupOptional {
+    margin-right: 25px;
+    margin-top: 10px;
+}
+div.searchWrapper {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+}
+div.lastCondition {
+    margin-right: 52px;
+}
+div.border {
+    border: 1px #999999 solid;
+}
+.deleteIcon {
+    cursor: pointer;
 }

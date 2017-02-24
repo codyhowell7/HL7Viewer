@@ -21,7 +21,7 @@ import { IAppState } from './states/states';
 import { WorkspaceMode } from './enums/enums';
 import { IAction } from './actions/actions';
 import {
-  reduceCurrentMessage, reduceMessages, reduceMenu, reduceWorkspace, reduceAccordion
+  reduceCurrentMessage, reduceMessages, reduceMenu, reduceWorkspace, reduceAccordion, reduceSearchCondition, reduceSearchConditionSize
 } from './reducers/reducers';
 import { ComparespaceComponent } from './components/comparespace/comparespace.component';
 import { QuickViewComponent } from './components/workspace/output-container/quick-view/quick-view.component';
@@ -69,6 +69,8 @@ function rootReducer(state: IAppState, action: IAction): IAppState {
     messages: reduceMessages(state.messages, action),
     menu: reduceMenu(state.menu, action),
     workspace: reduceWorkspace(state.workspace, action),
-    accordion: reduceAccordion(state.accordion, action)
+    accordion: reduceAccordion(state.accordion, action),
+    searchConditions: reduceSearchCondition(state.searchConditions, action),
+    searchConditionSize: reduceSearchConditionSize(state.searchConditionSize, action)
   };
 }

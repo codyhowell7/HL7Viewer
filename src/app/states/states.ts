@@ -11,6 +11,7 @@ export interface IAppState {
     accordion: IAccordion;
     searchConditions: ISearchConditions;
     searchConditionSize: Map<number, number>;
+    searchFilter: Map<number, boolean>;
 }
 
 export interface IMenuState { }
@@ -59,4 +60,5 @@ export interface ICondition {
     leftValue: string;
     rightValue: string;
     conditionOperand: '==' | '!=' | 'Like' | 'Contains' | '>' | '<' | '>=' | '<=';
+    functionModifier: '' | 'Length' | 'Concat';
 }

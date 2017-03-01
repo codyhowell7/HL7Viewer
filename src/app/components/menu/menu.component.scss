@@ -5,8 +5,15 @@
     display: flex;
     flex-direction: column;
     overflow: auto;
+    
+    div.filter{
+        font-size: 15px;
+        margin-top: 10px;
+        padding-left: 10px;
+        text-align: center;
+    }
 
-    div {
+    div.container {
         flex: 1 1 10%;
         margin-right: inherit;
         display: flex;
@@ -14,9 +21,12 @@
         overflow: auto;
         width: 100%;
         height: 100%;
-    }
+        margin-top: 10px;
 
-    button {
-        margin-bottom: 10px;
+    }
+    
+    md-icon {
+        font-size: 18px;
+        cursor: pointer;
     }
 }

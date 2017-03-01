@@ -1,5 +1,5 @@
 import {
-    IWorkspaceModeChangedPayload, IMessageReceivedPayload, IAddGroupConditionSizePayload,
+    IWorkspaceModeChangedPayload, IMessageReceivedPayload, ISaveSearchPayload,
     IIdPayload, IAccordionToggledPayload, IAddConditionPayload, IAddConditionGroupPayload
 } from '../payloads/payloads';
 
@@ -32,8 +32,10 @@ export interface IAddConditionGroup extends IAction {
     payload: IAddConditionPayload;
 }
 
-export interface IAddToConidtionSize extends IAction {
+export interface IAddToConidtionSize extends IAction { }
 
+export interface IAddSearchResults extends IAction {
+    payload: ISaveSearchPayload;
 }
 
 // export interface IFieldAccordionToggleaction extends IAction {

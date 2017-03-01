@@ -1,4 +1,4 @@
-import { Map, List } from 'immutable';
+import { Map } from 'immutable';
 
 import {
     IMenuState, IMessage, IWorkspaceState, IAccordion, ISegmentAccordion,
@@ -7,14 +7,16 @@ import {
 } from '../states/states';
 import {
     IAction, ISwitchMessageAction, IWorkspaceModeChangedAction, IAddToConidtionSize,
-    IRemoveMessageAction, IMessageReceivedAction, IAccordionToggleAction, IAddConditionGroup
+    IRemoveMessageAction, IMessageReceivedAction, IAccordionToggleAction, IAddConditionGroup,
+    IAddSearchResults
 } from '../actions/actions';
 import {
     DEFAULT_STATE, MODE_CHANGED, SWITCH_MESSAGE, ADD_MESSAGE, REMOVE_MESSAGE, MESSAGE_RECEIVED,
     TOGGLE_SEGMENT_ACCORDION, DEFAULT_SEGMENT_ACCORDIONS, DEFAULT_FIELD_ACCORDIONS, TOGGLE_FIELD_ACCORDION,
     DEFAULT_COMPONENT_ACCORDIONS, TOGGLE_COMPONENT_ACCORDION, DEFAULT_MESSAGE_ACCORDIONS, TOGGLE_REPEAT_FIELD_ACCORDION,
     DEFAULT_REPEAT_FIELD_ACCORDIONS, DEFAULT_REPEAT_COMPONENT_ACCORDIONS, TOGGLE_REPEAT_COMPONENT_ACCORDION, ADD_SEARCH_CONDITION,
-    ADD_SEARCH_GROUP_CONDITION, UPDATE_GROUP_OPERAND, UPDATE_SEARCH_OPERAND, DELETE_SINGLE_CONDITION, ADD_CONDITION_SIZE, ADD_GROUP_SIZE
+    ADD_SEARCH_GROUP_CONDITION, UPDATE_GROUP_OPERAND, UPDATE_SEARCH_OPERAND, DELETE_SINGLE_CONDITION, ADD_CONDITION_SIZE, ADD_GROUP_SIZE,
+    NEW_SEARCH_RESULT, NEW_SEARCH_MESSAGE, REMOVE_SEARCH_FILTER, SAVE_SEARCH
 } from '../constants/constants';
 import { WorkspaceMode } from '../enums/enums';
 import { HL7Message } from '../../parser/HL7Message';
@@ -482,123 +484,15 @@ function toggleRepeatComponentAccordion(state: IAccordion, action: IAccordionTog
 
 export function reduceSearchCondition(state: ISearchConditions, action: IAction): ISearchConditions {
     switch (action.type) {
-        case ADD_SEARCH_GROUP_CONDITION:
-            return addSearchGroupCondition(state, action as IAddConditionGroup);
-        case ADD_SEARCH_CONDITION:
-            return addSearchCondition(state, action as IAddConditionGroup);
-        case UPDATE_GROUP_OPERAND:
-            return updateGroupCondition(state, action as IAddConditionGroup);
-        case UPDATE_SEARCH_OPERAND:
-            return updateSearchCondition(state, action as IAddConditionGroup);
-        case DELETE_SINGLE_CONDITION:
-            return deleteSingleCondition(state, action as IAddConditionGroup);
-        case DEFAULT_STATE:
-            return defaultSearchGroup();
+        case SAVE_SEARCH:
+            return saveSearch(state, action as IAddSearchResults);
         default:
             return state;
     }
 }
 
-function defaultSearchGroup() {
-    let defaultCondition: ICondition = {
-        leftValue: '',
-        rightValue: '',
-        conditionOperand: '==',
-        conditionID: 0,
-    };
-    let defaultGroup: IConditionGroup = {
-        conditions: Map<number, ICondition>().set(0, defaultCondition),
-        groupOperand: 'AND',
-        groupID: 0
-    };
-    let defaultGroupConditions: ISearchConditions = {
-        conditionGroups: Map<number, IConditionGroup>().set(0, defaultGroup),
-        searchOperand: 'OR'
-    };
-
-    return defaultGroupConditions;
-}
-
-function addSearchCondition(state: ISearchConditions, action: IAddConditionGroup): ISearchConditions {
-    let condition: ICondition = {
-        leftValue: action.payload.leftValue,
-        rightValue: action.payload.rightValue,
-        conditionOperand: action.payload.conditionOperand,
-        conditionID: action.payload.conditionID
-    };
-    let conditionGroup: IConditionGroup = {
-        conditions: state.conditionGroups.get(action.payload.conditionGroupID)
-            .conditions.set(action.payload.conditionID, condition),
-        groupOperand: state.conditionGroups.get(action.payload.conditionGroupID).groupOperand,
-        groupID: action.payload.conditionGroupID,
-    };
-    let newState: ISearchConditions = {
-        conditionGroups: state.conditionGroups.set(action.payload.conditionGroupID, conditionGroup),
-        searchOperand: state.searchOperand
-    };
-
-    return newState;
-}
-function addSearchGroupCondition(state: ISearchConditions, action: IAddConditionGroup): ISearchConditions {
-    let condition: ICondition = {
-        leftValue: '',
-        rightValue: '',
-        conditionOperand: '==',
-        conditionID: action.payload.conditionID,
-
-    };
-    let conditionGroup: IConditionGroup = {
-        conditions: Map<number, ICondition>().set(action.payload.conditionID, condition),
-        groupOperand: 'AND',
-        groupID: action.payload.conditionGroupID
-    };
-    let newState: ISearchConditions = {
-        conditionGroups: state.conditionGroups.set(action.payload.conditionGroupID, conditionGroup),
-        searchOperand: state.searchOperand
-    };
-
-    return newState;
-}
-
-function updateGroupCondition(state: ISearchConditions, action: IAddConditionGroup): ISearchConditions {
-    let groupCondition: IConditionGroup = {
-        groupOperand: action.payload.conditionGroupOperand,
-        conditions: state.conditionGroups.get(action.payload.id).conditions,
-        groupID: action.payload.id,
-    };
-    let newState: ISearchConditions = {
-        conditionGroups: state.conditionGroups.set(action.payload.id, groupCondition),
-        searchOperand: state.searchOperand
-    };
-    return newState;
-}
-
-function updateSearchCondition(state: ISearchConditions, action: IAddConditionGroup): ISearchConditions {
-    let newState: ISearchConditions = {
-        conditionGroups: state.conditionGroups,
-        searchOperand: action.payload.searchOperand
-    };
-    return newState;
-}
-
-function deleteSingleCondition(state: ISearchConditions, action: IAddConditionGroup): ISearchConditions {
-    let deleteCondtion: IConditionGroup = {
-        conditions: state.conditionGroups.get(action.payload.conditionGroupID).conditions.delete(action.payload.conditionID),
-        groupOperand: state.conditionGroups.get(action.payload.conditionGroupID).groupOperand,
-        groupID: action.payload.conditionGroupID,
-    };
-    let newState: ISearchConditions = {
-        conditionGroups: state.conditionGroups.set(action.payload.conditionGroupID, deleteCondtion),
-        searchOperand: state.searchOperand
-    };
-    console.log(state.conditionGroups.get(action.payload.conditionGroupID).conditions);
-    if (state.conditionGroups.get(action.payload.conditionGroupID).conditions.size === 1) {
-        newState = {
-            conditionGroups: state.conditionGroups.delete(action.payload.conditionGroupID),
-            searchOperand: state.searchOperand
-        };
-    }
-    return newState;
+function saveSearch(state: ISearchConditions, action: IAddSearchResults ) {
+    return action.payload.search;
 }
 
 
@@ -626,4 +520,37 @@ function addConditionSize(state: Map<number, number>): Map<number, number> {
 function addGroupSize(state: Map<number, number>): Map<number, number> {
     return state.set(state.keySeq().max() + 1, state.valueSeq().max() + 1);
 }
+
+export function reduceSearchResults(state: Map<number, boolean>, action: IAction): Map<number, boolean> {
+    switch (action.type) {
+        case NEW_SEARCH_RESULT:
+            return newSearchResult(state, action as IAddSearchResults);
+        case NEW_SEARCH_MESSAGE:
+            return defaultNewMessage(state);
+        case REMOVE_SEARCH_FILTER:
+            return removeSearchResult(state);
+        case DEFAULT_STATE:
+            return defaultSearchResult(state);
+        default:
+            return state;
+    }
+}
+function defaultSearchResult(state) {
+    return Map<number, boolean>().set(0, true);
+}
+
+function defaultNewMessage(state: Map<number, boolean>) {
+    return state.set(state.size, true);
+}
+
+function newSearchResult(state: Map<number, boolean>, action: IAddSearchResults) {
+    return state = action.payload.messageFilterMap;
+}
+function removeSearchResult(state: Map<number, boolean>) {
+    let newState = Map<number, boolean>().set(0, true);
+    state.keySeq().forEach(id => newState = newState.set(id, true));
+    return newState;
+}
+
+
 // Search Condition State END //

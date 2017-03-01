@@ -11,7 +11,10 @@ import { Map } from 'immutable';
 import 'rxjs/add/operator/debounceTime';
 
 import { IMessage, IAppState, IAccordion, ISegmentAccordion } from '../../../states/states';
-import { MESSAGE_RECEIVED, ADD_MESSAGE, DEFAULT_SEGMENT_ACCORDIONS, DEFAULT_MESSAGE_ACCORDIONS } from '../../../constants/constants';
+import {
+  MESSAGE_RECEIVED, ADD_MESSAGE, DEFAULT_SEGMENT_ACCORDIONS, DEFAULT_MESSAGE_ACCORDIONS,
+  NEW_SEARCH_MESSAGE
+} from '../../../constants/constants';
 
 @Component({
   selector: 'hls-message',
@@ -41,23 +44,23 @@ export class MessageComponent implements OnInit {
         })
     )
       .subscribe(([accordion, message]) => {
-          if (!accordion.segment.has(this.messageId)) {
+        if (!accordion.segment.has(this.messageId)) {
+          this.ngRedux.dispatch({
+            type: DEFAULT_MESSAGE_ACCORDIONS,
+            payload: {
+              messageID: this.messageId,
+            }
+          });
+          this.messages.get(this.messageId).message.hl7Segments.forEach((segment, segmentIndex) => {
             this.ngRedux.dispatch({
-              type: DEFAULT_MESSAGE_ACCORDIONS,
+              type: DEFAULT_SEGMENT_ACCORDIONS,
               payload: {
                 messageID: this.messageId,
+                segmentID: segmentIndex
               }
             });
-            this.messages.get(this.messageId).message.hl7Segments.forEach((segment, segmentIndex) => {
-              this.ngRedux.dispatch({
-                type: DEFAULT_SEGMENT_ACCORDIONS,
-                payload: {
-                  messageID: this.messageId,
-                  segmentID: segmentIndex
-                }
-              });
-            });
-          }
+          });
+        }
         this.messageControl.setValue(message.message.hl7CorrectedMessage, { emitEvent: false });
       });
 
@@ -82,6 +85,9 @@ export class MessageComponent implements OnInit {
               payload: {
                 message: message
               }
+            });
+            this.ngRedux.dispatch({
+              type: NEW_SEARCH_MESSAGE
             });
           }
         });

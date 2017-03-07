@@ -5,6 +5,8 @@ import { HttpModule } from '@angular/http';
 import { MaterialModule } from '@angular/material';
 import { NgReduxModule, NgRedux } from 'ng2-redux';
 import { RouterModule } from '@angular/router';
+import { DndModule } from 'ng2-dnd';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { appRoutes } from './app.routing';
 
@@ -20,14 +22,18 @@ import { OutputTabContainerComponent } from './components/workspace/output-conta
 import { IAppState } from './states/states';
 import { WorkspaceMode } from './enums/enums';
 import { IAction } from './actions/actions';
-import {
-  reduceCurrentMessage, reduceMessages, reduceMenu, reduceWorkspace, reduceAccordion, reduceSearchCondition, reduceSearchConditionSize,
-  reduceSearchResults
-} from './reducers/reducers';
+import { reduceMessagesToCompare } from './reducers/compareReducers';
+import { reduceSearchResults } from './reducers/searchResultReducer';
+import { reduceSearchCondition, reduceSearchConditionSize } from './reducers/userSearchReducer';
+import { reduceWorkspace } from './reducers/workspaceReducer';
+import { reduceMenu } from './reducers/menuReducer';
+import { reduceCurrentMessage, reduceMessages } from './reducers/messageReducer';
+import { reduceAccordion } from './reducers/accordionReducer';
 import { ComparespaceComponent } from './components/comparespace/comparespace.component';
 import { QuickViewComponent } from './components/workspace/output-container/quick-view/quick-view.component';
 import { SearchComponent } from './components/workspace/output-container/search/search.component';
 import { StandardComponent } from './components/workspace/output-container/standard/standard.component';
+import { ComparespaceWorkspaceComponent } from './components/comparespace/comparespace-workspace/comparespace-workspace.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +49,7 @@ import { StandardComponent } from './components/workspace/output-container/stand
     QuickViewComponent,
     SearchComponent,
     StandardComponent,
+    ComparespaceWorkspaceComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,9 +58,10 @@ import { StandardComponent } from './components/workspace/output-container/stand
     HttpModule,
     MaterialModule.forRoot(),
     RouterModule.forRoot(appRoutes),
-    NgReduxModule
+    NgReduxModule,
+    DndModule.forRoot()
   ],
-  providers: [],
+  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent]
 })
 export class AppModule {
@@ -73,6 +81,7 @@ function rootReducer(state: IAppState, action: IAction): IAppState {
     accordion: reduceAccordion(state.accordion, action),
     searchConditions: reduceSearchCondition(state.searchConditions, action),
     searchConditionSize: reduceSearchConditionSize(state.searchConditionSize, action),
-    searchFilter: reduceSearchResults(state.searchFilter, action)
+    searchFilter: reduceSearchResults(state.searchFilter, action),
+    messagesToCompare: reduceMessagesToCompare(state.messagesToCompare, action)
   };
 }

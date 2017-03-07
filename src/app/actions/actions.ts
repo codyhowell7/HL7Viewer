@@ -1,6 +1,7 @@
 import {
     IWorkspaceModeChangedPayload, IMessageReceivedPayload, ISaveSearchPayload,
-    IIdPayload, IAccordionToggledPayload, IAddConditionPayload, IAddConditionGroupPayload
+    IIdPayload, IAccordionToggledPayload, IAddConditionPayload, IAddConditionGroupPayload,
+    ISaveComparePayload
 } from '../payloads/payloads';
 
 export interface IAction {
@@ -36,6 +37,10 @@ export interface IAddToConidtionSize extends IAction { }
 
 export interface IAddSearchResults extends IAction {
     payload: ISaveSearchPayload;
+}
+
+export interface IToggleMessageOnCompareList extends IAction {
+    payload: ISaveComparePayload;
 }
 
 // export interface IFieldAccordionToggleaction extends IAction {

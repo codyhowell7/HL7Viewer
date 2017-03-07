@@ -6,7 +6,7 @@ import { Map } from 'immutable';
 
 import { IMessage, IAppState } from '../../states/states';
 import { WorkspaceMode } from '../../enums/enums';
-import { ADD_MESSAGE, SWITCH_MESSAGE, NEW_SEARCH_MESSAGE, REMOVE_SEARCH_FILTER } from '../../constants/constants';
+import { ADD_MESSAGE, SWITCH_MESSAGE, NEW_SEARCH_MESSAGE, REMOVE_SEARCH_FILTER, SAVE_COMPARE } from '../../constants/constants';
 
 @Component({
   selector: 'hls-menu',
@@ -24,6 +24,7 @@ export class MenuComponent implements OnInit {
   messageCount$: Observable<number>;
 
   searchFilter: Map<number, boolean>;
+  checkBoxes = Map<number, boolean>();
   newMessageId: number;
   messagesSize: number;
   constructor(private ngRedux: NgRedux<IAppState>) { }
@@ -36,7 +37,7 @@ export class MenuComponent implements OnInit {
     this.isMessages$ = combineLatest(this.mode$, this.messageCount$)
       .map(([mode, messageCount]) => { return mode === WorkspaceMode.messages; });
     this.isCompare$ = combineLatest(this.mode$, this.messageCount$)
-      .map(([mode, messageCount]) => { return mode === WorkspaceMode.compare && messageCount > 1; });
+      .map(([mode, messageCount]) => { return mode === WorkspaceMode.compare; });
 
     this.searchFilter$.subscribe(filter => this.searchFilter = filter);
   }
@@ -48,10 +49,17 @@ export class MenuComponent implements OnInit {
         .toArray()
         .sort(function (a, b) { return a.id - b.id; }));
   };
+  
+  checkBoxToggle(compareId) {
+    this.checkBoxes = this.checkBoxes.set(compareId, !this.checkBoxes.get(compareId));
+  }
 
   isSorted() {
     let numInFilter = 0;
+    let deletedNum: number;
     this.searchFilter.forEach(value => { if (value === true) { numInFilter++; } });
+    this.messages$.subscribe(messages => deletedNum = messages.filter(message => message.deleted).size);
+    numInFilter = numInFilter - deletedNum;
     return !(this.messagesSize === numInFilter);
   }
 
@@ -72,4 +80,14 @@ export class MenuComponent implements OnInit {
       type: NEW_SEARCH_MESSAGE
     });
   }
+
+  compareMessages() {
+    this.ngRedux.dispatch({
+      type: SAVE_COMPARE,
+      payload: {
+        compareCheckBoxes: this.checkBoxes
+      }
+    })
+  }
+
 }

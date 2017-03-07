@@ -12,6 +12,7 @@ export interface IAppState {
     searchConditions: ISearchConditions;
     searchConditionSize: Map<number, number>;
     searchFilter: Map<number, boolean>;
+    messagesToCompare: Map<number, number>;
 }
 
 export interface IMenuState { }

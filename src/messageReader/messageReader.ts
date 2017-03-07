@@ -67,7 +67,6 @@ export class MessageReader {
     public evalConditions(condition, booleanArray: boolean[], searchResults: string): boolean[] {
         switch (condition.conditionOperand) {
             case '==':
-            console.log(`${searchResults}, ${condition.rightValue}`)
                 booleanArray.push(searchResults.toString() === condition.rightValue.toString());
                 return booleanArray;
             case '!=':
@@ -205,7 +204,6 @@ export class MessageReader {
                         concatedValue += this.parseDesignator(message, single.trim())[0].value;
                     }
                 });
-                console.log(concatedValue);
                 return concatedValue;
         }
     }

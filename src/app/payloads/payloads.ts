@@ -49,3 +49,7 @@ export interface ISaveSearchPayload {
     search: ISearchConditions;
     messageFilterMap: Map<number, boolean>;
 }
+
+export interface ISaveComparePayload {
+    localCompare: Map<number, number>;
+}

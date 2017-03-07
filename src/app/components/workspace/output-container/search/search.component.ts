@@ -118,14 +118,14 @@ export class SearchComponent implements OnInit {
         functionModifier: '',
         conditionID: this.searchSize.valueSeq().max()
       };
-      let conidtionGroup: IConditionGroup = {
+      let conditionGroup: IConditionGroup = {
         conditions: this.localConditionGroups.conditionGroups.get(this.selectedGroup)
           .conditions.set(this.searchSize.valueSeq().max(), condition),
         groupID: this.selectedGroup,
         groupOperand: this.localConditionGroups.conditionGroups.get(this.selectedGroup).groupOperand
       };
       this.localConditionGroups = {
-        conditionGroups: this.localConditionGroups.conditionGroups.set(this.selectedGroup, conidtionGroup),
+        conditionGroups: this.localConditionGroups.conditionGroups.set(this.selectedGroup, conditionGroup),
         searchOperand: this.localConditionGroups.searchOperand
       };
     }
@@ -142,13 +142,13 @@ export class SearchComponent implements OnInit {
       functionModifier: '',
       conditionID: this.searchSize.valueSeq().max()
     };
-    let conidtionGroup: IConditionGroup = {
+    let conditionGroup: IConditionGroup = {
       conditions: Map<number, ICondition>().set(this.searchSize.valueSeq().max(), condition),
       groupID: this.searchSize.keySeq().max(),
       groupOperand: 'AND'
     };
     this.localConditionGroups = {
-      conditionGroups: this.localConditionGroups.conditionGroups.set(this.searchSize.keySeq().max(), conidtionGroup),
+      conditionGroups: this.localConditionGroups.conditionGroups.set(this.searchSize.keySeq().max(), conditionGroup),
       searchOperand: this.localConditionGroups.searchOperand
     };
     this.selectedGroup = this.searchSize.keySeq().max();
@@ -188,13 +188,13 @@ export class SearchComponent implements OnInit {
       conditionID: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).conditionID,
       functionModifier: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).functionModifier
     };
-    let conidtionGroup: IConditionGroup = {
+    let conditionGroup: IConditionGroup = {
       conditions: this.localConditionGroups.conditionGroups.get(groupId).conditions.set(conditionId, condition),
       groupID: this.localConditionGroups.conditionGroups.get(groupId).groupID,
       groupOperand: this.localConditionGroups.conditionGroups.get(groupId).groupOperand
     };
     this.localConditionGroups = {
-      conditionGroups: this.localConditionGroups.conditionGroups.set(groupId, conidtionGroup),
+      conditionGroups: this.localConditionGroups.conditionGroups.set(groupId, conditionGroup),
       searchOperand: this.localConditionGroups.searchOperand
     };
   }
@@ -211,13 +211,13 @@ export class SearchComponent implements OnInit {
       conditionID: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).conditionID,
       functionModifier: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).functionModifier
     };
-    let conidtionGroup: IConditionGroup = {
+    let conditionGroup: IConditionGroup = {
       conditions: this.localConditionGroups.conditionGroups.get(groupId).conditions.set(conditionId, condition),
       groupID: this.localConditionGroups.conditionGroups.get(groupId).groupID,
       groupOperand: this.localConditionGroups.conditionGroups.get(groupId).groupOperand
     };
     this.localConditionGroups = {
-      conditionGroups: this.localConditionGroups.conditionGroups.set(groupId, conidtionGroup),
+      conditionGroups: this.localConditionGroups.conditionGroups.set(groupId, conditionGroup),
       searchOperand: this.localConditionGroups.searchOperand
     };
   }
@@ -226,7 +226,7 @@ export class SearchComponent implements OnInit {
     return this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).rightValue;
   }
 
-  updateFunctionModifier(value: ''|'Length'|'Concat', conditionId: number, groupId: number ) {
+  updateFunctionModifier(value: '' | 'Length' | 'Concat', conditionId: number, groupId: number) {
     let condition: ICondition = {
       leftValue: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).leftValue,
       rightValue: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).rightValue,
@@ -234,13 +234,13 @@ export class SearchComponent implements OnInit {
       conditionID: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).conditionID,
       functionModifier: value
     };
-    let conidtionGroup: IConditionGroup = {
+    let conditionGroup: IConditionGroup = {
       conditions: this.localConditionGroups.conditionGroups.get(groupId).conditions.set(conditionId, condition),
       groupID: this.localConditionGroups.conditionGroups.get(groupId).groupID,
       groupOperand: this.localConditionGroups.conditionGroups.get(groupId).groupOperand
     };
     this.localConditionGroups = {
-      conditionGroups: this.localConditionGroups.conditionGroups.set(groupId, conidtionGroup),
+      conditionGroups: this.localConditionGroups.conditionGroups.set(groupId, conditionGroup),
       searchOperand: this.localConditionGroups.searchOperand
     };
   }
@@ -257,27 +257,35 @@ export class SearchComponent implements OnInit {
       conditionID: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).conditionID,
       functionModifier: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).functionModifier
     };
-    let conidtionGroup: IConditionGroup = {
+    let conditionGroup: IConditionGroup = {
       conditions: this.localConditionGroups.conditionGroups.get(groupId).conditions.set(conditionId, condition),
       groupID: this.localConditionGroups.conditionGroups.get(groupId).groupID,
       groupOperand: this.localConditionGroups.conditionGroups.get(groupId).groupOperand
     };
     this.localConditionGroups = {
-      conditionGroups: this.localConditionGroups.conditionGroups.set(groupId, conidtionGroup),
+      conditionGroups: this.localConditionGroups.conditionGroups.set(groupId, conditionGroup),
       searchOperand: this.localConditionGroups.searchOperand
     };
   }
 
   updateGroupOperand(value, groupId: number) {
-    let conidtionGroup: IConditionGroup = {
+    let conditionGroup: IConditionGroup = {
       conditions: this.localConditionGroups.conditionGroups.get(groupId).conditions,
       groupID: groupId,
       groupOperand: value
     };
     this.localConditionGroups = {
-      conditionGroups: this.localConditionGroups.conditionGroups.set(groupId, conidtionGroup),
+      conditionGroups: this.localConditionGroups.conditionGroups.set(groupId, conditionGroup),
       searchOperand: this.localConditionGroups.searchOperand
     };
+  }
+
+  trackGroup(index, group) {
+    return group ? group.groupID : undefined;
+  }
+
+  trackCondition(index, condition) {
+    return condition ? condition.conditionID : undefined;
   }
 
 

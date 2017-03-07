@@ -1,0 +1,58 @@
+:host {
+    width: 100%;
+    height: 100%;
+    min-width: 10%;
+}
+div.compareWorkspace {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+div.compareOutput {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+}
+div.draggable1 {
+    flex: 1 1 40%;
+    background-color: white;
+    margin-right: 5px;
+    padding: 10px;
+    overflow: auto;
+    width: 100%;
+    min-width: 40%;
+    white-space: nowrap;
+}
+div.draggable2 {
+    flex: 1 1 40%;
+    background-color: white; 
+    margin-left: 5px; 
+    padding: 10px;
+    overflow: auto;
+    width: 100%;
+    min-width: 40%;
+    white-space: nowrap;
+}
+p.line {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    font-family: monospace;
+    user-select: none;
+}
+
+div.draggable1LineOutput {
+    width: 100%;
+    flex: auto;
+    margin-top: 8px;
+    background-color: white;
+}
+
+div.draggable2LineOutput {
+    width: 100%;
+    flex: auto;
+    margin-top: 3px;
+    background-color: white;
+}

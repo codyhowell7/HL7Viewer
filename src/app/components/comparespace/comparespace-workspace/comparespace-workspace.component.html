@@ -1,0 +1,17 @@
+<div class='compareWorkspace'>
+    <div class='compareOutput'>
+        <div class='draggable1' dnd-droppable (onDropSuccess)='saveLeftCompare($event.dragData)'  (onDropSuccess)='checkToSave()' (onDropSuccess)='dropArea1 = $event.dragData' [scrollLeft]='divScrollLeft' (scroll)=onScroll($event.target.scrollLeft)>
+            <div *ngIf='dropArea1'>
+                    <div *ngFor='let line of showLeftSegments(getMessage(dropArea1))'>
+                        <p class='line'>{{line}}<br></p>
+                    </div>
+            </div>
+        </div>
+    <div class='draggable2' dnd-droppable (onDropSuccess)='saveRightCompare($event.dragData)' (onDropSuccess)='checkToSave()' (onDropSuccess)='dropArea2 = $event.dragData' [scrollLeft]='divScrollLeft' (scroll)=onScroll($event.target.scrollLeft) >
+        <div *ngIf='dropArea2'>
+                <div *ngFor='let line of showRightSegments(getMessage(dropArea2))'>
+                    <p class='line'>{{line}}<br></p>
+                </div>
+        </div>
+    </div>
+</div>

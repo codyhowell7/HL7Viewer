@@ -1,31 +1,37 @@
 $iconHeight: 14px;
 
 :host {
-    border-bottom: 1px solid #aaa;
+    margin-bottom: 1px;
     cursor: pointer;
     padding: 10px;
     background-color: #fff;
+    user-select: none;
     
-
-    div {
-        display: flex;
-        justify-content: space-between;
-
-        span {
-            line-height: $iconHeight;
-        }
-
-        input {
-            line-height: $iconHeight;
-            margin-top: 3px;
-            margin-bottom: 2px;
-        }
-
-        md-icon {
-            padding: 2px;
-            height: $iconHeight;
-            width: $iconHeight;
-            font-size: $iconHeight;
+    div {      
+        div {
+            span {
+                line-height: $iconHeight;
+            }
+            input {
+                line-height: $iconHeight;
+                margin-top: 3px;
+                margin-bottom: 2px;
+            }
+            md-icon {
+                padding: 2px;
+                height: $iconHeight;
+                width: $iconHeight;
+                font-size: $iconHeight;
+            }
         }
     }
+}
+
+.compare {
+    display: flex;
+    justify-content: space-between;
+}
+.message {
+    display: flex;
+    justify-content: space-between;
 }

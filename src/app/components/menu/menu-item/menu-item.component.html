@@ -1,5 +1,12 @@
-<div [routerLink]="['/workspace', message.id, 'standard']" routerLinkActive="active">
+<div *ngIf='!(isMessages$ | async) && !(isCompare$ | async)' >
     <span>Message {{message.id + 1}}</span>
-    <md-icon *ngIf="isMessages$ | async" (click)="removeItem()">clear</md-icon>
-    <input *ngIf="isCompare$ | async" type="checkbox" />
+</div>
+<div *ngIf="isMessages$ | async">
+    <div [routerLink]="['/workspace', message.id, 'standard']" routerLinkActive="active" class='message'>
+        <span>Message {{message.id + 1}}</span>
+        <md-icon (click)="removeItem()">clear</md-icon>
+    </div>
+</div>
+<div *ngIf="isCompare$ | async" class='compare'  dnd-draggable [dragData]='message.id+1'>
+    <span>Message {{message.id + 1}}</span>
 </div>

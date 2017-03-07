@@ -32,6 +32,8 @@ export const NEW_SEARCH_MESSAGE = 'NEW_SEARCH_MESSAGE';
 export const REMOVE_SEARCH_FILTER = 'REMOVE_SEARCH_FILTER';
 export const SAVE_SEARCH = 'SAVE_SEARCH';
 
+export const SAVE_COMPARE = 'SAVE_COMPARE';
+
 
 
 

@@ -1,6 +1,6 @@
 <hls-menu-toolbar></hls-menu-toolbar>
 <button md-raised-button *ngIf="isMessages$ | async" (click)="addMessage()">Add Message</button>
-<button md-raised-button *ngIf="isCompare$ | async">Compare</button>
+<button md-raised-button *ngIf="isCompare$ | async" (click)='compareMessages()'>Compare</button>
 <div *ngIf='isSorted()' class='filter'> Filtered By Search 
     <md-icon (click)='removeFilter()'>clear</md-icon>
 </div>

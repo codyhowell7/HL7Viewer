@@ -1,0 +1,12 @@
+<div *ngIf='segment'>
+  <div *ngIf='missingSegment(segment)'>
+    <p>
+      <mark> {{segment}} </mark> <br> 
+    </p>
+  </div>
+  <div *ngIf='!missingSegment(segment)'>
+    <p> 
+      {{segment}} <br> 
+    </p>
+  </div>
+</div>

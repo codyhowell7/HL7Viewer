@@ -10,5 +10,5 @@ export class HL7Field {
     hasHL7Components: boolean = false;
     isInQuickView: boolean = false;
 
-    constructor(public value: string, private index: number) {}
+    constructor(public value: string, public index: number) {}
 }

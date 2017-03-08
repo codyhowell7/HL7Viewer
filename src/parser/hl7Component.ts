@@ -6,5 +6,5 @@ export class HL7Component {
     hasSubComponents: boolean = false;
     isInQuickView: boolean = false;
 
-    constructor(private value: string, private index: number) {    }
+    constructor(public value: string, public index: number) {    }
 }

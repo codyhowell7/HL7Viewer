@@ -3,6 +3,7 @@ import { HL7Message } from '../../parser/hl7Message';
 import { HL7Segment } from '../../parser/hl7Segment';
 import { Map } from 'immutable';
 import { ISearchConditions } from  '../states/states';
+import { IMessageDiscrepancies } from '../../messageReader/IMessageDiscrepancies';
 
 
 export interface IWorkspaceModeChangedPayload {
@@ -50,6 +51,14 @@ export interface ISaveSearchPayload {
     messageFilterMap: Map<number, boolean>;
 }
 
-export interface ISaveComparePayload {
-    localCompare: Map<number, number>;
+export interface ISaveLeftComparePayload {
+    leftArea: number;
+}
+
+export interface ISaveRightComparePayload {
+    rightArea: number;
+}
+
+export interface IDiscrepancyPayload {
+    discrepancies: IMessageDiscrepancies;
 }

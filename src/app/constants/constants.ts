@@ -33,6 +33,11 @@ export const REMOVE_SEARCH_FILTER = 'REMOVE_SEARCH_FILTER';
 export const SAVE_SEARCH = 'SAVE_SEARCH';
 
 export const SAVE_COMPARE = 'SAVE_COMPARE';
+export const SAVE_LEFT = 'SAVE_LEFT';
+export const SAVE_RIGHT = 'SAVE_RIGHT';
+
+
+export const SAVE_DISCREPANCY = 'SAVE_DISCREPANCY';
 
 
 

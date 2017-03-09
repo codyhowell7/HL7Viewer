@@ -1,12 +1,30 @@
-<div *ngIf='segment'>
-  <div *ngIf='missingSegment(segment)'>
-    <p>
-      <mark> {{segment}} </mark> <br> 
-    </p>
+<div *ngIf='leftSide'>
+  <div *ngIf='getM1DiscrepSize() === 0'>
+    <div *ngFor='let segment of getFullLeftMessage()'>
+      <p> {{segment}} <br> </p>
+    </div>
   </div>
-  <div *ngIf='!missingSegment(segment)'>
-    <p> 
-      {{segment}} <br> 
-    </p>
+  <div *ngFor='let segDiscrepancy of getM1Discrep(); let i = index'>
+    <div *ngIf='missingSegment(segDiscrepancy)'>
+      <p class='missingLine'><br></p>
+    </div>
+    <div *ngIf='!missingSegment(segDiscrepancy)'>
+      <p> {{getLeftSegment(getLeftCorrectedIndex(i))}} </p>
+    </div>
+    </div>
   </div>
-</div>
+  <div *ngIf='!leftSide'>
+    <div *ngIf='getM2DiscrepSize() === 0'>
+      <div *ngFor='let segment of getFullRightMessage()'>
+        <p> {{segment}} <br> </p>
+      </div>
+    </div>
+    <div *ngFor='let segDiscrepancy of getM2Discrep(); let i = index'>
+      <div *ngIf='missingSegment(segDiscrepancy)'>
+        <p class='missingLine'><br></p>
+      </div>
+      <div *ngIf='!missingSegment(segDiscrepancy)'>
+        <p> {{getRightSegment(getRightCorrectedIndex(i))}} </p>
+      </div>
+    </div>
+  </div>

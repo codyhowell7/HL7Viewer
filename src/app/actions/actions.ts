@@ -1,7 +1,7 @@
 import {
     IWorkspaceModeChangedPayload, IMessageReceivedPayload, ISaveSearchPayload,
     IIdPayload, IAccordionToggledPayload, IAddConditionPayload, IAddConditionGroupPayload,
-    ISaveComparePayload
+    ISaveLeftComparePayload, ISaveRightComparePayload, IDiscrepancyPayload
 } from '../payloads/payloads';
 
 export interface IAction {
@@ -39,25 +39,14 @@ export interface IAddSearchResults extends IAction {
     payload: ISaveSearchPayload;
 }
 
-export interface IToggleMessageOnCompareList extends IAction {
-    payload: ISaveComparePayload;
+export interface ISaveLeftCompareArea extends IAction {
+    payload: ISaveLeftComparePayload;
 }
 
-// export interface IFieldAccordionToggleaction extends IAction {
-//     payload: IFieldAccordionToggledPayload;
-// }
+export interface ISaveRightCompareArea extends IAction {
+    payload: ISaveRightComparePayload;
+}
+ export interface ISaveDiscrepancies extends IAction {
+     payload: IDiscrepancyPayload;
+ }
 
-// export interface IComponentAccordionToggleAction extends IAction {
-//     payload: IComponentAccordionToggledPayload;
-// }
-
-// export interface ISegmentOffsetAction extends IAction {
-//     payload: ISegmentOffsetPayload;
-// }
-
-// export interface IFieldOffsetAction extends IAction {
-//     payload: IFieldOffsetPayload;
-// }
-// export interface IComponentOffsetAction extends IAction {
-//     payload: IComponentOffsetPayload;
-// }

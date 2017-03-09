@@ -22,6 +22,7 @@ import { OutputTabContainerComponent } from './components/workspace/output-conta
 import { IAppState } from './states/states';
 import { WorkspaceMode } from './enums/enums';
 import { IAction } from './actions/actions';
+
 import { reduceMessagesToCompare } from './reducers/compareReducers';
 import { reduceSearchResults } from './reducers/searchResultReducer';
 import { reduceSearchCondition, reduceSearchConditionSize } from './reducers/userSearchReducer';
@@ -29,11 +30,16 @@ import { reduceWorkspace } from './reducers/workspaceReducer';
 import { reduceMenu } from './reducers/menuReducer';
 import { reduceCurrentMessage, reduceMessages } from './reducers/messageReducer';
 import { reduceAccordion } from './reducers/accordionReducer';
+import { reduceDiscrepancies } from './reducers/discrepancyReducer';
+
 import { ComparespaceComponent } from './components/comparespace/comparespace.component';
 import { QuickViewComponent } from './components/workspace/output-container/quick-view/quick-view.component';
 import { SearchComponent } from './components/workspace/output-container/search/search.component';
 import { StandardComponent } from './components/workspace/output-container/standard/standard.component';
 import { ComparespaceWorkspaceComponent } from './components/comparespace/comparespace-workspace/comparespace-workspace.component';
+import {
+  ComparespaceHighlightingComponent
+} from './components/comparespace/comparespace-workspace/comparespace-highlighting/comparespace-highlighting.component';
 
 @NgModule({
   declarations: [
@@ -50,6 +56,7 @@ import { ComparespaceWorkspaceComponent } from './components/comparespace/compar
     SearchComponent,
     StandardComponent,
     ComparespaceWorkspaceComponent,
+    ComparespaceHighlightingComponent
   ],
   imports: [
     BrowserModule,
@@ -82,6 +89,7 @@ function rootReducer(state: IAppState, action: IAction): IAppState {
     searchConditions: reduceSearchCondition(state.searchConditions, action),
     searchConditionSize: reduceSearchConditionSize(state.searchConditionSize, action),
     searchFilter: reduceSearchResults(state.searchFilter, action),
-    messagesToCompare: reduceMessagesToCompare(state.messagesToCompare, action)
+    messagesToCompare: reduceMessagesToCompare(state.messagesToCompare, action),
+    discrepancies: reduceDiscrepancies(state.discrepancies, action)
   };
 }

@@ -10,6 +10,7 @@ import {
     IMessageDiscrepancies, ISegmentDiscrepancies,
     IFieldDiscrepancies, IComponentDiscepancies, ISubComponentDiscrepancies
 } from './IMessageDiscrepancies';
+import { SAVE_DISCREPANCY } from '../app/constants/constants';
 
 export class MessageCompare {
 
@@ -20,12 +21,13 @@ export class MessageCompare {
     switched: boolean;
     m1ExtraLines = 0;
     m2ExtraLines = 0;
+    prevNoMatch = 0;
 
-    constructor() {
+    constructor(private ngRedux: NgRedux<IAppState>) {
         this.messages$.subscribe(messages => this.messages = messages);
     }
 
-    public gatherMessages(messageId1: number, messageId2: number): IMessageDiscrepancies {
+    public gatherMessages(messageId1: number, messageId2: number) {
         let message1Segs;
         let message2Segs;
         this.messages.forEach(message => {
@@ -42,7 +44,13 @@ export class MessageCompare {
             message2Segs = temp;
             this.switched = true;
         }
-        return this.combSegments(message1Segs, message2Segs);
+        this.combSegments(message1Segs, message2Segs)
+        this.ngRedux.dispatch({
+            type: SAVE_DISCREPANCY,
+            payload: {
+                discrepancies: this.discrep
+            }
+        });
     }
 
     private addOffsetDiscepencies(message1: HL7Segment, message2: HL7Segment, offsets: [number, number]) {
@@ -58,6 +66,10 @@ export class MessageCompare {
                 });
             }
         }
+        if (offsets[1] > 0) {
+            this.m1ExtraLines += offsets[1];
+            this.m2ExtraLines += offsets[0];
+        }
         for (let j = 0; j < offsets[0]; j++) {
             this.discrep.message2 = this.discrep.message2.set(message2.segmentIndex + j + this.m2ExtraLines, {
                 fields: Map<number, IFieldDiscrepancies>(),
@@ -71,16 +83,35 @@ export class MessageCompare {
                 });
             }
         }
-        this.discrep.message2 = this.discrep.message2.set(message2.segmentIndex + offsets[0] + 1, {
-            fields: Map<number, IFieldDiscrepancies>(),
-            missing: false
-        });
-        this.discrep.message1 = this.discrep.message1.set(message1.segmentIndex + offsets[0], {
-            fields: this.combFields(message1, message2),
-            missing: false
-        });
-        this.m1ExtraLines += offsets[1];
-        this.m2ExtraLines += offsets[0];
+        if (!(offsets[1] > 0 && offsets[0] > 0)) {
+            this.discrep.message1 = this.discrep.message1.set(message1.segmentIndex + offsets[0] + this.m1ExtraLines, {
+                fields: this.combFields(message1, message2),
+                missing: false
+            });
+            this.discrep.message2 = this.discrep.message2.set(message2.segmentIndex + offsets[0] + this.m2ExtraLines, {
+                fields: Map<number, IFieldDiscrepancies>(),
+                missing: false
+            });
+            this.m1ExtraLines += offsets[1];
+            this.m2ExtraLines += offsets[0];
+        } else {
+            this.discrep.message2 = this.discrep.message2.set(this.discrep.message2.size, {
+                fields: Map<number, IFieldDiscrepancies>(),
+                missing: true
+            });
+            this.discrep.message2 = this.discrep.message2.set(message2.segmentIndex + offsets[1] + this.m2ExtraLines, {
+                fields: this.combFields(message1, message2),
+                missing: false
+            });
+            this.discrep.message1 = this.discrep.message1.set(message1.segmentIndex  + offsets[1] + this.m1ExtraLines, {
+                fields: this.combFields(message1, message2),
+                missing: false
+            });
+            this.discrep.message2 = this.discrep.message2.set(message2.segmentIndex + offsets[0] + this.m2ExtraLines, {
+                fields: this.combFields(message1, message2),
+                missing: false
+            });
+        }
     }
 
     swap() {
@@ -89,13 +120,30 @@ export class MessageCompare {
         this.discrep.message2 = temp;
     }
 
-    private addEndOfListDiscepencies(message: HL7Segment[]) {
+    private addM1EndOfListDiscepencies(message: HL7Segment[]) {
         message.forEach((segment, segIndex) => {
-            this.discrep.message2 = this.discrep.message2.set(segment.segmentIndex + this.m2ExtraLines, {
+            this.discrep.message2 = this.discrep.message2.set(this.discrep.message2.size, {
                 fields: Map<number, IFieldDiscrepancies>(),
                 missing: true
             });
-            this.discrep.message1 = this.discrep.message1.set(segment.segmentIndex + this.m1ExtraLines, {
+            this.discrep.message1 = this.discrep.message1.set(this.discrep.message1.size, {
+                fields: Map<number, IFieldDiscrepancies>(),
+                missing: false
+            });
+        });
+        if (this.switched) {
+            this.swap();
+        }
+        return this.discrep;
+    }
+
+    private addM2EndOfListDiscepencies(message: HL7Segment[] ) {
+        message.forEach((segment, segIndex) => {
+            this.discrep.message1 = this.discrep.message1.set(this.discrep.message1.size, {
+                fields: Map<number, IFieldDiscrepancies>(),
+                missing: false
+            });
+            this.discrep.message2 = this.discrep.message2.set(this.discrep.message2.size, {
                 fields: Map<number, IFieldDiscrepancies>(),
                 missing: false
             });
@@ -123,9 +171,31 @@ export class MessageCompare {
             if (this.switched) {
                 this.swap();
             }
+            if (this.prevNoMatch > 0) {
+                this.discrep.message1 = this.discrep.message1.set(this.discrep.message1.size - 1, {
+                    fields: Map<number, IFieldDiscrepancies>(),
+                    missing: false
+                });
+                for (let i = 1; i < this.prevNoMatch; i++) {
+                    this.discrep.message1 = this.discrep.message1.set(this.discrep.message1.size, {
+                        fields: Map<number, IFieldDiscrepancies>(),
+                        missing: false
+                    });
+                    this.discrep.message2 = this.discrep.message2.set(this.discrep.message2.size, {
+                        fields: Map<number, IFieldDiscrepancies>(),
+                        missing: true
+                    });
+                }
+                this.discrep.message2 = this.discrep.message2.set(this.discrep.message2.size, {
+                    fields: Map<number, IFieldDiscrepancies>(),
+                    missing: true
+                });
+            }
             return this.discrep;
         } else if (message2Segs.length === 0) {
-            return this.addEndOfListDiscepencies(message1Segs);
+            return this.addM1EndOfListDiscepencies(message1Segs);
+        } else if ( message1Segs.length === 0) {
+            return this.addM2EndOfListDiscepencies(message2Segs);
         } else if (message1Segs[0].segmentName === message2Segs[0].segmentName) {
             this.discrep.message1 = this.discrep.message1.set(message1Segs[0].segmentIndex, {
                 fields: this.combFields(message1Segs[0], message2Segs[0]),
@@ -139,23 +209,48 @@ export class MessageCompare {
         } else {
             let match = this.nextMatch(message1Segs, 0, message2Segs, 0);
             if (match[0] === 0 && match[1] === 0) {
-                this.discrep.message1 = this.discrep.message1.set(message1Segs[0].segmentIndex + this.m1ExtraLines, {
-                    fields: Map<number, IFieldDiscrepancies>(),
-                    missing: true
-                });
-                this.discrep.message1 = this.discrep.message1.set(message1Segs[1].segmentIndex + this.m1ExtraLines, {
-                    fields: Map<number, IFieldDiscrepancies>(),
-                    missing: false
-                });
-                this.discrep.message2 = this.discrep.message2.set(message2Segs[0].segmentIndex + this.m2ExtraLines, {
-                    fields: Map<number, IFieldDiscrepancies>(),
-                    missing: false
-                });
-                this.m1ExtraLines++;
+                if (this.prevNoMatch === 0) {
+                    this.discrep.message1 = this.discrep.message1.set(message1Segs[0].segmentIndex + this.m1ExtraLines, {
+                        fields: Map<number, IFieldDiscrepancies>(),
+                        missing: true
+                    });
+                    this.discrep.message1 = this.discrep.message1.set(message1Segs[0].segmentIndex + this.m1ExtraLines + 1, {
+                        fields: Map<number, IFieldDiscrepancies>(),
+                        missing: false
+                    });
+                    this.discrep.message2 = this.discrep.message2.set(message2Segs[0].segmentIndex + this.m2ExtraLines, {
+                        fields: Map<number, IFieldDiscrepancies>(),
+                        missing: false
+                    });
+                    this.discrep.message2 = this.discrep.message2.set(message2Segs[0].segmentIndex + this.m2ExtraLines + 1, {
+                        fields: Map<number, IFieldDiscrepancies>(),
+                        missing: true
+                    });
+                } else {
+                    this.discrep.message1 = this.discrep.message1.set(message1Segs[0].segmentIndex + this.m1ExtraLines, {
+                        fields: Map<number, IFieldDiscrepancies>(),
+                        missing: true
+                    });
+                    this.discrep.message1 = this.discrep.message1.set(message1Segs[0].segmentIndex + this.m1ExtraLines + 1, {
+                        fields: Map<number, IFieldDiscrepancies>(),
+                        missing: false
+                    });
+                    this.discrep.message2 = this.discrep.message2.set(message2Segs[0].segmentIndex + this.m2ExtraLines, {
+                        fields: Map<number, IFieldDiscrepancies>(),
+                        missing: false
+                    });
+                    this.discrep.message2 = this.discrep.message2.set(message2Segs[0].segmentIndex + this.m2ExtraLines + 1, {
+                        fields: Map<number, IFieldDiscrepancies>(),
+                        missing: true
+                    });
+                }
+                this.prevNoMatch++;
                 return this.combSegments(message1Segs.slice(1), message2Segs.slice(1));
             }
             this.addOffsetDiscepencies(message1Segs[0], message2Segs[0], match);
-            if (match[0] > 0) {
+            if (match[0] > 0 && match[1] > 0) {
+                return this.combSegments(message1Segs.slice(match[0] + 1), message2Segs.slice(match[1] + 1));
+            } else if (match[0] > 0) {
                 return this.combSegments(message1Segs.slice(match[0] + 1), message2Segs.slice(1));
             } else {
                 return this.combSegments(message1Segs.slice(match[1]), message2Segs.slice(match[1] + 1));

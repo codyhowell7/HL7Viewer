@@ -1,6 +1,7 @@
 import { WorkspaceMode } from '../enums/enums';
 import { Map, List } from 'immutable';
 import { HL7Message } from '../../parser/hl7Message';
+import { IMessageDiscrepancies } from '../../messageReader/IMessageDiscrepancies';
 
 export interface IAppState {
 
@@ -13,6 +14,7 @@ export interface IAppState {
     searchConditionSize: Map<number, number>;
     searchFilter: Map<number, boolean>;
     messagesToCompare: Map<number, number>;
+    discrepancies: IMessageDiscrepancies;
 }
 
 export interface IMenuState { }

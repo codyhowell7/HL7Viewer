@@ -9,11 +9,18 @@ button.searchButton {
     font-size: 17px;
     margin-right: 10px;
 }
-button.addConditionButton {
+button.addConditionGroupButton {
     padding: 10px;
     width: 35%;
     font-size: 17px;
 }
+
+button.addConditionButton{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
 input.mainSearchInput {
     width: 100%;
     font-size: 20px;
@@ -45,7 +52,7 @@ div.conditionGroupClass {
 div.singleCondition {
     display: flex;
     flex-direction: row;
-    padding-bottom: 10px;
+    margin-top: 10px;
     justify-content: space-around;
 }
 div.betweenGroup{
@@ -80,4 +87,10 @@ div.bottomButton {
     display: flex;
     justify-content: center;
    
+}
+
+div.bottomRow {
+    display: flex;
+    justify-content: center;
+    margin-right: 25px;
 }

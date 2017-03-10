@@ -30,7 +30,6 @@ export class SearchComponent implements OnInit {
   searchOperands = ['AND', 'OR'];
   searchSize: Map<number, number>;
   messages: Map<number, IMessage>;
-  selectedGroup: number = 0;
   localConditionGroups: ISearchConditions;
   generalSearch: string;
 
@@ -46,8 +45,9 @@ export class SearchComponent implements OnInit {
     });
 
     this.$messages.subscribe(message => {
-      this.messages = message;
+      this.messages = message.filter(filteredMessage => !filteredMessage.deleted).toMap();
     });
+
     if (this.localConditionGroups == null) {
       let defaultCondition: ICondition = {
         leftValue: '',
@@ -102,12 +102,8 @@ export class SearchComponent implements OnInit {
     return this.localConditionGroups.searchOperand;
   }
 
-  onSelectionChange(currentGroupBox: number) {
-    this.selectedGroup = currentGroupBox;
-  }
-
-  addCondition() {
-    if (this.localConditionGroups.conditionGroups.get(this.selectedGroup) != null) {
+  addCondition(conditionGroupId: number) {
+    if (this.localConditionGroups.conditionGroups.get(conditionGroupId) != null) {
       this.ngRedux.dispatch({
         type: ADD_CONDITION_SIZE
       });
@@ -119,13 +115,13 @@ export class SearchComponent implements OnInit {
         conditionID: this.searchSize.valueSeq().max()
       };
       let conditionGroup: IConditionGroup = {
-        conditions: this.localConditionGroups.conditionGroups.get(this.selectedGroup)
+        conditions: this.localConditionGroups.conditionGroups.get(conditionGroupId)
           .conditions.set(this.searchSize.valueSeq().max(), condition),
-        groupID: this.selectedGroup,
-        groupOperand: this.localConditionGroups.conditionGroups.get(this.selectedGroup).groupOperand
+        groupID: conditionGroupId,
+        groupOperand: this.localConditionGroups.conditionGroups.get(conditionGroupId).groupOperand
       };
       this.localConditionGroups = {
-        conditionGroups: this.localConditionGroups.conditionGroups.set(this.selectedGroup, conditionGroup),
+        conditionGroups: this.localConditionGroups.conditionGroups.set(conditionGroupId, conditionGroup),
         searchOperand: this.localConditionGroups.searchOperand
       };
     }
@@ -151,7 +147,6 @@ export class SearchComponent implements OnInit {
       conditionGroups: this.localConditionGroups.conditionGroups.set(this.searchSize.keySeq().max(), conditionGroup),
       searchOperand: this.localConditionGroups.searchOperand
     };
-    this.selectedGroup = this.searchSize.keySeq().max();
   }
 
   updateSearchOperand(newSearchOperand: 'AND' | 'OR') {

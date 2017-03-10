@@ -4,13 +4,11 @@
         <button class='searchButton' (click)='mainSearch()'> Search  </button>
     </div>
     <div class='addButtons'>
-        <button class='addConditionButton' (click)='addCondition()'> Add Condition </button>
-        <button class='addConditionButton' (click)='addConditionGroup()'> Add Condition Group </button>
+        <button class='addConditionGroupButton' (click)='addConditionGroup()'> Add Condition Group </button>
     </div>
     <div class='searchWrapper'>
         <div class='conditionGroupClass' *ngFor='let conditionGroup of getConditionGroups(); let groupIdIndex = index; let lastGroupIndex = last; trackBy: trackGroup'>
             <div class='border' >
-                <input type='radio' [value]='conditionGroup.groupID' (change)='onSelectionChange(conditionGroup.groupID)' [checked]='conditionGroup.groupID==selectedGroup'>
                 <div class='singleCondition' *ngFor='let condition of getConditions(conditionGroup.groupID); let conditionIdIndex = index; let lastConditionIndex = last; trackBy: trackCondition' >
                     <md-icon class='deleteIcon' (click)='deleteSingleCondition(conditionGroup.groupID,condition.conditionID)'>clear</md-icon>
                     <select (change)='updateFunctionModifier($event.target.value, condition.conditionID, conditionGroup.groupID)'>
@@ -27,6 +25,9 @@
                         </select>
                         <div *ngIf='lastConditionIndex' class='lastCondition'></div>
                     </div>
+                </div>
+                <div class='bottomRow'>
+                    <button class='addConditionButton' (click)='addCondition(conditionGroup.groupID)'> Add Condition </button>
                 </div>
             </div>
             <div class='betweenGroup' *ngIf='!lastGroupIndex'>

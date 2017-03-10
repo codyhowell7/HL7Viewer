@@ -190,10 +190,17 @@ export class MessageReader {
     private evalFunctionModifers(message: HL7Message, searchValue: string, modifer: '' | 'Length' | 'Concat') {
         switch (modifer) {
             case '':
-                return this.parseDesignator(message, searchValue)[0].value;
+                if (this.parseDesignator(message, searchValue)[0] != null) {
+                    return this.parseDesignator(message, searchValue)[0].value;
+                } else {
+                    return '';
+                }
             case 'Length':
-                console.log(this.parseDesignator(message, searchValue)[0].value.length);
-                return this.parseDesignator(message, searchValue)[0].value.length;
+                if (this.parseDesignator(message, searchValue)[0] != null) {
+                    return this.parseDesignator(message, searchValue)[0].value.length;
+                } else {
+                    return '';
+                }
 
             case 'Concat':
                 let concatConditions = searchValue.split(',');
@@ -292,6 +299,9 @@ export class MessageReader {
         // specific one doens't exisit. IE. PID.5.1.1 -> PID.5.1 -> PID.5
         if (finalObj != null && typeof (finalObj[0]) === 'undefined' && designator.endsWith('1')) {
             finalObj = this.parseDesignator(message, designator.substr(0, designator.length - 2));
+        }
+        if (finalObj == null) {
+            finalObj = [null, null];
         }
         return finalObj;
     }

@@ -22,6 +22,8 @@ export class MessageCompare {
     m1ExtraLines = 0;
     m2ExtraLines = 0;
     prevNoMatch = 0;
+    message1ID;
+    message2ID;
 
     constructor(private ngRedux: NgRedux<IAppState>) {
         this.messages$.subscribe(messages => this.messages = messages);
@@ -30,6 +32,8 @@ export class MessageCompare {
     public gatherMessages(messageId1: number, messageId2: number) {
         let message1Segs;
         let message2Segs;
+        this.message1ID = messageId1;
+        this.message2ID = messageId2;
         this.messages.forEach(message => {
             if (message.id === messageId1) {
                 message1Segs = message.message.hl7Segments;
@@ -44,7 +48,7 @@ export class MessageCompare {
             message2Segs = temp;
             this.switched = true;
         }
-        this.combSegments(message1Segs, message2Segs)
+        this.combSegments(message1Segs, message2Segs);
         this.ngRedux.dispatch({
             type: SAVE_DISCREPANCY,
             payload: {
@@ -78,14 +82,14 @@ export class MessageCompare {
 
             if (this.discrep.message1.get(message1.segmentIndex + j + this.m1ExtraLines) == null) {
                 this.discrep.message1 = this.discrep.message1.set(message1.segmentIndex + j + this.m1ExtraLines, {
-                    fields: this.combFields(message1, message2),
+                    fields: Map<number, IFieldDiscrepancies>(),
                     missing: false
                 });
             }
         }
         if (!(offsets[1] > 0 && offsets[0] > 0)) {
             this.discrep.message1 = this.discrep.message1.set(message1.segmentIndex + offsets[0] + this.m1ExtraLines, {
-                fields: this.combFields(message1, message2),
+                fields: this.combFields(this.skipXSegments(message1, 0, offsets[0]), message2),
                 missing: false
             });
             this.discrep.message2 = this.discrep.message2.set(message2.segmentIndex + offsets[0] + this.m2ExtraLines, {
@@ -100,17 +104,36 @@ export class MessageCompare {
                 missing: true
             });
             this.discrep.message2 = this.discrep.message2.set(message2.segmentIndex + offsets[1] + this.m2ExtraLines, {
-                fields: this.combFields(message1, message2),
+                fields: Map<number, IFieldDiscrepancies>(),
                 missing: false
             });
-            this.discrep.message1 = this.discrep.message1.set(message1.segmentIndex  + offsets[1] + this.m1ExtraLines, {
-                fields: this.combFields(message1, message2),
+            this.discrep.message1 = this.discrep.message1.set(message1.segmentIndex + offsets[1] + this.m1ExtraLines, {
+                fields: this.combFields(this.skipXSegments(message1, 0, offsets[1]), this.skipXSegments(message2, 1, offsets[0])),
                 missing: false
             });
             this.discrep.message2 = this.discrep.message2.set(message2.segmentIndex + offsets[0] + this.m2ExtraLines, {
-                fields: this.combFields(message1, message2),
+                fields: Map<number, IFieldDiscrepancies>(),
                 missing: false
             });
+        }
+    }
+
+    skipXSegments(segment: HL7Segment, messageSide: 0 | 1, numberToSkip: number) {
+        switch (messageSide) {
+            case 0:
+                if (this.messages.get(this.message1ID).message.hl7Segments[segment.segmentIndex + numberToSkip] != null) {
+                    return this.messages.get(this.message1ID).message.hl7Segments[segment.segmentIndex + numberToSkip];
+                } else {
+                    let max = this.messages.get(this.message1ID).message.hl7Segments.length;
+                    return this.messages.get(this.message1ID).message.hl7Segments[max];
+                }
+            case 1:
+                if (this.messages.get(this.message2ID).message.hl7Segments[segment.segmentIndex + numberToSkip] != null) {
+                    return this.messages.get(this.message2ID).message.hl7Segments[segment.segmentIndex + numberToSkip];
+                } else {
+                    let max = this.messages.get(this.message2ID).message.hl7Segments.length;
+                    return this.messages.get(this.message2ID).message.hl7Segments[max];
+                }
         }
     }
 
@@ -118,6 +141,9 @@ export class MessageCompare {
         let temp = this.discrep.message1;
         this.discrep.message1 = this.discrep.message2;
         this.discrep.message2 = temp;
+        this.discrep.message2.forEach((segment, segmentIndex) => {
+            this.discrep.message1.get(segmentIndex).fields = segment.fields;
+        });
     }
 
     private addM1EndOfListDiscepencies(message: HL7Segment[]) {
@@ -137,7 +163,7 @@ export class MessageCompare {
         return this.discrep;
     }
 
-    private addM2EndOfListDiscepencies(message: HL7Segment[] ) {
+    private addM2EndOfListDiscepencies(message: HL7Segment[]) {
         message.forEach((segment, segIndex) => {
             this.discrep.message1 = this.discrep.message1.set(this.discrep.message1.size, {
                 fields: Map<number, IFieldDiscrepancies>(),
@@ -194,7 +220,7 @@ export class MessageCompare {
             return this.discrep;
         } else if (message2Segs.length === 0) {
             return this.addM1EndOfListDiscepencies(message1Segs);
-        } else if ( message1Segs.length === 0) {
+        } else if (message1Segs.length === 0) {
             return this.addM2EndOfListDiscepencies(message2Segs);
         } else if (message1Segs[0].segmentName === message2Segs[0].segmentName) {
             this.discrep.message1 = this.discrep.message1.set(message1Segs[0].segmentIndex, {
@@ -292,7 +318,7 @@ export class MessageCompare {
 
                 } else {
                     fieldDiscrepancies = fieldDiscrepancies.set(field.index, {
-                        components: this.combComponents(segment1.hl7Fields[field.index], segment2.hl7Fields[field.index]),
+                        components:  Map<number, IComponentDiscepancies>(),
                         missing: false,
                         match: false
                     });
@@ -301,7 +327,7 @@ export class MessageCompare {
         });
 
         segment2.hl7Fields.filter(field => field.value !== '').forEach(field => {
-            if (segment1.hl7Fields[field.index] == null) {
+            if (segment1.hl7Fields[field.index] == null || segment1.hl7Fields[field.index].value === '') {
                 fieldDiscrepancies = fieldDiscrepancies.set(field.index, {
                     components: Map<number, IComponentDiscepancies>(),
                     missing: true,
@@ -310,85 +336,6 @@ export class MessageCompare {
             }
         });
         return fieldDiscrepancies;
-    }
-
-    private combComponents(field1: HL7Field, field2: HL7Field) {
-        let componentDiscrepancies = Map<number, IComponentDiscepancies>();
-        field1.hl7Components.filter(component => component.value !== '').forEach(component => {
-            if (field2.hl7Components[component.index] == null) {
-                componentDiscrepancies = componentDiscrepancies.set(component.index, {
-                    subComponents: Map<number, ISubComponentDiscrepancies>(),
-                    missing: true,
-                    match: false
-                });
-
-            } else if (field2.hl7Components[component.index].value === field1.hl7Components[component.index].value) {
-                componentDiscrepancies = componentDiscrepancies.set(component.index, {
-                    subComponents: Map<number, ISubComponentDiscrepancies>(),
-                    missing: false,
-                    match: true
-                });
-
-            } else {
-                if (!field1.hl7Components[component.index].hasSubComponents || !field2.hl7Components[component.index].hasSubComponents) {
-                    componentDiscrepancies = componentDiscrepancies.set(component.index, {
-                        subComponents: Map<number, ISubComponentDiscrepancies>(),
-                        missing: false,
-                        match: false
-                    });
-                } else {
-                    componentDiscrepancies = componentDiscrepancies.set(component.index, {
-                        subComponents: this.combSubComponents(field1.hl7Components[component.index], field2.hl7Components[component.index]),
-                        missing: false,
-                        match: false
-                    });
-                }
-            }
-        });
-        field2.hl7Components.filter(component => component.value !== '').forEach(component => {
-            if (field1.hl7Components[component.index] == null) {
-                componentDiscrepancies = componentDiscrepancies.set(component.index, {
-                    subComponents: Map<number, ISubComponentDiscrepancies>(),
-                    missing: true,
-                    match: false
-                });
-            }
-        });
-        return componentDiscrepancies;
-    }
-
-    private combSubComponents(component1: HL7Component, component2: HL7Component) {
-        let subComponentDiscrepancies = Map<number, ISubComponentDiscrepancies>();
-        component1.hl7SubComponents.filter(subComponent => subComponent.value !== '').forEach(subComponent => {
-            if (component2.hl7SubComponents[subComponent.index] == null) {
-                subComponentDiscrepancies = subComponentDiscrepancies.set(subComponent.index, {
-                    missing: true,
-                    match: false
-                });
-
-            } else if (component2.hl7SubComponents[subComponent.index].value === component1.hl7SubComponents[subComponent.index].value) {
-                subComponentDiscrepancies = subComponentDiscrepancies.set(subComponent.index, {
-                    missing: false,
-                    match: true
-                });
-
-            } else {
-                subComponentDiscrepancies = subComponentDiscrepancies.set(subComponent.index, {
-                    missing: false,
-                    match: false
-                });
-            }
-        });
-
-        component2.hl7SubComponents.filter(subComponent => subComponent.value !== '').forEach(subComponent => {
-            if (component1.hl7SubComponents[subComponent.index] == null) {
-                subComponentDiscrepancies = subComponentDiscrepancies.set(subComponent.index, {
-                    missing: true,
-                    match: false
-                });
-            }
-        });
-        return subComponentDiscrepancies;
     }
 }
 

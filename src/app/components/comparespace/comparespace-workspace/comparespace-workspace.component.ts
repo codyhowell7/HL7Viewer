@@ -63,7 +63,7 @@ export class ComparespaceWorkspaceComponent implements OnInit {
       compare.gatherMessages(this.messagesToCompare.get(0) - 1, this.messagesToCompare.get(1) - 1); // Save discrepancies to redux store.
     }
   }
-
+  
   // showLeftSegments(message: string) {
   //   let newSplit;
   //   let extraSplitCount = 0;

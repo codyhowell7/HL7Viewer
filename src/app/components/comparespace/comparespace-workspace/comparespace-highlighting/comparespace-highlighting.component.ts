@@ -29,7 +29,7 @@ export class ComparespaceHighlightingComponent implements OnInit {
 
   ngOnInit() {
     this.discrepancies$.subscribe(discrep => this.discrepancies = discrep);
-    this.messages$.subscribe(messages => this.messages = messages);
+    this.messages$.subscribe(messages => this.messages = messages).unsubscribe();
     this.messagesToCompare$.subscribe(messagesToCompare => this.messagesToCompare = messagesToCompare);
   }
 
@@ -50,8 +50,15 @@ export class ComparespaceHighlightingComponent implements OnInit {
   }
 
   missingSegment(segDiscrep: ISegmentDiscrepancies) {
-    
     return segDiscrep.missing;
+  }
+
+  leftSideMissing(rightIndex: number) {
+    return this.getM1Discrep().get(rightIndex).missing;
+  }
+
+  rightSideMissing(leftIndex: number) {
+    return this.getM2Discrep().get(leftIndex).missing;
   }
 
   getLeftCorrectedIndex(index: number) {
@@ -78,20 +85,35 @@ export class ComparespaceHighlightingComponent implements OnInit {
     return lineBreak;
   }
 
-  getLeftSegment(index: number) {
-    if (this.messages.get(this.messagesToCompare.get(0) - 1).message.hl7Segments[index] != null) {
-      return this.messages.get(this.messagesToCompare.get(0) - 1).message.hl7Segments[index].value;
+
+  getSegment(index: number, sideIndex: 0 | 1) {
+    if (this.messages.get(this.messagesToCompare.get(sideIndex) - 1).message.hl7Segments[index] != null) {
+      return this.messages.get(this.messagesToCompare.get(sideIndex) - 1).message.hl7Segments[index].value;
     } else {
       return;
     }
   }
 
-  getRightSegment(index: number) {
-    if (this.messages.get(this.messagesToCompare.get(1) - 1).message.hl7Segments[index] != null) {
-      return this.messages.get(this.messagesToCompare.get(1) - 1).message.hl7Segments[index].value;
+  getSegmentHeader(index: number, sideIndex: 0 | 1) {
+    if (this.messages.get(this.messagesToCompare.get(sideIndex) - 1).message.hl7Segments[index] != null) {
+      return this.messages.get(this.messagesToCompare.get(sideIndex) - 1).message.hl7Segments[index].segmentName;
     } else {
       return;
     }
   }
+
+  getFields(segmentIndex: number, sideIndex: 0 | 1) {
+    return this.messages.get(this.messagesToCompare.get(sideIndex) - 1).message.hl7Segments[segmentIndex].hl7Fields;
+  }
+
+  fieldNoMatchMissing(segIndex: number, fieldIndex: number) {
+    if (this.getM1Discrep().get(segIndex).fields.get(fieldIndex) != null) {
+      return (this.getM1Discrep().get(segIndex).fields.get(fieldIndex).match);
+    } else {
+      return false;
+    }
+  }
+
+
 
 }

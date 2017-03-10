@@ -1,10 +1,35 @@
 p {
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin-top: 0px;
+    margin-bottom: 0px;
     font-family: monospace;
     user-select: none;
 }
 
-p.missingLine {
-    background-color: #FB6262  ;
+p.missingLine{
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-family: monospace;
+    user-select: none;
+    background-color: #FFBABA  ;
+}
+
+
+div.fullLine {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 4px;
+    margin-bottom: 4px;
+
+}
+
+div.missingLine {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    background-color: #FFBABA  ;
+}
+
+mark.missingField {
+    background-color: #FFBABA
 }

@@ -1,11 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { HL7Message } from '../../../../../parser/hl7Message';
 import { HL7Segment } from '../../../../../parser/hl7Segment';
-import { IMessageDiscrepancies, ISegmentDiscrepancies } from '../../../../../messageReader/IMessageDiscrepancies';
+import { IMessageDiscrepancies, ISegmentDiscrepancies } from '../../../../../messageReader/compareMessages/IMessageDiscrepancies';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
 import { IAppState, IMessage } from '../../../../states/states';
 import { Map } from 'immutable';
+import { SAVE_LEFT, SAVE_RIGHT } from '../../../../constants/constants';
 
 @Component({
   selector: 'hls-comparespace-highlighting',
@@ -29,7 +30,7 @@ export class ComparespaceHighlightingComponent implements OnInit {
 
   ngOnInit() {
     this.discrepancies$.subscribe(discrep => this.discrepancies = discrep);
-    this.messages$.subscribe(messages => this.messages = messages).unsubscribe();
+    this.messages$.subscribe(messages => this.messages = messages);
     this.messagesToCompare$.subscribe(messagesToCompare => this.messagesToCompare = messagesToCompare);
   }
 
@@ -103,7 +104,11 @@ export class ComparespaceHighlightingComponent implements OnInit {
   }
 
   getFields(segmentIndex: number, sideIndex: 0 | 1) {
-    return this.messages.get(this.messagesToCompare.get(sideIndex) - 1).message.hl7Segments[segmentIndex].hl7Fields;
+    if (this.messages.get(this.messagesToCompare.get(sideIndex) - 1).message.hl7Segments[segmentIndex] != null) {
+      return this.messages.get(this.messagesToCompare.get(sideIndex) - 1).message.hl7Segments[segmentIndex].hl7Fields;
+    } else {
+      return;
+    }
   }
 
   fieldNoMatchMissing(segIndex: number, fieldIndex: number) {
@@ -111,6 +116,16 @@ export class ComparespaceHighlightingComponent implements OnInit {
       return (this.getM1Discrep().get(segIndex).fields.get(fieldIndex).match);
     } else {
       return false;
+    }
+  }
+
+  addPipeBeforeCheck(fieldId: number, segId: number) {
+    if (fieldId < 2 && segId === 0  ) {
+      return false;
+    } else if (fieldId >= 2 && segId > 0) {
+      return true;
+    } else {
+      return true;
     }
   }
 

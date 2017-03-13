@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
 import { Map } from 'immutable';
 import { SAVE_LEFT, SAVE_RIGHT } from '../../../constants/constants';
 import { IAppState, IMessage } from '../../../states/states';
-import { MessageCompare } from '../../../../messageReader/messageCompare';
-import { IMessageDiscrepancies, ISegmentDiscrepancies } from '../../../../messageReader/IMessageDiscrepancies';
+import { MessageCompare } from '../../../../messageReader/compareMessages/messageCompare';
+import { IMessageDiscrepancies, ISegmentDiscrepancies } from '../../../../messageReader/compareMessages/IMessageDiscrepancies';
 
 @Component({
   selector: 'hls-comparespace-workspace',
@@ -38,6 +38,7 @@ export class ComparespaceWorkspaceComponent implements OnInit {
         leftArea: messageId,
       }
     });
+    this.checkToSave();
   }
 
   saveRightCompare(messageId: number) {
@@ -47,6 +48,7 @@ export class ComparespaceWorkspaceComponent implements OnInit {
         rightArea: messageId,
       }
     });
+    this.checkToSave();
   }
 
   getLeftID() {
@@ -60,7 +62,7 @@ export class ComparespaceWorkspaceComponent implements OnInit {
   checkToSave() {
     if (this.messagesToCompare.get(0) != null && this.messagesToCompare.get(1) != null) {
       let compare = new MessageCompare(this.ngRedux);
-      compare.gatherMessages(this.messagesToCompare.get(0) - 1, this.messagesToCompare.get(1) - 1); // Save discrepancies to redux store.
+      compare.gatherMessages(); // Save discrepancies to redux store.
     }
   }
   

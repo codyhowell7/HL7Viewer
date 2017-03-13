@@ -5,13 +5,13 @@
         <div *ngIf='getRightID()'> Message: {{getRightID()}} </div>
     </div>
     <div class='compareOutput'>
-        <div class='draggable1' dnd-droppable (onDropSuccess)='saveLeftCompare($event.dragData)' (onDropSuccess)='checkToSave()'
+        <div class='draggable1' dnd-droppable (onDropSuccess)='saveLeftCompare($event.dragData)'
             [scrollLeft]='divScrollLeft' (scroll)=onScroll($event.target.scrollLeft)>
             <div *ngIf='getLeftID()'>
                 <hls-comparespace-highlighting [leftSide]='true'></hls-comparespace-highlighting>
             </div>
         </div>
-        <div class='draggable2' dnd-droppable (onDropSuccess)='saveRightCompare($event.dragData)' (onDropSuccess)='checkToSave()'
+        <div class='draggable2' dnd-droppable (onDropSuccess)='saveRightCompare($event.dragData)'
             [scrollLeft]='divScrollLeft' (scroll)=onScroll($event.target.scrollLeft)>
             <div *ngIf='getRightID()'>
                 <hls-comparespace-highlighting [leftSide]='false'> </hls-comparespace-highlighting>

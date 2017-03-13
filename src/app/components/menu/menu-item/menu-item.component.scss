@@ -35,3 +35,7 @@ $iconHeight: 14px;
     display: flex;
     justify-content: space-between;
 }
+
+div.dnd-drag-start {
+    border: 1px dashed black;
+}

@@ -32,7 +32,7 @@ export class MessageComponent implements OnInit {
   messages: Map<number, IMessage>;
   messageControl: FormControl = new FormControl();
 
-  constructor(private route: ActivatedRoute, private ngRedux: NgRedux<IAppState>) { }
+  constructor(private ngRedux: NgRedux<IAppState>) { }
 
   ngOnInit() {
     combineLatest(this.accordion$,

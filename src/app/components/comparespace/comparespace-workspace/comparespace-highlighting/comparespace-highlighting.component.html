@@ -15,14 +15,12 @@
         <p>{{getSegmentHeader(getLeftCorrectedIndex(i), 0)}} </p>
       <div *ngFor='let field of getFields(getLeftCorrectedIndex(i), 0); let fieldIndex = index'>
         <div *ngIf='!fieldNoMatchMissing(getLeftCorrectedIndex(i), fieldIndex)'>
-          <p *ngIf='fieldIndex < 2 && i === 0'><mark class='missingField'>{{field.value}}</mark></p>
-          <p *ngIf='fieldIndex >= 2 && i === 0'>|<mark class='missingField'>{{field.value}}</mark></p>
-          <p *ngIf='fieldIndex >= 0 && i > 0'>|<mark class='missingField'>{{field.value}}</mark></p>
+          <p *ngIf='addPipeBeforeCheck(fieldIndex, i)'>|<mark class='missingField'>{{field.value}}</mark></p>
+          <p *ngIf='!addPipeBeforeCheck(fieldIndex, i)'><mark class='missingField'>{{field.value}}</mark></p>
         </div>
         <div *ngIf='fieldNoMatchMissing(getLeftCorrectedIndex(i), fieldIndex)'>
-          <p *ngIf='fieldIndex < 2 && i === 0'>{{field.value}}</p>
-          <p *ngIf='fieldIndex >= 2 && i === 0'>|{{field.value}}</p>
-          <p *ngIf='fieldIndex >= 0 && i > 0'>|{{field.value}}</p>
+          <p *ngIf='addPipeBeforeCheck(fieldIndex, i)'>|<mark class='missingField'>{{field.value}}</mark></p>
+          <p *ngIf='!addPipeBeforeCheck(fieldIndex, i)'><mark class='missingField'>{{field.value}}</mark></p>
         </div>
       </div>
     </div>
@@ -45,14 +43,12 @@
         <p>{{getSegmentHeader(getRightCorrectedIndex(i), 1)}} </p>
       <div *ngFor='let field of getFields(getRightCorrectedIndex(i), 1); let fieldIndex = index'>
         <div *ngIf='!fieldNoMatchMissing(getRightCorrectedIndex(i), fieldIndex)'>
-          <p *ngIf='fieldIndex < 2 && i === 0'><mark class='missingField'>{{field.value}}</mark></p>
-          <p *ngIf='fieldIndex >= 2 && i === 0'>|<mark class='missingField'>{{field.value}}</mark></p>
-          <p *ngIf='fieldIndex >= 0 && i > 0'>|<mark class='missingField'>{{field.value}}</mark></p>
+          <p *ngIf='addPipeBeforeCheck(fieldIndex, i)'>|<mark class='missingField'>{{field.value}}</mark></p>
+          <p *ngIf='!addPipeBeforeCheck(fieldIndex, i)'><mark class='missingField'>{{field.value}}</mark></p>
         </div>
         <div *ngIf='fieldNoMatchMissing(getRightCorrectedIndex(i), fieldIndex)'>
-          <p *ngIf='fieldIndex < 2 && i === 0'>{{field.value}}</p>
-          <p *ngIf='fieldIndex >= 2 && i === 0'>|{{field.value}}</p>
-          <p *ngIf='fieldIndex >= 0 && i > 0'>|{{field.value}}</p>
+          <p *ngIf='addPipeBeforeCheck(fieldIndex, i)'>|<mark class='missingField'>{{field.value}}</mark></p>
+          <p *ngIf='!addPipeBeforeCheck(fieldIndex, i)'><mark class='missingField'>{{field.value}}</mark></p>
       </div>
     </div>
   </div>

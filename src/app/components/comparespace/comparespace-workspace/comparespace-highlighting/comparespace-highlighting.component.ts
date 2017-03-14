@@ -1,6 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { HL7Message } from '../../../../../parser/hl7Message';
-import { HL7Segment } from '../../../../../parser/hl7Segment';
 import { IMessageDiscrepancies, ISegmentDiscrepancies } from '../../../../../messageReader/compareMessages/IMessageDiscrepancies';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
@@ -100,32 +98,6 @@ export class ComparespaceHighlightingComponent implements OnInit {
       return this.messages.get(this.messagesToCompare.get(sideIndex) - 1).message.hl7Segments[index].segmentName;
     } else {
       return;
-    }
-  }
-
-  getFields(segmentIndex: number, sideIndex: 0 | 1) {
-    if (this.messages.get(this.messagesToCompare.get(sideIndex) - 1).message.hl7Segments[segmentIndex] != null) {
-      return this.messages.get(this.messagesToCompare.get(sideIndex) - 1).message.hl7Segments[segmentIndex].hl7Fields;
-    } else {
-      return;
-    }
-  }
-
-  fieldNoMatchMissing(segIndex: number, fieldIndex: number) {
-    if (this.getM1Discrep().get(segIndex).fields.get(fieldIndex) != null) {
-      return (this.getM1Discrep().get(segIndex).fields.get(fieldIndex).match);
-    } else {
-      return false;
-    }
-  }
-
-  addPipeBeforeCheck(fieldId: number, segId: number) {
-    if (fieldId < 2 && segId === 0  ) {
-      return false;
-    } else if (fieldId >= 2 && segId > 0) {
-      return true;
-    } else {
-      return true;
     }
   }
 

@@ -55,10 +55,6 @@ export class MessageCompareHelper {
             fields: Map<number, IFieldDiscrepancies>(),
             missing: false
         });
-        newDiscrepancies.message2 = newDiscrepancies.message2.set(newDiscrepancies.message2.size - 1, {
-            fields: Map<number, IFieldDiscrepancies>(),
-            missing: true
-        });
         for (let i = 1; i < this.numMissingAtEnd; i++) {
             newDiscrepancies.message1 = newDiscrepancies.message1.set(newDiscrepancies.message1.size, {
                 fields: Map<number, IFieldDiscrepancies>(),
@@ -69,6 +65,10 @@ export class MessageCompareHelper {
                 missing: true
             });
         }
+        newDiscrepancies.message2 = newDiscrepancies.message2.set(newDiscrepancies.message2.size, {
+            fields: Map<number, IFieldDiscrepancies>(),
+            missing: true
+        });
         return newDiscrepancies;
     }
 

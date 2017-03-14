@@ -7,6 +7,6 @@
         <md-icon (click)="removeItem()">clear</md-icon>
     </div>
 </div>
-<div *ngIf="isCompare$ | async" class='compare'  dnd-draggable [dragData]='message.id+1'>
+<div *ngIf="isCompare$ | async" class='compare' [myDraggable]='{data: message.id + 1}'>
     <span>Message {{message.id + 1}}</span>
 </div>

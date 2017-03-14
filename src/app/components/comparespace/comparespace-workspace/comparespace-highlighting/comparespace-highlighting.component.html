@@ -5,24 +5,9 @@
     </div>
   </div>
   <div *ngFor='let segDiscrepancy of getM1Discrep(); let i = index'>
-    <div *ngIf='missingSegment(segDiscrepancy)' class='fullLine' class='missingLine'>
-      <p class='missingLine'><br></p>
-    </div>
-    <div *ngIf='rightSideMissing(i)' class='fullLine' class='missingLine'>
-      <p class='missingLine'> {{getSegment(getLeftCorrectedIndex(i), 0)}} </p>
-    </div>
-    <div *ngIf='!missingSegment(segDiscrepancy) && !rightSideMissing(i)' class='fullLine' >
-        <p>{{getSegmentHeader(getLeftCorrectedIndex(i), 0)}} </p>
-      <div *ngFor='let field of getFields(getLeftCorrectedIndex(i), 0); let fieldIndex = index'>
-        <div *ngIf='!fieldNoMatchMissing(getLeftCorrectedIndex(i), fieldIndex)'>
-          <p *ngIf='addPipeBeforeCheck(fieldIndex, i)'>|<mark class='missingField'>{{field.value}}</mark></p>
-          <p *ngIf='!addPipeBeforeCheck(fieldIndex, i)'><mark class='missingField'>{{field.value}}</mark></p>
-        </div>
-        <div *ngIf='fieldNoMatchMissing(getLeftCorrectedIndex(i), fieldIndex)'>
-          <p *ngIf='addPipeBeforeCheck(fieldIndex, i)'>|<mark class='missingField'>{{field.value}}</mark></p>
-          <p *ngIf='!addPipeBeforeCheck(fieldIndex, i)'><mark class='missingField'>{{field.value}}</mark></p>
-        </div>
-      </div>
+    <hls-comparespace-segment-highlighting [leftSide]='true' [segmentIndex]='i' [segmentDiscrep]='segDiscrepancy'> </hls-comparespace-segment-highlighting>
+    <div *ngIf='!missingSegment(segDiscrepancy) && !rightSideMissing(i)' class='fullLine'>
+      <hls-comparespace-field-highlighting [leftSide]='true' [segmentIndex]='i'> </hls-comparespace-field-highlighting>
     </div>
   </div>
 </div>
@@ -33,23 +18,9 @@
     </div>
   </div>
   <div *ngFor='let segDiscrepancy of getM2Discrep(); let i = index'>
-    <div *ngIf='missingSegment(segDiscrepancy)' class='fullLine' class='missingLine'>
-      <p class='missingLine'><br></p>
-    </div>
-    <div *ngIf='leftSideMissing(i)' class='fullLine' class='missingLine'>
-      <p class='missingLine'> {{getSegment(getRightCorrectedIndex(i), 1)}} </p>
-    </div>
+    <hls-comparespace-segment-highlighting [leftSide]='false' [segmentIndex]='i' [segmentDiscrep]='segDiscrepancy'></hls-comparespace-segment-highlighting>
     <div *ngIf='!missingSegment(segDiscrepancy) && !leftSideMissing(i)' class='fullLine'>
-        <p>{{getSegmentHeader(getRightCorrectedIndex(i), 1)}} </p>
-      <div *ngFor='let field of getFields(getRightCorrectedIndex(i), 1); let fieldIndex = index'>
-        <div *ngIf='!fieldNoMatchMissing(getRightCorrectedIndex(i), fieldIndex)'>
-          <p *ngIf='addPipeBeforeCheck(fieldIndex, i)'>|<mark class='missingField'>{{field.value}}</mark></p>
-          <p *ngIf='!addPipeBeforeCheck(fieldIndex, i)'><mark class='missingField'>{{field.value}}</mark></p>
-        </div>
-        <div *ngIf='fieldNoMatchMissing(getRightCorrectedIndex(i), fieldIndex)'>
-          <p *ngIf='addPipeBeforeCheck(fieldIndex, i)'>|<mark class='missingField'>{{field.value}}</mark></p>
-          <p *ngIf='!addPipeBeforeCheck(fieldIndex, i)'><mark class='missingField'>{{field.value}}</mark></p>
-      </div>
+      <hls-comparespace-field-highlighting [leftSide]='false' [segmentIndex]='i'> </hls-comparespace-field-highlighting>
     </div>
   </div>
 </div>

@@ -1,5 +1,4 @@
 import { Map } from 'immutable';
-import { HL7Message } from '../parser/HL7Message';
 
 export interface IMessageDiscrepancies {
     message1: Map<number, ISegmentDiscrepancies>;

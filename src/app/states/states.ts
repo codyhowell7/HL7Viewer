@@ -1,7 +1,7 @@
 import { WorkspaceMode } from '../enums/enums';
 import { Map, List } from 'immutable';
 import { HL7Message } from '../../parser/hl7Message';
-import { IMessageDiscrepancies } from '../../messageReader/IMessageDiscrepancies';
+import { IMessageDiscrepancies } from '../../messageReader/compareMessages/IMessageDiscrepancies';
 
 export interface IAppState {
 

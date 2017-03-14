@@ -5,7 +5,6 @@ import { HttpModule } from '@angular/http';
 import { MaterialModule } from '@angular/material';
 import { NgReduxModule, NgRedux } from 'ng2-redux';
 import { RouterModule } from '@angular/router';
-import { DndModule } from 'ng2-dnd';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { appRoutes } from './app.routing';
@@ -40,6 +39,11 @@ import { ComparespaceWorkspaceComponent } from './components/comparespace/compar
 import {
   ComparespaceHighlightingComponent
 } from './components/comparespace/comparespace-workspace/comparespace-highlighting/comparespace-highlighting.component';
+import { ComparespaceFieldHighlightingComponent } from './components/comparespace/comparespace-workspace/comparespace-highlighting/comparespace-field-highlighting/comparespace-field-highlighting.component';
+import { DragService } from '../drag/drag.service';
+import { DraggableDirective } from '../drag/draggable-directive';
+import { DropTargetDirective } from '../drag/drop-target.directive';
+import { ComparespaceSegmentHighlightingComponent } from './components/comparespace/comparespace-workspace/comparespace-highlighting/comparespace-segment-highlighting/comparespace-segment-highlighting.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +60,11 @@ import {
     SearchComponent,
     StandardComponent,
     ComparespaceWorkspaceComponent,
-    ComparespaceHighlightingComponent
+    ComparespaceHighlightingComponent,
+    ComparespaceFieldHighlightingComponent,
+    DraggableDirective,
+    DropTargetDirective,
+    ComparespaceSegmentHighlightingComponent
   ],
   imports: [
     BrowserModule,
@@ -66,9 +74,8 @@ import {
     MaterialModule.forRoot(),
     RouterModule.forRoot(appRoutes),
     NgReduxModule,
-    DndModule.forRoot()
   ],
-  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
+  providers: [DragService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

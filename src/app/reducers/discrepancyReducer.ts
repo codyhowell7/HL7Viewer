@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import { IAction, ISaveDiscrepancies } from '../actions/actions';
 import { DEFAULT_STATE, SAVE_DISCREPANCY } from '../constants/constants';
-import { IMessageDiscrepancies, ISegmentDiscrepancies } from '../../messageReader/IMessageDiscrepancies';
+import { IMessageDiscrepancies, ISegmentDiscrepancies } from '../../messageReader/compareMessages/IMessageDiscrepancies';
 
 export function reduceDiscrepancies(state: IMessageDiscrepancies, action: IAction): IMessageDiscrepancies {
     switch (action.type) {

@@ -1,0 +1,17 @@
+<div *ngIf='leftSide'>
+  <div *ngIf='missingSegment(segmentDiscrep)' class='fullLine' class='missingLine'>
+    <p class='missingLine'><br></p>
+  </div>
+  <div *ngIf='rightSideMissing(segmentIndex)' class='fullLine' class='missingLine'>
+    <p class='missingLine'> {{getSegment(getLeftCorrectedIndex(segmentIndex))}} </p>
+  </div>
+</div>
+
+<div *ngIf='!leftSide'>
+  <div *ngIf='missingSegment(segmentDiscrep)' class='fullLine' class='missingLine'>
+    <p class='missingLine'><br></p>
+  </div>
+  <div *ngIf='leftSideMissing(segmentIndex)' class='fullLine' class='missingLine'>
+    <p class='missingLine'> {{getSegment(getRightCorrectedIndex(segmentIndex))}} </p>
+  </div>
+</div>

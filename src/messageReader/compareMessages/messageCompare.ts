@@ -78,7 +78,7 @@ export class MessageCompare extends MessageCompareHelper {
                 this.discrep = this.addDiscrepanciesForMissingSegmentHeaders(message1Segs, message2Segs, this.discrep);
                 return this.combSegments(message1Segs.slice(1), message2Segs.slice(1));
             }
-            this.addOffsetDiscepencies(message1Segs[0], message2Segs[0], match, this.discrep);
+            this.discrep = this.addOffsetDiscepencies(message1Segs[0], message2Segs[0], match, this.discrep);
             if (match[0] > 0 && match[1] > 0) {
                 return this.combSegments(message1Segs.slice(match[0] + 1), message2Segs.slice(match[1] + 1));
             } else if (match[0] > 0) {

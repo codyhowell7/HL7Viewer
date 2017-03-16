@@ -76,11 +76,11 @@ export class MessageCompareHelper {
         message1SegList: HL7Segment[], message2SegList: HL7Segment[]) {
 
         let newDiscrepancies: IMessageDiscrepancies = currentDiscrepancies;
-        newDiscrepancies.message1 = newDiscrepancies.message1.set(message1SegList[0].segmentIndex, {
+        newDiscrepancies.message1 = newDiscrepancies.message1.set(newDiscrepancies.message1.size, {
             fields: this.compareFields.combFields(message1SegList[0], message2SegList[0]),
             missing: false
         });
-        newDiscrepancies.message2 = newDiscrepancies.message2.set(message2SegList[0].segmentIndex, {
+        newDiscrepancies.message2 = newDiscrepancies.message2.set(newDiscrepancies.message2.size, {
             fields: Map<number, IFieldDiscrepancies>(),
             missing: false
         });
@@ -166,7 +166,7 @@ export class MessageCompareHelper {
         }
         if (!(offsets[1] > 0 && offsets[0] > 0)) {
             newDiscrepancies.message1 = newDiscrepancies.message1.set(newDiscrepancies.message1.size, {
-                fields: this.compareFields.combFields(this.skipXSegments(message1, 0, offsets[0]), message2),
+                fields: this.compareFields.combFields(this.skipXSegments(message1, 0, offsets[1]), message2),
                 missing: false
             });
             newDiscrepancies.message2 = newDiscrepancies.message2.set(newDiscrepancies.message2.size, {
@@ -184,6 +184,7 @@ export class MessageCompareHelper {
                 missing: false
             });
         }
+        return newDiscrepancies;
     }
 
     protected addM1EndOfListDiscrepencies(message: HL7Segment[], currentDiscrepancies: IMessageDiscrepancies, messagesSwitched: boolean) {
@@ -198,6 +199,19 @@ export class MessageCompareHelper {
                 missing: false
             });
         }
+        if ( this.numMissingAtEnd === 0 ) {
+            message.forEach(seg  => {
+            newDiscrepancies.message2 = newDiscrepancies.message2.set(newDiscrepancies.message2.size, {
+                fields: Map<number, IFieldDiscrepancies>(),
+                missing: true
+            });
+            newDiscrepancies.message1 = newDiscrepancies.message1.set(newDiscrepancies.message1.size, {
+                fields: Map<number, IFieldDiscrepancies>(),
+                missing: false
+            });
+            });
+        }
+
         if (messagesSwitched) {
             newDiscrepancies = this.swap(newDiscrepancies);
         }
@@ -240,6 +254,7 @@ export class MessageCompareHelper {
                     return this.messages.get(this.message2ID - 1).message.hl7Segments[max];
                 }
         }
+        return segment;
     }
 
     protected swap(currentDiscrepancies: IMessageDiscrepancies) {

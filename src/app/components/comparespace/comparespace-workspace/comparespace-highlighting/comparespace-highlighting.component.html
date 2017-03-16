@@ -1,26 +1,15 @@
-<div *ngIf='leftSide'>
-  <div *ngIf='getM1DiscrepSize() === 0'>
-    <div *ngFor='let segment of getFullLeftMessage()' class='fullLine'>
-      <p> {{segment}} <br> </p>
-    </div>
-  </div>
-  <div *ngFor='let segDiscrepancy of getM1Discrep(); let i = index'>
-    <hls-comparespace-segment-highlighting [leftSide]='true' [segmentIndex]='i' [segmentDiscrep]='segDiscrepancy'> </hls-comparespace-segment-highlighting>
-    <div *ngIf='!missingSegment(segDiscrepancy) && !rightSideMissing(i)' class='fullLine'>
-      <hls-comparespace-field-highlighting [leftSide]='true' [segmentIndex]='i'> </hls-comparespace-field-highlighting>
-    </div>
+<div *ngIf='getDiscrepSize() === 0'>
+  <div *ngFor='let segment of getFullMessage()' class='fullLine'>
+    <p> {{segment}} <br> </p>
   </div>
 </div>
-<div *ngIf='!leftSide'>
-  <div *ngIf='getM2DiscrepSize() === 0'>
-    <div *ngFor='let segment of getFullRightMessage()' class='fullLine'>
-      <p> {{segment}} <br> </p>
-    </div>
+<div *ngFor='let segDiscrepancy of getDiscrep(); let i = index' (click)='sendLineToBottom(getCorrectedIndex(i))' class='eachLine'>
+  <div *ngIf='!(!missingSegment(segDiscrepancy) && !oppositeSideMissing(i))'>
+    <hls-comparespace-segment-highlighting [segmentIndex]='i' [discrepancies]='discrepancies' [oppositeDiscrepancies]='oppositeDiscrepancies'
+      [messages]='messages' [messageID]='messageID'> </hls-comparespace-segment-highlighting>
   </div>
-  <div *ngFor='let segDiscrepancy of getM2Discrep(); let i = index'>
-    <hls-comparespace-segment-highlighting [leftSide]='false' [segmentIndex]='i' [segmentDiscrep]='segDiscrepancy'></hls-comparespace-segment-highlighting>
-    <div *ngIf='!missingSegment(segDiscrepancy) && !leftSideMissing(i)' class='fullLine'>
-      <hls-comparespace-field-highlighting [leftSide]='false' [segmentIndex]='i'> </hls-comparespace-field-highlighting>
-    </div>
+  <div *ngIf='!missingSegment(segDiscrepancy) && !oppositeSideMissing(i)' class='fullLine'>
+    <hls-comparespace-field-highlighting [segmentIndex]='i' [discrepancies]='discrepancies' [oppositeDiscrepancies]='oppositeDiscrepancies'
+      [messages]='messages' [messageID]='messageID'> </hls-comparespace-field-highlighting>
   </div>
 </div>

@@ -1,25 +1,11 @@
-<div *ngIf='leftSide' class='fullLine'>
-  <p>{{getSegmentHeader(getLeftCorrectedIndex(segmentIndex))}} </p>
-  <div *ngFor='let field of getFields(getLeftCorrectedIndex(segmentIndex)); let fieldIndex = index' >
-    <div *ngIf='fieldNoMatchMissing(getLeftCorrectedIndex(segmentIndex), fieldIndex)'>
+<div class='fullLine'>
+  <p> {{getSegmentHeader(getCorrectedIndex(segmentIndex))}} </p>
+  <div *ngFor='let field of getFields(getCorrectedIndex(segmentIndex)); let fieldIndex = index'>
+    <div *ngIf='fieldNoMatchMissing(segmentIndex, fieldIndex)'>
       <p *ngIf='addPipeBeforeCheck(segmentIndex, fieldIndex)'>|{{field.value}}</p>
       <p *ngIf='!addPipeBeforeCheck(segmentIndex, fieldIndex)'>{{field.value}}</p>
     </div>
-    <div *ngIf='!fieldNoMatchMissing(getLeftCorrectedIndex(segmentIndex), fieldIndex)'>
-      <p *ngIf='addPipeBeforeCheck(segmentIndex, fieldIndex)'>|<mark class='missingField'>{{field.value}}</mark></p>
-      <p *ngIf='!addPipeBeforeCheck(segmentIndex, fieldIndex)'><mark class='missingField'>{{field.value}}</mark></p>
-    </div>
-  </div>
-</div>
-
-<div *ngIf='!leftSide' class='fullLine'>
-  <p>{{getSegmentHeader(getRightCorrectedIndex(segmentIndex))}} </p>
-  <div *ngFor='let field of getFields(getRightCorrectedIndex(segmentIndex)); let fieldIndex = index' >
-    <div *ngIf='fieldNoMatchMissing(getRightCorrectedIndex(segmentIndex), fieldIndex)'>
-      <p *ngIf='addPipeBeforeCheck(segmentIndex, fieldIndex)'>|{{field.value}}</p>
-      <p *ngIf='!addPipeBeforeCheck(segmentIndex, fieldIndex)'>{{field.value}}</p>
-    </div>
-    <div *ngIf='!fieldNoMatchMissing(getRightCorrectedIndex(segmentIndex), fieldIndex)'>
+    <div *ngIf='!fieldNoMatchMissing(segmentIndex, fieldIndex)'>
       <p *ngIf='addPipeBeforeCheck(segmentIndex, fieldIndex)'>|<mark class='missingField'>{{field.value}}</mark></p>
       <p *ngIf='!addPipeBeforeCheck(segmentIndex, fieldIndex)'><mark class='missingField'>{{field.value}}</mark></p>
     </div>

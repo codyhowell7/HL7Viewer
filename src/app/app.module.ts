@@ -3,12 +3,10 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { MaterialModule } from '@angular/material';
-import { NgReduxModule, NgRedux } from 'ng2-redux';
+import { NgReduxModule, NgRedux, DevToolsExtension } from 'ng2-redux';
 import { RouterModule } from '@angular/router';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
-
 import { appRoutes } from './app.routing';
-
 import { AppComponent } from './app.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
@@ -17,11 +15,9 @@ import { MenuToolbarComponent } from './components/menu/menu-toolbar/menu-toolba
 import { MenuItemComponent } from './components/menu/menu-item/menu-item.component';
 import { OutputContainerComponent } from './components/workspace/output-container/output-container.component';
 import { OutputTabContainerComponent } from './components/workspace/output-container/output-tab-container/output-tab-container.component';
-
 import { IAppState } from './states/states';
 import { WorkspaceMode } from './enums/enums';
 import { IAction } from './actions/actions';
-
 import { reduceMessagesToCompare } from './reducers/compareReducers';
 import { reduceSearchResults } from './reducers/searchResultReducer';
 import { reduceSearchCondition, reduceSearchConditionSize } from './reducers/userSearchReducer';
@@ -30,7 +26,6 @@ import { reduceMenu } from './reducers/menuReducer';
 import { reduceCurrentMessage, reduceMessages } from './reducers/messageReducer';
 import { reduceAccordion } from './reducers/accordionReducer';
 import { reduceDiscrepancies } from './reducers/discrepancyReducer';
-
 import { ComparespaceComponent } from './components/comparespace/comparespace.component';
 import { QuickViewComponent } from './components/workspace/output-container/quick-view/quick-view.component';
 import { SearchComponent } from './components/workspace/output-container/search/search.component';
@@ -39,11 +34,17 @@ import { ComparespaceWorkspaceComponent } from './components/comparespace/compar
 import {
   ComparespaceHighlightingComponent
 } from './components/comparespace/comparespace-workspace/comparespace-highlighting/comparespace-highlighting.component';
-import { ComparespaceFieldHighlightingComponent } from './components/comparespace/comparespace-workspace/comparespace-highlighting/comparespace-field-highlighting/comparespace-field-highlighting.component';
+import {
+  ComparespaceFieldHighlightingComponent
+} from './components/comparespace/comparespace-workspace/comparespace-highlighting/comparespace-field-highlighting/comparespace-field-highlighting.component';
+import {
+  ComparespaceSegmentHighlightingComponent
+} from './components/comparespace/comparespace-workspace/comparespace-highlighting/comparespace-segment-highlighting/comparespace-segment-highlighting.component';
 import { DragService } from '../drag/drag.service';
 import { DraggableDirective } from '../drag/draggable-directive';
 import { DropTargetDirective } from '../drag/drop-target.directive';
-import { ComparespaceSegmentHighlightingComponent } from './components/comparespace/comparespace-workspace/comparespace-highlighting/comparespace-segment-highlighting/comparespace-segment-highlighting.component';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { isDevMode } from '@angular/core';
 
 @NgModule({
   declarations: [
@@ -80,7 +81,7 @@ import { ComparespaceSegmentHighlightingComponent } from './components/comparesp
 })
 export class AppModule {
 
-  constructor(ngRedux: NgRedux<{}>) {
+  constructor(private ngRedux: NgRedux<{}>) {
     ngRedux.configureStore(rootReducer, {});
   }
 

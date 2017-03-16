@@ -28,6 +28,7 @@ export class DropTargetDirective {
     @HostListener('dragover', ['$event'])
     onDragOver(event) {
             event.preventDefault();
+            return false;
     }
 
     @HostListener('drop', ['$event'])

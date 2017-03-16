@@ -2,19 +2,23 @@
     <div class='headers'>
         <div *ngIf='getLeftID()'> Message: {{getLeftID()}} </div>
         <div *ngIf='getLeftID() && !getRightID()'></div>
+        <div *ngIf='!getLeftID() && getRightID()'></div>
         <div *ngIf='getRightID()'> Message: {{getRightID()}} </div>
     </div>
     <div class='compareOutput'>
-        <div class='draggable1' myDropTarget (myDrop)='saveLeftCompare($event)'
-            [scrollLeft]='divScrollLeft' (scroll)=onScroll($event.target.scrollLeft)>
+        <div class='draggable1' myDropTarget (myDrop)='saveLeftCompare($event)' [scrollLeft]='divScrollLeft' (scroll)=onScroll($event.target.scrollLeft)>
             <div *ngIf='getLeftID()'>
-                <hls-comparespace-highlighting [leftSide]='true'></hls-comparespace-highlighting>
+                <hls-comparespace-highlighting [discrepancies]='discrep1' [messageID]='getLeftID()' [messages]='messages' [oppositeDiscrepancies]='discrep2' (sendToBottom)='sendLeftLineToBottom($event)' ></hls-comparespace-highlighting>
             </div>
         </div>
-        <div class='draggable2' myDropTarget (myDrop)='saveRightCompare($event)'
-            [scrollLeft]='divScrollLeft' (scroll)=onScroll($event.target.scrollLeft)>
+        <div class='draggable2' myDropTarget (myDrop)='saveRightCompare($event)' [scrollLeft]='divScrollLeft' (scroll)=onScroll($event.target.scrollLeft)>
             <div *ngIf='getRightID()'>
-                <hls-comparespace-highlighting [leftSide]='false'> </hls-comparespace-highlighting>
+                <hls-comparespace-highlighting [discrepancies]='discrep2' [messageID]='getRightID()'  [messages]='messages' [oppositeDiscrepancies]='discrep1' (sendToBottom)='sendRightLineToBottom($event)'> </hls-comparespace-highlighting>
             </div>
         </div>
     </div>
+    <div *ngIf='upperBottom'>
+        <div class='draggable1LineOutput'> {{upperBottom}} </div>
+        <div class='draggable2LineOutput'> {{lowerBottom}}</div>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Map } from 'immutable';
 import { SAVE_LEFT, SAVE_RIGHT } from '../../../constants/constants';
 import { IAppState, IMessage } from '../../../states/states';
@@ -14,17 +15,41 @@ import { IMessageDiscrepancies, ISegmentDiscrepancies } from '../../../../messag
 })
 export class ComparespaceWorkspaceComponent implements OnInit {
 
+  @select(['discrepancies']) discrepancies$: Observable<IMessageDiscrepancies>;
+  @select(['messages']) messages$: Observable<Map<number, IMessage>>;
   @select(['messagesToCompare']) messagesToCompare$: Observable<Map<number, number>>;
+
 
   messagesToCompare = Map<number, number>();
   messages: Map<number, IMessage>;
   divScrollLeft: any;
-  discrep: IMessageDiscrepancies = { message1: Map<number, ISegmentDiscrepancies>(), message2: Map<number, ISegmentDiscrepancies>() }
+  discrep1: Map<number, ISegmentDiscrepancies>;
+  discrep2: Map<number, ISegmentDiscrepancies>;
+  upperBottom: string;
+  lowerBottom: string;
+  discrepSub1;
+  discrepSub2;
+  messageSub;
 
   constructor(private ngRedux: NgRedux<IAppState>) { }
 
   ngOnInit() {
-    this.messagesToCompare$.subscribe(compare => this.messagesToCompare = compare);
+    combineLatest(this.messagesToCompare$, this.messages$)
+      .subscribe(([messagesToCompare, messages]) => {
+        if (messagesToCompare.get(0) != null && messagesToCompare.get(1) != null) {
+          let compare = new MessageCompare(this.ngRedux);
+          compare.gatherMessages();
+        }
+        this.messagesToCompare = messagesToCompare;
+        this.messages = messages;
+      });
+    this.discrepSub1 = this.discrepancies$.subscribe(discrepancies => this.discrep1 = discrepancies.message1);
+    this.discrepSub2 = this.discrepancies$.subscribe(discrepancies => this.discrep2 = discrepancies.message2);
+  }
+
+  ngOnDestroy() {
+    this.discrepSub1.unsubscribe();
+    this.discrepSub2.unsubscribe();
   }
 
   onScroll(eventScrollLeft) {
@@ -38,7 +63,6 @@ export class ComparespaceWorkspaceComponent implements OnInit {
         leftArea: messageId,
       }
     });
-    this.checkToSave();
   }
 
   saveRightCompare(messageId: number) {
@@ -48,7 +72,6 @@ export class ComparespaceWorkspaceComponent implements OnInit {
         rightArea: messageId,
       }
     });
-    this.checkToSave();
   }
 
   getLeftID() {
@@ -59,45 +82,23 @@ export class ComparespaceWorkspaceComponent implements OnInit {
     return this.messagesToCompare.get(1);
   }
 
-  checkToSave() {
-    if (this.messagesToCompare.get(0) != null && this.messagesToCompare.get(1) != null) {
-      let compare = new MessageCompare(this.ngRedux);
-      compare.gatherMessages(); // Save discrepancies to redux store.
+  sendLeftLineToBottom(indices: [number, number]) {
+    if (this.discrep1.get(indices[0]).missing !== true) {
+      this.upperBottom = this.messages.get(this.getLeftID() - 1).message.hl7Segments[indices[0]].value;
+    } else {
+      this.upperBottom = '';
+    }
+    if (this.discrep2.get(indices[0]).missing !== true) {
+      this.lowerBottom = this.messages.get(this.getRightID() - 1).message.hl7Segments[indices[1]].value;
+    } else {
+      this.upperBottom = '';
     }
   }
-  
-  // showLeftSegments(message: string) {
-  //   let newSplit;
-  //   let extraSplitCount = 0;
-  //   if (this.discrep.message1.size === 0) {
-  //     let lineBreak: string[] = [];
-  //     lineBreak = message.split(/(?:\r\n|\r|\n)/g);
-  //     return lineBreak;
-  //   }
-  //   newSplit = message.split(/(?:\r\n|\r|\n)/g);
-  //   this.discrep.message1.forEach((segment, segmentIndex) => {
-  //     if (segment.missing) {
-  //       newSplit.splice(segmentIndex, 0, '');
-  //       extraSplitCount++;
-  //     }
-  //   });
-  //   return newSplit;
-  // }
 
-  // showRightSegments(message: string) {
-  //   let extraSplitCount = 0;
-  //   if (this.discrep.message2.size === 0) {
-  //     let lineBreak: string[] = [];
-  //     lineBreak = message.split(/(?:\r\n|\r|\n)/g);
-  //     return lineBreak;
-  //   }
-  //   let newSplit = message.split(/(?:\r\n|\r|\n)/g);
-  //   this.discrep.message2.forEach((segment, segmentIndex) => {
-  //     if (segment.missing) {
-  //       newSplit.splice((segmentIndex), 0, '');
-  //       extraSplitCount++;
-  //     }
-  //   });
-  //   return newSplit;
-  // }
+  sendRightLineToBottom(indices: [number, number]) {
+    this.upperBottom = this.messages.get(this.getRightID() - 1).message.hl7Segments[indices[0]].value;
+    this.lowerBottom = this.messages.get(this.getLeftID() - 1).message.hl7Segments[indices[1]].value;
+  }
+
+
 }

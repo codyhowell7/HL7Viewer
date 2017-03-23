@@ -7,6 +7,7 @@ import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Parser } from '../../../../parser/parse';
 import { HL7MultiMessage } from '../../../../parser/hl7MultiMessage';
 import { HL7Message } from '../../../../parser/HL7Message';
+import { HL7Segment } from '../../../../parser/hl7Segment';
 import { Map } from 'immutable';
 import 'rxjs/add/operator/debounceTime';
 
@@ -44,6 +45,7 @@ export class MessageComponent implements OnInit {
         })
     )
       .subscribe(([accordion, message]) => {
+        let hl7Segments: HL7Segment[] = this.messages.get(this.messageId).message.hl7Segments;
         if (!accordion.segment.has(this.messageId)) {
           this.ngRedux.dispatch({
             type: DEFAULT_MESSAGE_ACCORDIONS,
@@ -51,7 +53,7 @@ export class MessageComponent implements OnInit {
               messageID: this.messageId,
             }
           });
-          this.messages.get(this.messageId).message.hl7Segments.forEach((segment, segmentIndex) => {
+          hl7Segments.forEach((segment, segmentIndex) => {
             this.ngRedux.dispatch({
               type: DEFAULT_SEGMENT_ACCORDIONS,
               payload: {
@@ -70,7 +72,8 @@ export class MessageComponent implements OnInit {
       .debounceTime(200)
       .subscribe(value => {
         let parsedMessage = new HL7MultiMessage(this.message);
-        parsedMessage.hl7Messages.forEach((message, messageIndexId) => {
+        let messages: HL7Message[] = parsedMessage.hl7Messages;
+        messages.forEach((message, messageIndexId) => {
           if (messageIndexId === 0) {
             this.ngRedux.dispatch({
               type: MESSAGE_RECEIVED,
@@ -91,7 +94,8 @@ export class MessageComponent implements OnInit {
             });
           }
         });
-        this.messages.get(this.messageId).message.hl7Segments.forEach((segment, segmentIndex) => {
+        let hl7Segments: HL7Segment[] = this.messages.get(this.messageId).message.hl7Segments;
+        hl7Segments.forEach((segment, segmentIndex) => {
           this.ngRedux.dispatch({
             type: DEFAULT_SEGMENT_ACCORDIONS,
             payload: {

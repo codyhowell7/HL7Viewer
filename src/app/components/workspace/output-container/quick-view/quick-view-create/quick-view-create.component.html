@@ -1,0 +1,17 @@
+<div class='QuickViewBox'>
+    <span> <h2> Name:  <input (blur)='saveName($event.target.value)'> </h2> </span>
+    <div class='aroundFields'>
+        <span> <h2> Fields: </h2> </span>
+        <div *ngFor='let view of currentViews; let i = index; trackBy: trackFields'>
+            <input type='text' [value]=getListValue(i) (blur)='saveListValue($event.target.value, i)' class='fieldInput'>
+            <!--<md-icon (click)='saveListValue(i)'>done</md-icon>-->
+        </div>
+        <button class='addViewButton' (click)='addView()'> Add View </button>
+    </div>
+    <span> <h3> {{ fieldValError }} </h3> </span>
+    <button class='saveButton' (click)='validateFields()' *ngIf='!fieldsValidated'> Validate Fields </button>
+    <button class='saveButton' (click)='saveView()' *ngIf='fieldsValidated'> Save </button>
+    <div>
+        <button class='logoutButton' (click)='backToMain()'> Back </button>
+    </div>
+</div>

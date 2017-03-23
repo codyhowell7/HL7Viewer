@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, ContentChildren, QueryList } from '@angular/core';
 import { IMessageDiscrepancies, ISegmentDiscrepancies } from '../../../../../messageReader/compareMessages/IMessageDiscrepancies';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
@@ -18,6 +18,8 @@ export class ComparespaceHighlightingComponent implements OnInit {
   @Input() messageID: number;
   @Input() messages: Map<number, IMessage>;
   @Input() oppositeDiscrepancies: Map<number, ISegmentDiscrepancies>;
+  @Input() fieldDiscrepancies: Map<number, ISegmentDiscrepancies>;
+
 
   constructor(private ngRedux: NgRedux<IAppState>) { }
 
@@ -43,14 +45,6 @@ export class ComparespaceHighlightingComponent implements OnInit {
 
   oppositeSideMissing(index: number) {
     return this.oppositeDiscrepancies.get(index).missing;
-  }
-
-  getCorrectedIndex(index: number) {
-    let currentSlice = this.discrepancies.slice(0, index);
-    let missingLines = currentSlice.filter(current => current.missing === true).size;
-    let oppositeSlice = this.oppositeDiscrepancies.slice(0, index);
-    let oppositeMissingLines = oppositeSlice.filter(opposite => opposite.missing === true).size;
-    return [index - missingLines, index - oppositeMissingLines];
   }
 
   sendLineToBottom(index: number) {

@@ -1,7 +1,7 @@
 import {
     IWorkspaceModeChangedPayload, IMessageReceivedPayload, ISaveSearchPayload,
     IIdPayload, IAccordionToggledPayload, IAddConditionPayload, IAddConditionGroupPayload,
-    ISaveLeftComparePayload, ISaveRightComparePayload, IDiscrepancyPayload
+    ISaveLeftComparePayload, ISaveRightComparePayload, IDiscrepancyPayload, IJWTPayload
 } from '../payloads/payloads';
 
 export interface IAction {
@@ -46,7 +46,14 @@ export interface ISaveLeftCompareArea extends IAction {
 export interface ISaveRightCompareArea extends IAction {
     payload: ISaveRightComparePayload;
 }
- export interface ISaveDiscrepancies extends IAction {
-     payload: IDiscrepancyPayload;
- }
+
+export interface ISaveDiscrepancies extends IAction {
+    payload: IDiscrepancyPayload;
+}
+
+export interface ISaveJWT extends IAction {
+    payload: IJWTPayload;
+}
+
+
 

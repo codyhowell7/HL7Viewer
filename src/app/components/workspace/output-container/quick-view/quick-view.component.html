@@ -1,7 +1,22 @@
-<div class='QuickViewBox'>
-    <div class='NameLine'>
-        <div> Name:  </div>
-        <input>        
-    </div>
-    <button> Add New View </button>
+<div *ngIf='!jwt' class='loginBox'>
+    <span class='loginText'> <h1> You must be logged in to use this functionality </h1> </span>
+    <button (click)='azureLogin()' class='loginButton'> Login </button>
 </div>
+
+<div class='QuickViewBox' *ngIf='jwt && mainPage && !isTokenExpired()'>
+    <button (click)='useQuickView()' class='loginButton'> Use / Edit Your Quick Views </button>
+    <button (click)='createNewView()' class='loginButton'> Create New Quick View </button>
+    <button (click)='searchViews()' class='loginButton'> Search Quick Views </button>
+    <button *ngIf='jwt && mainPage' class='logoutButton'  (click)='azureLogout()'> Logout </button>
+</div>
+
+<div class='QuickViewBox' *ngIf='isTokenExpired()'>
+    <span> Your seesions has expired, please logout </span>
+    <button *ngIf='jwt && mainPage' class='logoutButton'  (click)='azureLogout()'> Logout </button>
+</div>
+
+
+<hls-quick-view-create *ngIf='createView' [jwt]='jwt' (switchBack)=updateCreateView($event)> </hls-quick-view-create>
+<hls-quick-view-select-all *ngIf='searchAllViews' [jwt]='jwt' (switchBack)=updateCreateView($event)>  </hls-quick-view-select-all>
+<hls-quick-view-select *ngIf='useView' [jwt]='jwt' (switchBack)=updateCreateView($event)>  </hls-quick-view-select>
+

@@ -1,0 +1,44 @@
+:host {
+    background-color: #fff;
+    height: 100%;
+    width: 100%;
+}
+
+div.searchAll {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    overflow: auto;
+}
+
+div.searchElm {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border: 1px dashed lightgray;
+    margin: 2px;
+}
+
+div.fullSearch{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+button.logoutButton {
+    margin: 10px;
+    width: 20%;
+}
+
+button.hideShowButton {
+    margin-top: 5px;
+}
+
+button.useButton{
+    align-self: center;
+    margin-right: 10px;
+}
+
+div.wrapper{
+    padding: 5px;
+}

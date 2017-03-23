@@ -62,3 +62,7 @@ export interface ISaveRightComparePayload {
 export interface IDiscrepancyPayload {
     discrepancies: IMessageDiscrepancies;
 }
+
+export interface IJWTPayload {
+    JWT: string;
+}

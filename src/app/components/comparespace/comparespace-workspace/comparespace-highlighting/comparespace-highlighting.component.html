@@ -3,13 +3,13 @@
     <p> {{segment}} <br> </p>
   </div>
 </div>
-<div *ngFor='let segDiscrepancy of getDiscrep(); let i = index' (click)='sendLineToBottom(getCorrectedIndex(i))' class='eachLine'>
+<div *ngFor='let segDiscrepancy of getDiscrep(); let i = index' (click)='sendLineToBottom(i)' class='eachLine'>
   <div *ngIf='!(!missingSegment(segDiscrepancy) && !oppositeSideMissing(i))'>
     <hls-comparespace-segment-highlighting [segmentIndex]='i' [discrepancies]='discrepancies' [oppositeDiscrepancies]='oppositeDiscrepancies'
       [messages]='messages' [messageID]='messageID'> </hls-comparespace-segment-highlighting>
   </div>
   <div *ngIf='!missingSegment(segDiscrepancy) && !oppositeSideMissing(i)' class='fullLine'>
     <hls-comparespace-field-highlighting [segmentIndex]='i' [discrepancies]='discrepancies' [oppositeDiscrepancies]='oppositeDiscrepancies'
-      [messages]='messages' [messageID]='messageID'> </hls-comparespace-field-highlighting>
+      [messages]='messages' [messageID]='messageID' [fieldDiscrepancies]='fieldDiscrepancies'> </hls-comparespace-field-highlighting>
   </div>
 </div>

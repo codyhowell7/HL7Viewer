@@ -26,6 +26,8 @@ import { reduceMenu } from './reducers/menuReducer';
 import { reduceCurrentMessage, reduceMessages } from './reducers/messageReducer';
 import { reduceAccordion } from './reducers/accordionReducer';
 import { reduceDiscrepancies } from './reducers/discrepancyReducer';
+import { reduceJWT } from './reducers/jwtReducer';
+
 import { ComparespaceComponent } from './components/comparespace/comparespace.component';
 import { QuickViewComponent } from './components/workspace/output-container/quick-view/quick-view.component';
 import { SearchComponent } from './components/workspace/output-container/search/search.component';
@@ -45,6 +47,10 @@ import { DraggableDirective } from '../drag/draggable-directive';
 import { DropTargetDirective } from '../drag/drop-target.directive';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { isDevMode } from '@angular/core';
+import { QuickViewCreateComponent } from './components/workspace/output-container/quick-view/quick-view-create/quick-view-create.component';
+import { QuickViewSelectAllComponent } from './components/workspace/output-container/quick-view/quick-view-select-all/quick-view-select-all.component';
+import { QuickViewSelectComponent } from './components/workspace/output-container/quick-view/quick-view-select/quick-view-select.component';
+import { QuickViewUseComponent } from './components/workspace/output-container/quick-view/quick-view-use/quick-view-use.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +71,11 @@ import { isDevMode } from '@angular/core';
     ComparespaceFieldHighlightingComponent,
     DraggableDirective,
     DropTargetDirective,
-    ComparespaceSegmentHighlightingComponent
+    ComparespaceSegmentHighlightingComponent,
+    QuickViewCreateComponent,
+    QuickViewSelectAllComponent,
+    QuickViewSelectComponent,
+    QuickViewUseComponent
   ],
   imports: [
     BrowserModule,
@@ -98,6 +108,7 @@ function rootReducer(state: IAppState, action: IAction): IAppState {
     searchConditionSize: reduceSearchConditionSize(state.searchConditionSize, action),
     searchFilter: reduceSearchResults(state.searchFilter, action),
     messagesToCompare: reduceMessagesToCompare(state.messagesToCompare, action),
-    discrepancies: reduceDiscrepancies(state.discrepancies, action)
+    discrepancies: reduceDiscrepancies(state.discrepancies, action),
+    jwt: reduceJWT(state.jwt, action)
   };
 }

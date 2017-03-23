@@ -1,0 +1,7 @@
+<div class='fullSearch' *ngIf='selectedQuickView'>
+    <h2> {{selectedQuickView.name}} </h2>
+    <div *ngFor='let field of selectedQuickView.selectors'>
+      {{field}}
+      {{getValueBySelector(field)}}
+    </div> 
+</div>

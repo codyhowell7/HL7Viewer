@@ -45,19 +45,63 @@ p.line {
 
 div.draggable1LineOutput {
     width: 100%;
-    flex: auto;
     margin-top: 6px;
     background-color: white;
 }
 
 div.draggable2LineOutput {
     width: 100%;
-    flex: auto;
     margin-top: 3px;
     background-color: white;
 }
+
+div.bottomSection{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    white-space: nowrap;
+}
+
 div.headers {
     width: 100%;
     display: flex;
     justify-content: space-around;
+}
+
+div.header1 {
+    background-color: white;
+    margin-right: 5px;
+    padding-top: 3px;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px dashed lightgray;
+    user-select: none;
+    
+}
+
+div.header2 {
+    background-color: white;
+    margin-left: 5px;
+    padding-top: 3px;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px dashed lightgray;
+    user-select: none;
+}
+
+div.fakeheader1 {
+    background-color: white;
+    margin-right: 5px;
+    width: 100%;
+}
+
+div.fakeheader2 {
+    background-color: white;
+    margin-left: 5px;
+    width: 100%;
+
+}
+
+.comparespaceHighlighting {
+    display: inline-block;
 }

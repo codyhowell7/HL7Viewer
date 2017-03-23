@@ -30,10 +30,12 @@ $iconHeight: 14px;
 .compare {
     display: flex;
     justify-content: space-between;
+    user-select: none;
 }
 .message {
     display: flex;
     justify-content: space-between;
+    user-select: none;
 }
 
 div.dnd-drag-start {

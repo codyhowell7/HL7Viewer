@@ -1,0 +1,27 @@
+<div class='fullSearch' *ngIf='!useQV'>
+  <div class='searchAll'>
+    <div *ngFor='let view of userViews' class='searchElm'>
+      <div class='wrapper'>
+        <div>
+          <b> Name: </b> {{view.name}}
+        </div>
+        <button *ngIf='!fieldsVisible(view.id)' (click)='showFields(view.id)' class='hideShowButton'> Show Fields </button>
+        <div *ngIf='fieldsVisible(view.id)'>
+          <div> <b> Fields:  </b> </div>
+          <div *ngFor='let field of view.selectors'>
+            {{field}}
+          </div>
+          <button *ngIf='fieldsVisible(view.id)' (click)='hideFields(view.id)' class='hideShowButton'> Hide Fields </button>
+        </div>
+      </div>
+      <div class='useEditWrapper'>
+        <button class='useButton' (click)='useQuickView(view.aggregateId)'> Use </button>
+        <button class='useButton'> Edit </button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <button class='logoutButton' (click)='backToMain()'> Back </button>
+  </div>
+</div>
+<hls-quick-view-use *ngIf='useQV' [jwt]='jwt' [quickViewId]='useQV' > </hls-quick-view-use>

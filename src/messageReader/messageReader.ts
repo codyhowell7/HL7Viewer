@@ -9,32 +9,29 @@ import { Map } from 'immutable';
 
 export class MessageReader {
 
-    public setQuickView(messages: HL7Message[], sectionDesignators: string[]) {
+    public setQuickView(message: IMessage, sectionDesignators: string[]) {
         let generalDesignator: string;
-        messages.forEach((message, messageIndex) => {
-            sectionDesignators.forEach(designator => {
-                let objectToUpdate = this.parseDesignator(message, designator);
-                if (typeof (objectToUpdate) !== 'undefined') {
-                    objectToUpdate.isInQuickView = true;
-                } else {
-                    console.log(`${designator} did not exist in message ${messageIndex + 1}`);
-                }
-            });
+        let results = Map<string, string>();
+        sectionDesignators.forEach(designator => {
+            let valueInField = this.parseDesignator(message.message, designator);
+            if (valueInField[0] != null) {
+                results = results.set(designator, valueInField[0].value);
+            } else {
+                console.log(`${designator} did not exist in message ${message.id + 1}`);
+            }
         });
+        return results;
     }
 
     public generalSearch(messages: Map<number, IMessage>, searchValue: string) {
         let messageFilter = Map<number, boolean>().set(0, false);
         messages.forEach((message, messageNum) => {
             if (message.message.hl7CorrectedMessage.search(searchValue) !== -1) {
-                console.log(searchValue);
-                console.log(message.message.hl7CorrectedMessage.search(searchValue));
                 messageFilter = messageFilter.set(messageNum, true);
             } else {
                 messageFilter = messageFilter.set(messageNum, false);
             }
         });
-        console.log(messageFilter);
         return messageFilter;
     }
 

@@ -42,22 +42,26 @@ export class StandardComponent implements OnInit {
   }
 
   getSegments() {
-    return this.message.message.hl7Segments;
+    let segments = this.message.message.hl7Segments;
+    return segments;
   }
 
   getFields(segmentIndex: number) {
-    return this.message.message.hl7Segments[segmentIndex].hl7Fields;
+    let fields = this.message.message.hl7Segments[segmentIndex].hl7Fields;
+    return fields;
   }
 
   getRepeat(segmentIndex: number, fieldIndex: number) {
     if (this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hasRepetition) {
-      return this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hl7RepeatedFields;
+      let repeatFields = this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hl7RepeatedFields;
+      return repeatFields;
     }
   }
 
   getComponents(segmentIndex: number, fieldIndex: number) {
     if (this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hasHL7Components) {
-      return this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hl7Components;
+      let components = this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hl7Components;
+      return components;
     } else {
       return;
     }
@@ -65,7 +69,9 @@ export class StandardComponent implements OnInit {
 
   getRepeatComponents(segmentIndex: number, fieldIndex: number, repeatIndex: number) {
     if (this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hasRepetition) {
-      return this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hl7RepeatedFields[repeatIndex].hl7Components;
+      let repeatComponents = this.message.message.hl7Segments[segmentIndex].
+        hl7Fields[fieldIndex].hl7RepeatedFields[repeatIndex].hl7Components;
+      return repeatComponents;
     } else {
       return;
     }
@@ -74,8 +80,9 @@ export class StandardComponent implements OnInit {
   getRepeatSubComponents(segmentIndex: number, fieldIndex: number, repeatIndex: number, componentIndex: number) {
     if (this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex]
       .hl7RepeatedFields[repeatIndex].hl7Components[componentIndex].hasSubComponents) {
-      return this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex]
+        let repeatSubComponents = this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex]
         .hl7RepeatedFields[repeatIndex].hl7Components[componentIndex].hl7SubComponents;
+      return repeatSubComponents;
     } else {
       return;
     }
@@ -84,7 +91,9 @@ export class StandardComponent implements OnInit {
   getSubComponents(segmentIndex: number, fieldIndex: number, componentIndex: number) {
     if (this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hasHL7Components) {
       if (this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hl7Components[componentIndex].hasSubComponents) {
-        return this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex].hl7Components[componentIndex].hl7SubComponents;
+        let subComponents = this.message.message.hl7Segments[segmentIndex].
+          hl7Fields[fieldIndex].hl7Components[componentIndex].hl7SubComponents;
+        return subComponents;
       } else {
         return;
       }
@@ -134,7 +143,8 @@ export class StandardComponent implements OnInit {
       }
     });
     this.accordion$.subscribe(accordionState => {
-      this.message.message.hl7Segments[segmentIndex].hl7Fields.forEach((field, fieldIndex) => {
+      let fields = this.message.message.hl7Segments[segmentIndex].hl7Fields;
+      fields.forEach((field, fieldIndex) => {
         this.ngRedux.dispatch({
           type: DEFAULT_FIELD_ACCORDIONS,
           payload: {
@@ -163,7 +173,8 @@ export class StandardComponent implements OnInit {
   extendFieldAccordion(segmentId: number, fieldId: number, fieldAccordionState: boolean) {
     this.accordion$.subscribe(accordionFieldState => {
       if (this.message.message.hl7Segments[segmentId].hl7Fields[fieldId].hasRepetition) {
-        this.message.message.hl7Segments[segmentId].hl7Fields[fieldId].hl7RepeatedFields.forEach((repeatField, repeatFieldIndex) => {
+        let repeatFields = this.message.message.hl7Segments[segmentId].hl7Fields[fieldId].hl7RepeatedFields;
+        repeatFields.forEach((repeatField, repeatFieldIndex) => {
           this.ngRedux.dispatch({
             type: DEFAULT_REPEAT_FIELD_ACCORDIONS,
             payload: {
@@ -177,7 +188,8 @@ export class StandardComponent implements OnInit {
           });
         });
       } else {
-        this.message.message.hl7Segments[segmentId].hl7Fields[fieldId].hl7Components.forEach((component, componentIndex) => {
+        let components = this.message.message.hl7Segments[segmentId].hl7Fields[fieldId].hl7Components;
+          components.forEach((component, componentIndex) => {
           this.ngRedux.dispatch({
             type: DEFAULT_COMPONENT_ACCORDIONS,
             payload: {

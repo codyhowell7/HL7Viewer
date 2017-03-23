@@ -34,7 +34,7 @@ export class ComparespaceWorkspaceComponent implements OnInit {
   constructor(private ngRedux: NgRedux<IAppState>) { }
 
   ngOnInit() {
-    combineLatest(this.messagesToCompare$, this.messages$)
+    this.messageSub = combineLatest(this.messagesToCompare$, this.messages$)
       .subscribe(([messagesToCompare, messages]) => {
         if (messagesToCompare.get(0) != null && messagesToCompare.get(1) != null) {
           let compare = new MessageCompare(this.ngRedux);
@@ -50,6 +50,7 @@ export class ComparespaceWorkspaceComponent implements OnInit {
   ngOnDestroy() {
     this.discrepSub1.unsubscribe();
     this.discrepSub2.unsubscribe();
+    this.messageSub.unsubscribe();
   }
 
   onScroll(eventScrollLeft) {
@@ -82,22 +83,51 @@ export class ComparespaceWorkspaceComponent implements OnInit {
     return this.messagesToCompare.get(1);
   }
 
-  sendLeftLineToBottom(indices: [number, number]) {
-    if (this.discrep1.get(indices[0]).missing !== true) {
-      this.upperBottom = this.messages.get(this.getLeftID() - 1).message.hl7Segments[indices[0]].value;
+  getLeftCorrectedIndex(index: number) {
+    let currentSlice = this.discrep1.slice(0, index);
+    let missingLines = currentSlice.filter(current => current.missing === true).size;
+    return index - missingLines;
+  }
+
+  getRightCorrectedIndex(index: number) {
+    let currentSlice = this.discrep2.slice(0, index);
+    let missingLines = currentSlice.filter(current => current.missing === true).size;
+    return index - missingLines;
+  }
+
+
+  sendLeftLineToBottom(index: number) {
+    if (this.discrep1.get(index).missing !== true) {
+      this.upperBottom = this.messages.get(this.getLeftID() - 1).message.hl7Segments[this.getLeftCorrectedIndex(index)].value;
     } else {
       this.upperBottom = '';
     }
-    if (this.discrep2.get(indices[0]).missing !== true) {
-      this.lowerBottom = this.messages.get(this.getRightID() - 1).message.hl7Segments[indices[1]].value;
+    if (this.discrep2.get(index).missing !== true) {
+      this.lowerBottom = this.messages.get(this.getRightID() - 1).message.hl7Segments[this.getRightCorrectedIndex(index)].value;
     } else {
-      this.upperBottom = '';
+      this.lowerBottom = '';
     }
   }
 
-  sendRightLineToBottom(indices: [number, number]) {
-    this.upperBottom = this.messages.get(this.getRightID() - 1).message.hl7Segments[indices[0]].value;
-    this.lowerBottom = this.messages.get(this.getLeftID() - 1).message.hl7Segments[indices[1]].value;
+  sendRightLineToBottom(index: number) {
+    if (this.discrep2.get(index).missing !== true) {
+      this.upperBottom = this.messages.get(this.getRightID() - 1).message.hl7Segments[this.getRightCorrectedIndex(index)].value;
+    } else {
+      this.upperBottom = '';
+    }
+    if (this.discrep1.get(index).missing !== true) {
+      this.lowerBottom = this.messages.get(this.getLeftID() - 1).message.hl7Segments[this.getLeftCorrectedIndex(index)].value;
+    } else {
+      this.lowerBottom = '';
+    }
+  }
+
+  displayBottom() {
+    if (this.upperBottom || this.lowerBottom) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 

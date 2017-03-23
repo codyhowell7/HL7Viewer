@@ -17,6 +17,7 @@ export class ComparespaceFieldHighlightingComponent implements OnInit {
   @Input() oppositeDiscrepancies: Map<number, ISegmentDiscrepancies>;
   @Input() messages: Map<number, IMessage>;
   @Input() messageID: number;
+  @Input() fieldDiscrepancies: Map<number, ISegmentDiscrepancies>;
 
   constructor() { }
 
@@ -46,8 +47,9 @@ export class ComparespaceFieldHighlightingComponent implements OnInit {
   }
 
   fieldNoMatchMissing(segmentIndex: number, fieldIndex: number) {
-    if (this.discrepancies.get(segmentIndex).fields.get(fieldIndex) != null) {
-      return (this.discrepancies.get(segmentIndex).fields.get(fieldIndex).match);
+
+    if (this.fieldDiscrepancies.get(segmentIndex).fields.get(fieldIndex) != null) {
+      return (this.fieldDiscrepancies.get(segmentIndex).fields.get(fieldIndex).match);
     } else {
       return false;
     }

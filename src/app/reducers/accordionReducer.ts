@@ -169,7 +169,6 @@ function setDefaultRepeatFieldAccordions(state: IAccordion, action: IAccordionTo
 }
 
 function setDefaultRepeatComponentAccordions(state: IAccordion, action: IAccordionToggleAction) {
-    console.log(state);
     let componentRepeatAccordionDefault: IRepeatFieldAccordion = {
         repeatFieldAccordionState: action.payload.repeatToggleState, repeatComponent:
         state.segment.get(action.payload.messageID).get(action.payload.segmentID)

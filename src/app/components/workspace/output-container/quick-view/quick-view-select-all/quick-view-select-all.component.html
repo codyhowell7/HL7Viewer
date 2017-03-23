@@ -1,0 +1,26 @@
+<div class='fullSearch'>
+  <div class='searchAll'>
+    <div *ngFor='let view of allViews' class='searchElm'>
+      <div class='wrapper'>
+        <div>
+          <b> Name: </b> {{view.name}}
+        </div>
+        <div>
+          <b> Created By: </b> {{getUserName()}}
+        </div>
+        <button *ngIf='!fieldsVisible(view.id)' (click)='showFields(view.id)' class='hideShowButton'> Show Fields </button>
+        <div *ngIf='fieldsVisible(view.id)'>
+          <div> <b> Fields:  </b> </div>
+          <div *ngFor='let field of view.selectors'>
+            {{field}}
+          </div>
+          <button *ngIf='fieldsVisible(view.id)' (click)='hideFields(view.id)' class='hideShowButton'> Hide Fields </button>
+        </div>
+      </div>
+      <button class='useButton'> Use </button>
+    </div>
+  </div>
+  <div>
+    <button class='logoutButton' (click)='backToMain()'> Back </button>
+  </div>
+</div>

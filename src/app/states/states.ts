@@ -15,6 +15,7 @@ export interface IAppState {
     searchFilter: Map<number, boolean>;
     messagesToCompare: Map<number, number>;
     discrepancies: IMessageDiscrepancies;
+    jwt: string;
 }
 
 export interface IMenuState { }

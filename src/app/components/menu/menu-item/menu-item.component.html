@@ -2,7 +2,7 @@
     <span>Message {{message.id + 1}}</span>
 </div>
 <div *ngIf="isMessages$ | async">
-    <div [routerLink]="['/workspace', message.id, 'standard']" routerLinkActive="active" class='message'>
+    <div [routerLink]="['/workspace', message.id, keepLastRoute()]" routerLinkActive="active" class='message'>
         <span>Message {{message.id + 1}}</span>
         <md-icon (click)="removeItem()">clear</md-icon>
     </div>

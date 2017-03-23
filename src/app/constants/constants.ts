@@ -38,6 +38,7 @@ export const SAVE_RIGHT = 'SAVE_RIGHT';
 
 
 export const SAVE_DISCREPANCY = 'SAVE_DISCREPANCY';
+export const SAVE_JWT = 'SAVE_JWT';
 
 
 

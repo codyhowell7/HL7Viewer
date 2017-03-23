@@ -2,7 +2,16 @@ import { HL7Field } from './hl7Field';
 import { Parser } from './parse';
 
 export class HL7Segment {
-    hl7Fields: HL7Field[] = [];
+    private _hl7Fields: HL7Field[] = [];
+
+    get hl7Fields(): HL7Field[] {
+        return this._hl7Fields;
+    }
+
+    set hl7Fields(fields: HL7Field[]) {
+        this._hl7Fields = fields;
+    }
+
     segmentName: string;
     segmentDesc: string;
     isInQuickView: boolean = false;

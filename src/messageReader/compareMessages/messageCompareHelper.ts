@@ -17,6 +17,8 @@ export class MessageCompareHelper {
     numMissingAtEnd = 0;
     compareFields = new FieldCompare();
     messages: Map<number, IMessage>;
+    numMissingOnLeft: number;
+    numMissingOnRight: number;
     message1ID: number;
     message2ID: number;
 
@@ -166,7 +168,7 @@ export class MessageCompareHelper {
         }
         if (!(offsets[1] > 0 && offsets[0] > 0)) {
             newDiscrepancies.message1 = newDiscrepancies.message1.set(newDiscrepancies.message1.size, {
-                fields: this.compareFields.combFields(this.skipXSegments(message1, 0, offsets[1]), message2),
+                fields: this.compareFields.combFields(this.skipXSegments(message1, 0, (offsets[1] + this.numMissingOnLeft)), this.skipXSegments(message2, 1, (offsets[0] + this.numMissingOnRight ))),
                 missing: false
             });
             newDiscrepancies.message2 = newDiscrepancies.message2.set(newDiscrepancies.message2.size, {
@@ -184,6 +186,8 @@ export class MessageCompareHelper {
                 missing: false
             });
         }
+        this.numMissingOnLeft += offsets[1];
+        this.numMissingOnRight += offsets[0];
         return newDiscrepancies;
     }
 

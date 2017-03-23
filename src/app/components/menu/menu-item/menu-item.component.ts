@@ -6,6 +6,7 @@ import { Map } from 'immutable';
 import { IMessage, IAppState } from '../../../states/states';
 import { WorkspaceMode } from '../../../enums/enums';
 import { REMOVE_MESSAGE } from '../../../constants/constants';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'hls-menu-item',
@@ -25,7 +26,7 @@ export class MenuItemComponent implements OnInit {
 
   messageCount$: Observable<number>;
 
-  constructor(private ngRedux: NgRedux<IAppState>) { }
+  constructor(private ngRedux: NgRedux<IAppState>, private router: ActivatedRoute) { }
 
   ngOnInit() {
     this.messageCount$ = this.messages$.map(messages => messages.filter(message => !message.deleted).size);
@@ -43,4 +44,10 @@ export class MenuItemComponent implements OnInit {
       id: this.message.id
     }
   })
+
+  keepLastRoute() {
+    let currentRoute;
+    this.router.children[0].url.subscribe(route => currentRoute = route[0].path);
+    return currentRoute;
+  }
 }

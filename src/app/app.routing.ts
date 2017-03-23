@@ -26,6 +26,10 @@ export const appRoutes: Routes = [
         ]
     },
     {
+        path: 'workspace/:id/quick',
+        component: QuickViewComponent
+    },
+    {
         path: 'workspace',
         redirectTo: '/workspace/0/standard'
     },

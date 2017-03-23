@@ -2,10 +2,18 @@ import { HL7Message } from './hl7Message';
 import { Parser } from './parse';
 
 export class HL7MultiMessage {
-    hl7Messages: HL7Message[] = [];
+    private _hl7Messages: HL7Message[] = [];
 
     constructor(hl7Fullmessage: string) {
         this.beginParse(hl7Fullmessage);
+    }
+
+    get hl7Messages(): HL7Message[] {
+        return this._hl7Messages;
+    }
+
+    set hl7Messages(messages: HL7Message[]) {
+        this._hl7Messages = messages;
     }
 
     private beginParse(hl7Fullmessage: string) {

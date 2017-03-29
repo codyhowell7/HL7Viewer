@@ -1,0 +1,20 @@
+<div class='QuickViewBox' *ngIf='selectedQuickView'>
+    <div class='aroundTop'>
+        <div> <span> <h2> Name:  <input [value]='selectedQuickView.name' (blur)='updateName($event.target.value)' class='nameInput' > </h2> </span> </div>
+        <button class='deleteButton' (click)='delete()' > Delete </button>
+    </div>
+    <div class='aroundFields'>
+        <span> <h2> Fields: </h2> </span>
+        <div *ngFor='let selector of newSelectors; let i = index; trackBy: trackBy' class='eachInput'>
+            <input type='text' [value]='selector' (blur)='setValue(i, $event.target.value)' class='fieldInput'>
+            <md-icon (click)='removeListValue(i)'>clear</md-icon>
+        </div>
+        <button class='addViewButton' (click)='addView()'> Add View </button>
+    </div>
+    <span> <h3> {{ fieldValError }} </h3> </span>
+    <button class='saveButton' (click)='validate()' *ngIf='!fieldsValidated'> Validate </button>
+    <button class='saveButton' (click)='saveView()' *ngIf='fieldsValidated'> Save </button>
+    <div>
+        <button class='logoutButton' (click)='back()'> Back </button>
+    </div>
+</div>

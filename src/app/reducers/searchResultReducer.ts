@@ -11,6 +11,9 @@ export function reduceSearchResults(state: Map<number, boolean>, action: IAction
         case REMOVE_SEARCH_FILTER:
             return removeSearchResult(state);
         case DEFAULT_STATE:
+            if (state != null) {
+                return state;
+            }
             return defaultSearchResult(state);
         default:
             return state;

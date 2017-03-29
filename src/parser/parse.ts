@@ -103,7 +103,7 @@ export class Parser {
 
     private segmentDesc(segmentHead: string): string {
         if (typeof HL7Dict.definitions['2.7.1'].segments[segmentHead] === 'undefined' ) {
-            throw `Segment name not found: ${segmentHead}`; // TODO: Create Custom
+            console.log(`Segment name not found: ${segmentHead}`); // TODO: Create Custom
         } else {
             return HL7Dict.definitions['2.7.1'].segments[segmentHead].desc;
         }
@@ -117,7 +117,11 @@ export class Parser {
         }
         let hl7Field: HL7Field = new HL7Field(fieldValue, fieldIndex);
         let localRepeatedFields: HL7Field[] = hl7Field.hl7RepeatedFields;
-        hl7Field.fieldDesc = HL7Dict.definitions['2.7.1'].segments[currentSegmentName].fields[fieldIndex].desc;
+        if (hl7Field.fieldDesc = HL7Dict.definitions['2.7.1'].segments[currentSegmentName]) {
+            hl7Field.fieldDesc = HL7Dict.definitions['2.7.1'].segments[currentSegmentName].fields[fieldIndex].desc;
+        } else {
+            hl7Field.fieldDesc = 'Custom Segment';
+        }
         if (repetitionArray.length > 1) {
             if (fieldValue !== this.componentSeparator + this.fieldRepetitionSeparator +
                 this.escapeCharacter + this.subcomponentSeparator) {

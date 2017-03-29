@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { combineLatest } from 'rxjs/observable/combineLatest';
+import { Router, ActivatedRoute, Params, NavigationExtras } from '@angular/router';
 import { merge } from 'rxjs/observable/merge';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
@@ -28,10 +29,11 @@ export class StandardComponent implements OnInit {
   @select(['currentMessage']) currentMessage$: Observable<number>;
   @select(['accordion']) accordion$: Observable<IAccordion>;
 
-  constructor(private ngRedux: NgRedux<IAppState>) { }
+  constructor(private ngRedux: NgRedux<IAppState>, private router: Router) { }
 
 
   ngOnInit() {
+    this.router.navigate(['/workspace/0/standard']);
     combineLatest(this.messages$, this.currentMessage$)
       .map(([messages, currentMessage]) => {
         let message = messages.get(currentMessage);

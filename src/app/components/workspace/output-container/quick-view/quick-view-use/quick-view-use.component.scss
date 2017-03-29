@@ -2,5 +2,50 @@ div.fullSearch{
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 10px;
+    margin-left: 10px;
+}
+
+div.eachView{
+    display: flex;
+    flex-direction: column;
+    background-color: #EFEFEF;
+    margin-top: 13px;
+    font-size: 17px;
+    justify-content: space-between;
+}
+
+div.nameDesc {
+    display: flex;
+    flex-direction: row;
+    background-color: #DBDBDB;
+    font-size: 18px;
+    justify-content: flex-start;
+    border-bottom: 1px dashed black;
+    margin-left: 10px;
+}
+
+div.value {
+    margin-top: 5px;
+}
+
+div.desc {
+    margin-left: 30px;
+}
+div.allViews {
+    overflow: auto;
+}
+
+button.back {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 20%;
+    height: 40px;
+}
+
+h2 {
+    margin-bottom: 5px
+}
+
+b {
+    margin-left: 10px;
 }

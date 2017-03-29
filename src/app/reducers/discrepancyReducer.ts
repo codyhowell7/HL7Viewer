@@ -6,6 +6,9 @@ import { IMessageDiscrepancies, ISegmentDiscrepancies } from '../../messageReade
 export function reduceDiscrepancies(state: IMessageDiscrepancies, action: IAction): IMessageDiscrepancies {
     switch (action.type) {
         case DEFAULT_STATE:
+            if (state != null) {
+                return state;
+            }
             return defaultDiscrepancy();
         case SAVE_DISCREPANCY:
             return saveDiscrepancy(state, action as ISaveDiscrepancies);

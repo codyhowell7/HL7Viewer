@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { QuickViewService } from '../../../../../backendCalls/quickview.service';
 import { List } from 'immutable';
+const uuidV1 = require('uuid/v1');
 
 @Component({
   selector: 'hls-quick-view-create',
@@ -18,7 +19,7 @@ export class QuickViewCreateComponent implements OnInit {
   fieldsValidated = false;
   fieldValError: string;
 
-  ngOnInit() {  }
+  ngOnInit() { }
 
   constructor(private quickViewService: QuickViewService) { }
 
@@ -27,7 +28,7 @@ export class QuickViewCreateComponent implements OnInit {
   }
 
   saveView() {
-    this.quickViewService.createQuickView(this.name, this.currentViews, this.jwt);
+    this.quickViewService.createQuickView(this.name, this.currentViews, this.jwt, uuidV1());
     this.switchBack.emit(false);
     this.fieldsValidated = false;
   }
@@ -37,6 +38,10 @@ export class QuickViewCreateComponent implements OnInit {
     this.currentViews.forEach(field => {
       if (field.length < 3) {
         checkSeg.push(0);
+      } else if (field.length > 4) {
+        if (field.indexOf('.') === -1) {
+          checkSeg.push(0);
+        }
       } else {
         checkSeg.push(field.substr(0, 3).search(/[.]/));
       }
@@ -71,6 +76,10 @@ export class QuickViewCreateComponent implements OnInit {
 
   trackFields(index, field) {
     return field ? field.id : undefined;
+  }
+
+  removeListValue(index: number) {
+    this.currentViews = this.currentViews.delete(index);
   }
 
 }

@@ -33,6 +33,9 @@ export function reduceAccordion(state: IAccordion, action: IAction): IAccordion 
         case DEFAULT_REPEAT_COMPONENT_ACCORDIONS:
             return setDefaultRepeatComponentAccordions(state, action as IAccordionToggleAction);
         case DEFAULT_STATE:
+            if (state != null) {
+                return state;
+            }
             return defaultAccordion();
         default:
             return state;

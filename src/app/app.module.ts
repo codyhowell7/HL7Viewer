@@ -1,9 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, enableProdMode } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { MaterialModule } from '@angular/material';
 import { NgReduxModule, NgRedux, DevToolsExtension } from 'ng2-redux';
+import { createStore } from 'redux';
 import { RouterModule } from '@angular/router';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { appRoutes } from './app.routing';
@@ -51,7 +52,10 @@ import { QuickViewCreateComponent } from './components/workspace/output-containe
 import { QuickViewSelectAllComponent } from './components/workspace/output-container/quick-view/quick-view-select-all/quick-view-select-all.component';
 import { QuickViewSelectComponent } from './components/workspace/output-container/quick-view/quick-view-select/quick-view-select.component';
 import { QuickViewUseComponent } from './components/workspace/output-container/quick-view/quick-view-use/quick-view-use.component';
+import { SerializeHelper } from './backendCalls/serializationHelper';
+import { QuickViewEditComponent } from './components/workspace/output-container/quick-view/quick-view-edit/quick-view-edit.component';
 
+enableProdMode();
 @NgModule({
   declarations: [
     AppComponent,
@@ -75,7 +79,8 @@ import { QuickViewUseComponent } from './components/workspace/output-container/q
     QuickViewCreateComponent,
     QuickViewSelectAllComponent,
     QuickViewSelectComponent,
-    QuickViewUseComponent
+    QuickViewUseComponent,
+    QuickViewEditComponent
   ],
   imports: [
     BrowserModule,
@@ -92,7 +97,12 @@ import { QuickViewUseComponent } from './components/workspace/output-container/q
 export class AppModule {
 
   constructor(private ngRedux: NgRedux<{}>) {
-    ngRedux.configureStore(rootReducer, {});
+    if (loadState(ngRedux) !== undefined) {
+      ngRedux.provideStore(createStore(rootReducer, loadState(ngRedux)));
+    } else {
+      ngRedux.configureStore(rootReducer, {});
+    }
+    localStorage.clear();
   }
 
 }
@@ -111,4 +121,9 @@ function rootReducer(state: IAppState, action: IAction): IAppState {
     discrepancies: reduceDiscrepancies(state.discrepancies, action),
     jwt: reduceJWT(state.jwt, action)
   };
+}
+
+function loadState(redux) {
+  let sHelper = new SerializeHelper(redux);
+  return sHelper.read();
 }

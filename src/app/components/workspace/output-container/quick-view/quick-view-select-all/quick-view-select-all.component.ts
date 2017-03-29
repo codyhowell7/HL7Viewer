@@ -16,6 +16,12 @@ export class QuickViewSelectAllComponent implements OnInit {
   allViews;
   fieldVisible = Map<number, boolean>();
   jwtHelper: JwtHelper = new JwtHelper();
+  useQV: string;
+  showUse: boolean;
+  userSelected = false;
+  nameSelected = true;
+  byUser = '';
+  byName = '';
 
   constructor(private quickViewService: QuickViewService) { }
 
@@ -29,8 +35,46 @@ export class QuickViewSelectAllComponent implements OnInit {
     this.switchBack.emit(viewStatus);
   }
 
-  getUserName() {
-    return this.jwtHelper.decodeToken(this.jwt).name;
+  getCurrentViews() {
+    let views = this.allViews;
+    if (this.nameSelected === true && views) {
+      return views.filter(view => view.name.toLowerCase().includes(this.byName.toLowerCase()));
+    } else if (this.userSelected === true && views) {
+      return views.filter(view => view.userName.toLowerCase().includes(this.byUser.toLowerCase()));
+    } else {
+      return views;
+    }
+  }
+
+  updateSearchOption(optionSelected) {
+    switch (optionSelected) {
+      case 'By Name:':
+        this.nameSelected = true;
+        this.userSelected = false;
+        this.byName = this.byUser;
+        this.byUser = '';
+        break;
+      case 'By User:':
+        this.nameSelected = false;
+        this.userSelected = true;
+        this.byUser = this.byName;
+        this.byName = '';
+        break;
+    }
+  }
+
+  searchFor(searchString: string) {
+    if (this.userSelected === true) {
+      this.byUser = searchString;
+      this.byName = '';
+    } else if (this.nameSelected === true) {
+      this.byName = searchString;
+      this.byUser = '';
+    }
+  }
+
+  getUserName(currentView) {
+    return currentView.userName.substring(0, currentView.userName.indexOf('@'));
   }
 
   showFields(QvId: number) {
@@ -49,4 +93,22 @@ export class QuickViewSelectAllComponent implements OnInit {
     }
   }
 
+  useQuickView(id: string) {
+    this.useQV = id;
+    this.showUse = true;
+  }
+
+  changeView(changeView: boolean) {
+    this.showUse = changeView;
+    this.byUser = '';
+    this.byName = '';
+  }
+
+  showSelect() {
+    if (!this.useQV || this.showUse === false) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

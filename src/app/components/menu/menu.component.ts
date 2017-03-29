@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
@@ -27,7 +28,7 @@ export class MenuComponent implements OnInit {
   checkBoxes = Map<number, boolean>();
   newMessageId: number;
   messagesSize: number;
-  constructor(private ngRedux: NgRedux<IAppState>) { }
+  constructor(private ngRedux: NgRedux<IAppState>, private router: Router) { }
 
   ngOnInit() {
     this.messageCount$ = this.messages$.map(messages => {
@@ -79,6 +80,7 @@ export class MenuComponent implements OnInit {
     this.ngRedux.dispatch({
       type: NEW_SEARCH_MESSAGE
     });
+    this.router.navigate([`/workspace/${this.messagesSize - 1}/standard`]);
   }
 
   compareMessages() {

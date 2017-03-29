@@ -1,7 +1,27 @@
 <div class='fullSearch' *ngIf='selectedQuickView'>
-    <h2> {{selectedQuickView.name}} </h2>
-    <div *ngFor='let field of selectedQuickView.selectors'>
-      {{field}}
-      {{getValueBySelector(field)}}
-    </div> 
+  <h2> {{selectedQuickView.name}} </h2>
+  <div class='allViews'>
+    <div *ngFor='let field of selectedQuickView.selectors' class='eachView'>
+      <div class='nameDesc'>
+        <div> {{field}} </div>
+        <div class='desc'> {{getFieldDesc(field)}} </div>
+      </div>
+      <div *ngIf='existsCheck(field)'>
+        <div class='value' *ngFor='let value of results.get(field); let i = index'>
+          <div *ngIf='value'>
+            <div *ngIf='manySegCheck(field)'> {{i + 1}}| <b> {{formatValue(value)}} </b> </div>
+            <div *ngIf='!manySegCheck(field)'> <b> {{formatValue(value)}} </b> </div>
+          </div>
+          <div *ngIf='!value'>
+            <div *ngIf='manySegCheck(field)'> {{i + 1}}| <b> "" </b> </div>
+            <div *ngIf='!manySegCheck(field)'> <b> "" </b> </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf='!existsCheck(field)'>
+        <b> "" </b>
+      </div>
+    </div>
+  </div>
+  <button class='back' (click)='back()'> Back </button>
 </div>

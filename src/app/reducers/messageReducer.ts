@@ -11,6 +11,9 @@ export function reduceCurrentMessage(state: number, action: IAction): number {
         case SWITCH_MESSAGE:
             return (action as ISwitchMessageAction).payload.id;
         case DEFAULT_STATE:
+            if (state != null) {
+                return state;
+            }
             return 0;
         default:
             return state;
@@ -27,6 +30,9 @@ export function reduceMessages(state: Map<number, IMessage>, action: IAction): M
         case MESSAGE_RECEIVED:
             return messageReceived(state, action as IMessageReceivedAction);
         case DEFAULT_STATE:
+            if (state != null) {
+                return state;
+            }
             return getMessageDefaultState();
         default:
             return state;

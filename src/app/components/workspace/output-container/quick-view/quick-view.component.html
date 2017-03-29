@@ -1,6 +1,6 @@
 <div *ngIf='!jwt' class='loginBox'>
     <span class='loginText'> <h1> You must be logged in to use this functionality </h1> </span>
-    <button (click)='azureLogin()' class='loginButton'> Login </button>
+    <button (click)='azureLogin()' class='loginButton actualLoginButon'> Login </button>
 </div>
 
 <div class='QuickViewBox' *ngIf='jwt && mainPage && !isTokenExpired()'>

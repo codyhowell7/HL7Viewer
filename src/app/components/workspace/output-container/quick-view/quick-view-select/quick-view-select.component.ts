@@ -18,15 +18,18 @@ export class QuickViewSelectComponent implements OnInit {
   fieldVisible = Map<number, boolean>();
   userViews;
   useQV: string;
+  showUse: boolean;
+  showEdit: boolean;
 
   constructor(private quickViewService: QuickViewService) { }
 
   ngOnInit() {
     this.quickViewService.getQuickViewsForUser(this.jwt, this.getCurrentUserId()).subscribe(
-      views => this.userViews = views
-    );
+      views => {
+        this.userViews = views;
+      });
   }
-
+  
   backToMain(viewStatus: boolean) {
     this.switchBack.emit(viewStatus);
   }
@@ -53,6 +56,27 @@ export class QuickViewSelectComponent implements OnInit {
 
   useQuickView(id: string) {
     this.useQV = id;
+    this.showUse = true;
+    this.showEdit = false;
+  }
+
+  editQuickView(id: string) {
+    this.useQV = id;
+    this.showEdit = true;
+    this.showUse = false;
+  }
+
+  changeView(changeView: boolean) {
+    this.showUse = changeView;
+    this.showEdit = changeView;
+  }
+
+  showSelect() {
+    if (!this.useQV || (this.showUse === false && this.showEdit === false)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

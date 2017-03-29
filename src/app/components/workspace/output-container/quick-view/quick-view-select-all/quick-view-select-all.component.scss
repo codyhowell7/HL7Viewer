@@ -7,26 +7,29 @@
 div.searchAll {
     display: flex;
     flex-direction: column;
-    padding: 10px;
     overflow: auto;
 }
 
 div.searchElm {
-    display: flex;
     flex-direction: row;
     justify-content: space-between;
     border: 1px dashed lightgray;
     margin: 2px;
+    display: -webkit-inline-box;
+
 }
 
 div.fullSearch{
     display: flex;
     flex-direction: column;
     height: 100%;
+    margin-left: 10px;
 }
 
 button.logoutButton {
-    margin: 10px;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
     width: 20%;
 }
 
@@ -41,4 +44,8 @@ button.useButton{
 
 div.wrapper{
     padding: 5px;
+}
+
+div.searchSelect {
+    margin: 10px;
 }

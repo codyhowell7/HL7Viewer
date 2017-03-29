@@ -1,4 +1,4 @@
-<div class='fullSearch' *ngIf='!useQV'>
+<div class='fullSearch' *ngIf='showSelect()'>
   <div class='searchAll'>
     <div *ngFor='let view of userViews' class='searchElm'>
       <div class='wrapper'>
@@ -16,7 +16,7 @@
       </div>
       <div class='useEditWrapper'>
         <button class='useButton' (click)='useQuickView(view.aggregateId)'> Use </button>
-        <button class='useButton'> Edit </button>
+        <button class='useButton' (click)='editQuickView(view.aggregateId)'> Edit </button>
       </div>
     </div>
   </div>
@@ -24,4 +24,5 @@
     <button class='logoutButton' (click)='backToMain()'> Back </button>
   </div>
 </div>
-<hls-quick-view-use *ngIf='useQV' [jwt]='jwt' [quickViewId]='useQV' > </hls-quick-view-use>
+<hls-quick-view-use *ngIf='useQV && showUse' [jwt]='jwt' [quickViewId]='useQV' (switchBack)=changeView($event) > </hls-quick-view-use>
+<hls-quick-view-edit *ngIf='showEdit && !showUse' [jwt]='jwt' [quickViewId]='useQV' (switchBack)=changeView($event) > </hls-quick-view-edit>

@@ -64,5 +64,5 @@ export interface ICondition {
     leftValue: string;
     rightValue: string;
     conditionOperand: '==' | '!=' | 'Like' | 'Contains' | '>' | '<' | '>=' | '<=';
-    functionModifier: '' | 'Length' | 'Concat';
+    functionModifier: '' | 'Length';
 }

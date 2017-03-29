@@ -4,12 +4,15 @@ import { IAction, ISaveLeftCompareArea, ISaveRightCompareArea } from '../actions
 import { DEFAULT_STATE, SAVE_LEFT, SAVE_RIGHT } from '../constants/constants';
 
 export function reduceMessagesToCompare(state: Map<number, number>, action: IAction) {
-    switch(action.type) {
+    switch (action.type) {
         case SAVE_LEFT:
             return saveLeft(state, action as ISaveLeftCompareArea);
         case SAVE_RIGHT:
             return saveRight(state, action as ISaveRightCompareArea);
         case DEFAULT_STATE:
+            if (state != null) {
+                return state;
+            }
             return defaultCompareState();
         default:
             return state;

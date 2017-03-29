@@ -45,6 +45,8 @@ export class ComparespaceWorkspaceComponent implements OnInit {
       });
     this.discrepSub1 = this.discrepancies$.subscribe(discrepancies => this.discrep1 = discrepancies.message1);
     this.discrepSub2 = this.discrepancies$.subscribe(discrepancies => this.discrep2 = discrepancies.message2);
+    console.log(this.discrep1)
+    console.log(this.discrep2)
   }
 
   ngOnDestroy() {
@@ -132,3 +134,4 @@ export class ComparespaceWorkspaceComponent implements OnInit {
 
 
 }
+

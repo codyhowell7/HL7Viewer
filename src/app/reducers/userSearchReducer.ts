@@ -12,7 +12,7 @@ export function reduceSearchCondition(state: ISearchConditions, action: IAction)
     }
 }
 
-function saveSearch(state: ISearchConditions, action: IAddSearchResults ) {
+function saveSearch(state: ISearchConditions, action: IAddSearchResults) {
     return action.payload.search;
 }
 
@@ -24,6 +24,9 @@ export function reduceSearchConditionSize(state: Map<number, number>, action: IA
         case ADD_GROUP_SIZE:
             return addGroupSize(state);
         case DEFAULT_STATE:
+            if (state != null) {
+                return state;
+            }
             return defaultSearchSize(state);
         default:
             return state;

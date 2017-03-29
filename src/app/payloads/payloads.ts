@@ -39,7 +39,7 @@ export interface IAddConditionPayload extends IIdPayload {
     leftValue: string;
     rightValue: string;
     conditionOperand: '==' | '!=' | 'Like' | 'Contains' | '>' | '<' | '>=' | '<=';
-    functionModifier: '' | 'Length' | 'Concat';
+    functionModifier: '' | 'Length';
 }
 
 export interface IAddConditionGroupPayload extends IIdPayload {

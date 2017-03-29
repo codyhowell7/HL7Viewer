@@ -45,7 +45,12 @@ export class MessageComponent implements OnInit {
         })
     )
       .subscribe(([accordion, message]) => {
-        let hl7Segments: HL7Segment[] = this.messages.get(this.messageId).message.hl7Segments;
+        let hl7Segments: HL7Segment[];
+        if (this.messages.get(this.messageId)) {
+          hl7Segments = this.messages.get(this.messageId).message.hl7Segments;
+        } else {
+          hl7Segments = this.messages.get(0).message.hl7Segments;
+        }
         if (!accordion.segment.has(this.messageId)) {
           this.ngRedux.dispatch({
             type: DEFAULT_MESSAGE_ACCORDIONS,
@@ -63,7 +68,10 @@ export class MessageComponent implements OnInit {
             });
           });
         }
-        this.messageControl.setValue(message.message.hl7CorrectedMessage, { emitEvent: false });
+        if (message) {
+          this.messageControl.setValue(message.message.hl7CorrectedMessage, { emitEvent: false });
+        }
+
       });
 
 
@@ -94,7 +102,12 @@ export class MessageComponent implements OnInit {
             });
           }
         });
-        let hl7Segments: HL7Segment[] = this.messages.get(this.messageId).message.hl7Segments;
+        let hl7Segments: HL7Segment[];
+        if (this.messages.get(this.messageId)) {
+          hl7Segments = this.messages.get(this.messageId).message.hl7Segments;
+        } else {
+           hl7Segments = this.messages.get(0).message.hl7Segments;
+        }
         hl7Segments.forEach((segment, segmentIndex) => {
           this.ngRedux.dispatch({
             type: DEFAULT_SEGMENT_ACCORDIONS,

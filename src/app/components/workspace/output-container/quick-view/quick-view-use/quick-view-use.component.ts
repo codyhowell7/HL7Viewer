@@ -7,6 +7,7 @@ import { select, NgRedux } from 'ng2-redux';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Observable } from 'rxjs/Observable';
 import { IMessage, IAppState } from '../../../../../states/states';
+let HL7Dict = require('hl7-dictionary');
 
 
 @Component({
@@ -21,10 +22,11 @@ export class QuickViewUseComponent implements OnInit {
 
   @Input() quickViewId: string;
   @Input() jwt: string;
+  @Output() switchBack = new EventEmitter;
 
   selectedQuickView;
   mSub;
-  results: Map<string, string>;
+  results: Map<string, string[]>;
 
   constructor(private quickViewService: QuickViewService, private ngRedux: NgRedux<IAppState>) { }
 
@@ -44,7 +46,44 @@ export class QuickViewUseComponent implements OnInit {
       });
   }
 
-  getValueBySelector(selector: string) {
-    return this.results.get(selector);
+  manySegCheck(field: string) {
+    return this.results.get(field).length > 1;
+  }
+
+  existsCheck(field) {
+    return this.results.get(field).length > 0;
+  }
+
+  formatValue(value: string) {
+    if (value !== '' && value) {
+      return value;
+    } else {
+      return `""`;
+    }
+  }
+
+  getFieldDesc(selector: string) {
+    if (HL7Dict.definitions['2.7.1'].segments[selector.substr(0, 3)]) {
+      if (selector.includes('.')) {
+        let reg = new RegExp('\\.', 'g');
+        if (selector.match(reg).length > 1) {
+          if (selector.includes('[')) {
+            return HL7Dict.definitions['2.7.1'].segments
+            [selector.substr(0, 3)].fields[+selector.substring(4, selector.indexOf('[', 5)) - 1].desc;
+          } else {
+            return HL7Dict.definitions['2.7.1'].segments
+            [selector.substr(0, 3)].fields[+selector.substring(4, selector.indexOf('.', 5)) - 1].desc;
+          }
+        } else {
+          return HL7Dict.definitions['2.7.1'].segments[selector.substr(0, 3)].fields[+selector.slice(4) - 1].desc;
+        }
+      } else {
+        return HL7Dict.definitions['2.7.1'].segments[selector].desc;
+      }
+    }
+  }
+
+  back() {
+    this.switchBack.emit(false);
   }
 }

@@ -25,7 +25,7 @@ export class SearchComponent implements OnInit {
 
   conditionGroups: ISearchConditions;
   conditionOperands = ['==', '!=', 'Like', 'Contains', '>', '<', '>=', '<='];
-  functionOptions = ['', 'Length', 'Concat'];
+  functionOptions = ['', 'Length'];
   groupOperands = ['AND', 'OR'];
   searchOperands = ['AND', 'OR'];
   searchSize: Map<number, number>;
@@ -221,7 +221,7 @@ export class SearchComponent implements OnInit {
     return this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).rightValue;
   }
 
-  updateFunctionModifier(value: '' | 'Length' | 'Concat', conditionId: number, groupId: number) {
+  updateFunctionModifier(value: '' | 'Length' , conditionId: number, groupId: number) {
     let condition: ICondition = {
       leftValue: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).leftValue,
       rightValue: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).rightValue,
@@ -301,7 +301,4 @@ export class SearchComponent implements OnInit {
       }
     });
   }
-
-
-
 }

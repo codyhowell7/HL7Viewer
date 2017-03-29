@@ -5,6 +5,7 @@ import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
 import { IMessage, IAppState } from '../../../../states/states';
 import { QuickViewService } from '../../../../backendCalls/quickview.service';
+import { SerializeHelper } from '../../../../backendCalls/serializationHelper';
 import { SAVE_JWT } from '../../../../constants/constants';
 import { List } from 'immutable';
 import { JwtHelper } from 'angular2-jwt';
@@ -53,7 +54,7 @@ export class QuickViewComponent implements OnInit {
       }
     });
     this.jwt$.subscribe(jwt => this.jwt = jwt);
-    this.router.navigate([`/workspace/${this.currentMessageId}/quick`], {queryParams: {}});
+    this.router.navigate([`/workspace/${this.currentMessageId}/quick`], { queryParams: {} });
 
   }
 
@@ -83,7 +84,13 @@ export class QuickViewComponent implements OnInit {
   }
 
   azureLogin() {
+    this.saveState();
     window.location.href = 'http://localhost:5000/auth/login';
+  }
+
+  saveState() {
+    let sHelper = new SerializeHelper(this.ngRedux);
+    sHelper.write();
   }
 
   azureLogout() {
@@ -92,7 +99,7 @@ export class QuickViewComponent implements OnInit {
 
   isTokenExpired() {
     if (this.jwt) {
-      this.jwtHelper.isTokenExpired(this.jwt);
+      return this.jwtHelper.isTokenExpired(this.jwt);
     }
   }
 

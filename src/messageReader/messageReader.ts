@@ -11,14 +11,18 @@ export class MessageReader {
 
     public setQuickView(message: IMessage, sectionDesignators: string[]) {
         let generalDesignator: string;
-        let results = Map<string, string>();
+        let results = Map<string, string[]>();
+        let designatorResults = [];
+        let valueInField;
         sectionDesignators.forEach(designator => {
-            let valueInField = this.parseDesignator(message.message, designator);
-            if (valueInField[0] != null) {
-                results = results.set(designator, valueInField[0].value);
-            } else {
-                console.log(`${designator} did not exist in message ${message.id + 1}`);
-            }
+            valueInField = this.parseDesignator(message.message, designator);
+            valueInField.forEach(value => {
+                if (value && value.value != null) {
+                    designatorResults.push(value.value);
+                }
+            });
+            results = results.set(designator, designatorResults);
+            designatorResults = [];
         });
         return results;
     }
@@ -38,7 +42,7 @@ export class MessageReader {
 
     public searchResults(messages: Map<number, IMessage>, search: ISearchConditions): Map<number, boolean> {
         let messageBooleanMap = Map<number, boolean>().set(0, true);
-        let searchResults: string;
+        let searchResults: string[];
         messages.forEach((message, messageIndex) => {
             let groupBooleanArray: boolean[] = [];
             search.conditionGroups.forEach(group => {
@@ -61,56 +65,137 @@ export class MessageReader {
         return messageBooleanMap;
     }
 
-    public evalConditions(condition, booleanArray: boolean[], searchResults: string): boolean[] {
+    public evalConditions(condition, booleanArray: boolean[], searchResults: string[]): boolean[] {
         switch (condition.conditionOperand) {
             case '==':
-                booleanArray.push(searchResults.toString() === condition.rightValue.toString());
+                let eqTempArray: boolean[] = [];
+                searchResults.forEach(result => {
+                    if (result.toString() === condition.rightValue.toString()) {
+                        eqTempArray.push(true);
+                    } else {
+                        eqTempArray.push(false);
+                    }
+                });
+                booleanArray.push(eqTempArray.some(checkResults => checkResults === true));
                 return booleanArray;
             case '!=':
-                booleanArray.push(searchResults.toString() !== condition.rightValue.toString());
+                let neqTempArray: boolean[] = [];
+                searchResults.forEach(result => {
+                    if (result.toString() !== condition.rightValue.toString()) {
+                        neqTempArray.push(true);
+                    } else {
+                        neqTempArray.push(false);
+                    }
+                });
+                booleanArray.push(neqTempArray.some(checkResults => checkResults === true));
                 return booleanArray;
             case 'Like':
-                if (condition.rightValue.endsWith('%')) {
-                    let beginWord = new RegExp('(' + condition.rightValue.replace('%', '') + ')\\w*');
-                    booleanArray.push(searchResults.match(beginWord) != null);
+                let replace = /%/g;
+                let likeTempArray: boolean[] = [];
+                if (condition.rightValue.endsWith('%') && !condition.rightValue.startsWith('%')) {
+                    let beginWord = new RegExp('(' + condition.rightValue.replace(replace, '') + ')\\w*');
+                    searchResults.forEach(result => {
+                        if (result.match(beginWord) != null) {
+                            likeTempArray.push(true);
+                        } else {
+                            likeTempArray.push(false);
+                        }
+                    });
+                    booleanArray.push(likeTempArray.some(checkResults => checkResults === true));
                     return booleanArray;
-                } else if (condition.rightValue.startsWith('%')) {
-                    let endWord = new RegExp('\\w*(' + condition.rightValue.replace('%', '') + ')');
-                    booleanArray.push(searchResults.match(endWord) != null);
+                } else if (condition.rightValue.startsWith('%') && !condition.rightValue.endsWith('%')) {
+                    let replace = /%/g;
+                    let endWord = new RegExp('\\w*(' + condition.rightValue.replace(replace, '') + ')');
+                    searchResults.forEach(result => {
+                        if (result.match(endWord) != null) {
+                            likeTempArray.push(true);
+                        } else {
+                            likeTempArray.push(false);
+                        }
+                    });
+                    booleanArray.push(likeTempArray.some(checkResults => checkResults === true));
                     return booleanArray;
                 } else {
-                    let elseWord = new RegExp('\\w*(' + condition.rightValue.replace('%', '') + ')\\w*');
-                    booleanArray.push(searchResults.match(elseWord) != null);
+                    let replace = /%/g;
+                    let elseWord = new RegExp('\\w*(' + condition.rightValue.replace(replace, '') + ')\\w*');
+                    searchResults.forEach(result => {
+                        if (result.match(elseWord) != null) {
+                            likeTempArray.push(true);
+                        } else {
+                            likeTempArray.push(false);
+                        }
+                    });
+                    booleanArray.push(likeTempArray.some(checkResults => checkResults === true));
                     return booleanArray;
                 }
             case 'Contains':
+                let containsTempArray: boolean[] = [];
                 let elseWord = new RegExp('\\w*(' + condition.rightValue + ')\\w*');
-                booleanArray.push(searchResults.match(elseWord) != null);
+                searchResults.forEach(result => {
+                    if (result.match(elseWord) != null) {
+                        containsTempArray.push(true);
+                    } else {
+                        containsTempArray.push(false);
+                    }
+                });
+                booleanArray.push(containsTempArray.some(checkResults => checkResults === true));
                 return booleanArray;
             case '>':
+                let grtTempArray: boolean[] = [];
                 if (typeof (+searchResults) === 'number' && typeof (+condition.rightValue) === 'number') {
-                    booleanArray.push(+searchResults > +condition.rightValue);
+                    searchResults.forEach(result => {
+                        if (+result > +condition.rightValue) {
+                            grtTempArray.push(true);
+                        } else {
+                            grtTempArray.push(false);
+                        }
+                    });
+                    booleanArray.push(grtTempArray.some(checkResults => checkResults === true));
                     return booleanArray;
                 }
                 booleanArray.push(false);
                 return booleanArray;
             case '<':
+                let lessTempArray: boolean[] = [];
                 if (typeof (+searchResults) === 'number' && typeof (+condition.rightValue) === 'number') {
-                    booleanArray.push(+searchResults < +condition.rightValue);
+                    searchResults.forEach(result => {
+                        if (+result < +condition.rightValue) {
+                            lessTempArray.push(true);
+                        } else {
+                            lessTempArray.push(false);
+                        }
+                    });
+                    booleanArray.push(lessTempArray.some(checkResults => checkResults === true));
                     return booleanArray;
                 }
                 booleanArray.push(false);
                 return booleanArray;
             case '>=':
+                let grtEqTempArray: boolean[] = [];
                 if (typeof (+searchResults) === 'number' && typeof (+condition.rightValue) === 'number') {
-                    booleanArray.push(+searchResults >= +condition.rightValue);
+                    searchResults.forEach(result => {
+                        if (+result >= +condition.rightValue) {
+                            grtEqTempArray.push(true);
+                        } else {
+                            grtEqTempArray.push(false);
+                        }
+                    });
+                    booleanArray.push(grtEqTempArray.some(checkResults => checkResults === true));
                     return booleanArray;
                 }
                 booleanArray.push(false);
                 return booleanArray;
             case '<=':
+                let lessEqTempArray: boolean[] = [];
                 if (typeof (+searchResults) === 'number' && typeof (+condition.rightValue) === 'number') {
-                    booleanArray.push(+searchResults <= +condition.rightValue);
+                    searchResults.forEach(result => {
+                        if (+result >= +condition.rightValue) {
+                            lessEqTempArray.push(true);
+                        } else {
+                            lessEqTempArray.push(false);
+                        }
+                    });
+                    booleanArray.push(lessEqTempArray.some(checkResults => checkResults === true));
                     return booleanArray;
                 }
                 booleanArray.push(false);
@@ -184,38 +269,37 @@ export class MessageReader {
         }
         return boolToAdd;
     }
-    private evalFunctionModifers(message: HL7Message, searchValue: string, modifer: '' | 'Length' | 'Concat') {
+    private evalFunctionModifers(message: HL7Message, searchValue: string, modifer: '' | 'Length') {
         switch (modifer) {
             case '':
-                if (this.parseDesignator(message, searchValue)[0] != null) {
-                    return this.parseDesignator(message, searchValue)[0].value;
+                let noFuncResultsArray: string[] = [];
+                let noFuncFieldToEval = this.parseDesignator(message, searchValue);
+                if (noFuncFieldToEval != null) {
+                    noFuncFieldToEval.forEach(eachFound => {
+                        noFuncResultsArray.push(eachFound.value);
+                    });
+                    return noFuncResultsArray;
                 } else {
-                    return '';
+                    return [];
                 }
             case 'Length':
-                if (this.parseDesignator(message, searchValue)[0] != null) {
-                    return this.parseDesignator(message, searchValue)[0].value.length;
+                let lengthResultsArray: string[] = [];
+                let lengthFieldToEval = this.parseDesignator(message, searchValue);
+                if (lengthFieldToEval != null) {
+                    lengthFieldToEval.forEach(eachFound => {
+                        lengthResultsArray.push(eachFound.value);
+                    });
+                    return lengthResultsArray;
                 } else {
-                    return '';
+                    return [];
                 }
-
-            case 'Concat':
-                let concatConditions = searchValue.split(',');
-                let literalValue = '';
-                let concatedValue = '';
-                concatConditions.forEach(single => {
-                    if (this.parseDesignator(message, single.trim())[0] != null) {
-                        concatedValue += this.parseDesignator(message, single.trim())[0].value;
-                    }
-                });
-                return concatedValue;
         }
     }
 
     public compareDesignatorSearch(messages: Map<number, IMessage>, specificDesignator: string): Object[] {
         let resultsArray: Object[] = [];
         messages.forEach((message, messageIndex) => {
-            let objectToAdd = this.parseDesignator(message.message, specificDesignator)[0];
+            let objectToAdd = this.parseDesignator(message.message, specificDesignator);
             if (typeof (objectToAdd) !== 'undefined') {
                 resultsArray.push(objectToAdd);
             } else {
@@ -236,7 +320,7 @@ export class MessageReader {
         let fieldObj: HL7Field;
         let componentObj: HL7Component;
         let subComponentObj: HL7SubComponent;
-        let finalObj;
+        let finalObj = [];
 
         let messageSections = designator.split('.');
         let segmentName = messageSections[0];
@@ -257,7 +341,6 @@ export class MessageReader {
                 }
             }
         }
-
         message.hl7Segments.forEach((segment, segmentIndex) => {
             if (segment.segmentName === segmentName) {
                 segmentObj = segment;
@@ -274,18 +357,18 @@ export class MessageReader {
 
                         if (subComponentNumber != null) {
                             subComponentObj = componentObj.hl7SubComponents[subComponentNumber - 1];
-                            finalObj = [subComponentObj, message.hl7MessageId];
+                            finalObj.push(subComponentObj);
                             return;
                         } else {
-                            finalObj = [componentObj, message.hl7MessageId];
+                            finalObj.push(componentObj);
                             return;
                         }
                     } else {
-                        finalObj = [fieldObj, message.hl7MessageId];
+                        finalObj.push(fieldObj);
                         return;
                     }
                 } else {
-                    finalObj = [segmentObj, message.hl7MessageId];
+                    finalObj.push(segmentObj);
                     return;
                 }
             } else {
@@ -294,11 +377,11 @@ export class MessageReader {
         });
         // If the last digit is a 1, we can assume the user would also want the previous value if their more
         // specific one doens't exisit. IE. PID.5.1.1 -> PID.5.1 -> PID.5
-        if (finalObj != null && typeof (finalObj[0]) === 'undefined' && designator.endsWith('1')) {
+        if (finalObj.filter(obj => obj != null).length === 0 && designator.endsWith('1')) {
             finalObj = this.parseDesignator(message, designator.substr(0, designator.length - 2));
         }
         if (finalObj == null) {
-            finalObj = [null, null];
+            finalObj = [null];
         }
         return finalObj;
     }

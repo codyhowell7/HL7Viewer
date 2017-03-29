@@ -64,3 +64,11 @@ div.aroundFields{
 h2 {
     margin: 10px;
 }
+md-icon {
+    cursor: pointer;
+}
+
+div.eachInput {
+    display: flex;
+    justify-content: flex-start;
+}

@@ -15,9 +15,9 @@ export class QuickViewService {
     private deleteQV = 'http://uts-hl7-viewer:5124/command/quickview/';
     private replaceSelectorsQV = 'http://uts-hl7-viewer:5124/command/quickview/';
 
-    private queryAllQV = 'http://uts-hl7-viewer:5123/query/quickview/all';
-    private queryUserQV = 'http://uts-hl7-viewer:5123/query/quickview/byuser/';
-    private queryById = 'http://uts-hl7-viewer:5123/query/quickview/byid/';
+    private queryAllQV = 'http://uts-hl7-viewer:5124/query/quickview/all';
+    private queryUserQV = 'http://uts-hl7-viewer:5124/query/quickview/byuser/';
+    private queryById = 'http://uts-hl7-viewer:5124/query/quickview/byid/';
 
     constructor(private http: Http) { }
 

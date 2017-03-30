@@ -11,6 +11,7 @@ import {
   UPDATE_SEARCH_OPERAND, DELETE_SINGLE_CONDITION, ADD_CONDITION_SIZE, ADD_GROUP_SIZE,
   NEW_SEARCH_RESULT, SAVE_SEARCH
 } from '../../../../constants/constants';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'hls-search',
@@ -33,9 +34,10 @@ export class SearchComponent implements OnInit {
   localConditionGroups: ISearchConditions;
   generalSearch: string;
 
-  constructor(private ngRedux: NgRedux<IAppState>) { }
+  constructor(private ngRedux: NgRedux<IAppState>, private router: Router) { }
 
   ngOnInit() {
+    this.router.navigate([`/workspace/0/search`], { queryParams: {} });
     this.$searchConditions.subscribe(condtions => {
       this.localConditionGroups = condtions;
     });

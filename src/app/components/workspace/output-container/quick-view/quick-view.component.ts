@@ -53,7 +53,7 @@ export class QuickViewComponent implements OnInit {
       }
     });
     this.jwt$.subscribe(jwt => this.jwt = jwt);
-    this.router.navigate([`/workspace/${this.currentMessageId}/quick`], { queryParams: {} });
+    this.router.navigate([`/workspace/0/quick`], { queryParams: {} });
 
   }
 
@@ -84,7 +84,7 @@ export class QuickViewComponent implements OnInit {
 
   azureLogin() {
     this.saveState();
-    window.location.href = 'http://localhost:5123/auth/login';
+    window.location.href = 'http://uts-hl7-viewer:5123/auth/login';
   }
 
   saveState() {
@@ -93,7 +93,7 @@ export class QuickViewComponent implements OnInit {
   }
 
   azureLogout() {
-    window.location.href = 'http://localhost:5123/auth/logout';
+    window.location.href = 'http://uts-hl7-viewer:5123/auth/logout';
   }
 
   isTokenExpired() {

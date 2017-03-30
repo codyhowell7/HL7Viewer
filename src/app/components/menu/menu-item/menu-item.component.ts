@@ -5,7 +5,7 @@ import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Map } from 'immutable';
 import { IMessage, IAppState } from '../../../states/states';
 import { WorkspaceMode } from '../../../enums/enums';
-import { REMOVE_MESSAGE } from '../../../constants/constants';
+import { REMOVE_MESSAGE, REMOVE_MESSAGE_FROM_FILTER } from '../../../constants/constants';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 @Component({
@@ -38,12 +38,21 @@ export class MenuItemComponent implements OnInit {
 
   }
 
-  removeItem = () => this.ngRedux.dispatch({
-    type: REMOVE_MESSAGE,
-    payload: {
-      id: this.message.id
-    }
-  })
+  removeItem() {
+    this.ngRedux.dispatch({
+      type: REMOVE_MESSAGE,
+      payload: {
+        id: this.message.id
+      }
+    });
+
+    this.ngRedux.dispatch({
+      type: REMOVE_MESSAGE_FROM_FILTER,
+      payload: {
+        id: this.message.id
+      }
+    });
+  }
 
   keepLastRoute() {
     let currentRoute;

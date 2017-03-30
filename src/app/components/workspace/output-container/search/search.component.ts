@@ -179,7 +179,7 @@ export class SearchComponent implements OnInit {
 
   updateLeftValue(value: string, conditionId: number, groupId: number) {
     let condition: ICondition = {
-      leftValue: value,
+      leftValue: value.toUpperCase(),
       rightValue: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).rightValue,
       conditionOperand: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).conditionOperand,
       conditionID: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).conditionID,
@@ -295,11 +295,11 @@ export class SearchComponent implements OnInit {
     });
 
     let messageSearch = new MessageReader;
-
     this.ngRedux.dispatch({
       type: NEW_SEARCH_RESULT,
       payload: {
-        messageFilterMap: messageSearch.searchResults(this.messages, this.localConditionGroups)
+        messageFilterMap: messageSearch.
+          searchResults(this.messages.filter(message => message.deleted === false).toMap(), this.localConditionGroups)
       }
     });
   }

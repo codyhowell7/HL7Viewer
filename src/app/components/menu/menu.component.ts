@@ -28,6 +28,8 @@ export class MenuComponent implements OnInit {
   checkBoxes = Map<number, boolean>();
   newMessageId: number;
   messagesSize: number;
+  searched = false;
+
   constructor(private ngRedux: NgRedux<IAppState>, private router: Router) { }
 
   ngOnInit() {
@@ -50,7 +52,7 @@ export class MenuComponent implements OnInit {
         .toArray()
         .sort(function (a, b) { return a.id - b.id; }));
   };
-  
+
   checkBoxToggle(compareId) {
     this.checkBoxes = this.checkBoxes.set(compareId, !this.checkBoxes.get(compareId));
   }
@@ -58,10 +60,10 @@ export class MenuComponent implements OnInit {
   isSorted() {
     let numInFilter = 0;
     let deletedNum: number;
-    this.searchFilter.forEach(value => { if (value === true) { numInFilter++; } });
+    numInFilter = this.searchFilter.filter(value => value === true).size;
     this.messages$.subscribe(messages => deletedNum = messages.filter(message => message.deleted).size);
-    numInFilter = numInFilter - deletedNum;
-    return !(this.messagesSize === numInFilter);
+    console.log(`${numInFilter} === ${this.messagesSize}, Deleted: ${deletedNum}`);
+    return !(numInFilter === this.messagesSize);
   }
 
   removeFilter() {
@@ -89,7 +91,7 @@ export class MenuComponent implements OnInit {
       payload: {
         compareCheckBoxes: this.checkBoxes
       }
-    })
+    });
   }
 
 }

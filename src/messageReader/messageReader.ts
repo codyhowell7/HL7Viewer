@@ -205,70 +205,30 @@ export class MessageReader {
 
     public evalGroup(group, conditionBoolArray: boolean[], groupBooleanArray: boolean[]): boolean[] {
         let pushedBool = false;
-        conditionBoolArray.forEach(conditionBool => {
-            switch (group.groupOperand) {
-                case 'OR':
-                    if (conditionBool === true) {
-                        groupBooleanArray.push(true);
-                        pushedBool = true;
-                    }
-                    break;
-                case 'AND':
-                    if (conditionBool === false) {
-                        groupBooleanArray.push(false);
-                        pushedBool = true;
-                        break;
-                    }
-            }
-        });
-        if (pushedBool === false) {
-            switch (group.groupOperand) {
-                case 'OR':
-                    groupBooleanArray.push(false);
-                    break;
-                case 'AND':
-                    groupBooleanArray.push(true);
-                    break;
-            }
+        switch (group.groupOperand) {
+            case 'OR':
+                groupBooleanArray.push(conditionBoolArray.some(someCondition => someCondition === true));
+                break;
+            case 'AND':
+                groupBooleanArray.push(conditionBoolArray.every(everyCondition => everyCondition === true));
+                break;
         }
         return groupBooleanArray;
     }
 
     public evalSearch(search, groupBooleanArray: boolean[]): boolean {
         let finalBool = false;
-        let boolToAdd = false;
-        groupBooleanArray.forEach(groupBool => {
-            switch (search.searchOperand) {
-                case 'OR':
-                    if (groupBool === true) {
-                        finalBool = true;
-                        boolToAdd = true;
-                    } else {
-                        finalBool = false;
-                    }
-                    break;
-                case 'AND':
-                    if (groupBool === false) {
-                        finalBool = true;
-                        boolToAdd = false;
-                    } else {
-                        finalBool = false;
-                    }
-                    break;
-            }
-        });
-        if (finalBool === false) {
-            switch (search.searchOperand) {
-                case 'OR':
-                    boolToAdd = false;
-                    break;
-                case 'AND':
-                    boolToAdd = true;
-                    break;
-            }
+        switch (search.searchOperand) {
+            case 'OR':
+                finalBool = groupBooleanArray.some(someGroup => someGroup === true);
+                break;
+            case 'AND':
+                finalBool = groupBooleanArray.every(everyGroup => everyGroup === true);
+                break;
         }
-        return boolToAdd;
+        return finalBool;
     }
+
     private evalFunctionModifers(message: HL7Message, searchValue: string, modifer: '' | 'Length') {
         switch (modifer) {
             case '':
@@ -287,7 +247,7 @@ export class MessageReader {
                 let lengthFieldToEval = this.parseDesignator(message, searchValue);
                 if (lengthFieldToEval != null) {
                     lengthFieldToEval.forEach(eachFound => {
-                        lengthResultsArray.push(eachFound.value);
+                        lengthResultsArray.push(eachFound.value.length);
                     });
                     return lengthResultsArray;
                 } else {

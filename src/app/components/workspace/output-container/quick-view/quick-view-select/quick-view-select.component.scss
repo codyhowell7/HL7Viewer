@@ -16,6 +16,7 @@ div.searchElm {
     justify-content: space-between;
     border: 1px dashed lightgray;
     margin: 2px;
+    display: -webkit-inline-box;
 }
 
 div.fullSearch{
@@ -43,7 +44,6 @@ div.wrapper{
 }
 
 div.useEditWrapper {
-    display: flex;
-    flex-direction: column;
+    margin-right: 10px;
     align-self: center;
 }

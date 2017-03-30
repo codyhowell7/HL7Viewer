@@ -26,7 +26,6 @@ export class QuickViewComponent implements OnInit {
   @select(['jwt']) jwt$: Observable<string>;
 
   jwtHelper: JwtHelper = new JwtHelper();
-
   message: IMessage;
   createView = false;
   searchAllViews = false;

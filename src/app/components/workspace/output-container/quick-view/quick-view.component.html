@@ -11,12 +11,12 @@
 </div>
 
 <div class='QuickViewBox' *ngIf='isTokenExpired()'>
-    <span> Your seesions has expired, please logout </span>
-    <button *ngIf='jwt && mainPage' class='logoutButton'  (click)='azureLogout()'> Logout </button>
+    <span> Your seesion has expired, please logout </span>
+    <button class='logoutButton'  (click)='azureLogout()'> Logout </button>
 </div>
 
 
-<hls-quick-view-create *ngIf='createView' [jwt]='jwt' (switchBack)=updateCreateView($event)> </hls-quick-view-create>
-<hls-quick-view-select-all *ngIf='searchAllViews' [jwt]='jwt' (switchBack)=updateCreateView($event)>  </hls-quick-view-select-all>
-<hls-quick-view-select *ngIf='useView' [jwt]='jwt' (switchBack)=updateCreateView($event)>  </hls-quick-view-select>
+<hls-quick-view-create *ngIf='createView && !isTokenExpired()' [jwt]='jwt' (switchBack)=updateCreateView($event)> </hls-quick-view-create>
+<hls-quick-view-select-all *ngIf='searchAllViews && !isTokenExpired()' [jwt]='jwt' (switchBack)=updateCreateView($event)>  </hls-quick-view-select-all>
+<hls-quick-view-select *ngIf='useView && !isTokenExpired()' [jwt]='jwt' (switchBack)=updateCreateView($event)>  </hls-quick-view-select>
 

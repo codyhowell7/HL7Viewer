@@ -8,16 +8,16 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class QuickViewService {
 
-    private createQV = `http://uts-hl7-viewer:5124/command/quickview/`;
-    private removeSelectorQV = 'http://uts-hl7-viewer:5124/command/quickview/';
-    private addSelectedQV = 'http://uts-hl7-viewer:5124/command/quickview/';
-    private changeNameQV = 'http://uts-hl7-viewer:5124/command/quickview/';
-    private deleteQV = 'http://uts-hl7-viewer:5124/command/quickview/';
-    private replaceSelectorsQV = 'http://uts-hl7-viewer:5124/command/quickview/';
+    private createQV = `http://uts-hl7-viewer:5001/command/quickview/`;
+    private removeSelectorQV = 'http://uts-hl7-viewer:5001/command/quickview/';
+    private addSelectedQV = 'http://uts-hl7-viewer:5001/command/quickview/';
+    private changeNameQV = 'http://uts-hl7-viewer:5001/command/quickview/';
+    private deleteQV = 'http://uts-hl7-viewer:5001/command/quickview/';
+    private replaceSelectorsQV = 'http://uts-hl7-viewer:5001/command/quickview/';
 
-    private queryAllQV = 'http://uts-hl7-viewer:5124/query/quickview/all';
-    private queryUserQV = 'http://uts-hl7-viewer:5124/query/quickview/byuser/';
-    private queryById = 'http://uts-hl7-viewer:5124/query/quickview/byid/';
+    private queryAllQV = 'http://uts-hl7-viewer:5001/query/quickview/all';
+    private queryUserQV = 'http://uts-hl7-viewer:5001/query/quickview/byuser/';
+    private queryById = 'http://uts-hl7-viewer:5001/query/quickview/byid/';
 
     constructor(private http: Http) { }
 

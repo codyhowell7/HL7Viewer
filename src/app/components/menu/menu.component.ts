@@ -62,7 +62,6 @@ export class MenuComponent implements OnInit {
     let deletedNum: number;
     numInFilter = this.searchFilter.filter(value => value === true).size;
     this.messages$.subscribe(messages => deletedNum = messages.filter(message => message.deleted).size);
-    console.log(`${numInFilter} === ${this.messagesSize}, Deleted: ${deletedNum}`);
     return !(numInFilter === this.messagesSize);
   }
 

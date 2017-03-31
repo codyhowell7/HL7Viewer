@@ -71,7 +71,6 @@ export class QuickViewEditComponent implements OnInit {
 
   saveView() {
     this.quickViewService.replaceSelectors(this.newSelectors, this.jwt, this.quickViewId);
-    console.log(this.jwt);
     this.switchBack.emit(false);
 
   }

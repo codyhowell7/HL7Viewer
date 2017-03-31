@@ -37,11 +37,11 @@ export class Parser {
             // See https://corepointhealth.com/resource-center/hl7-resources/hl7-escape-sequences for resource
             // looking for \F\, \R\, etc. where \ represents the escape character.
             // At this point we know one of these exists so we have to run through the list to check which one.
-            {escapeSequence: '(\\' + this.escapeCharacter + 'F' + '\\' + this.escapeCharacter + ')', result: this.fieldSeparator},
-            {escapeSequence: '(\\' + this.escapeCharacter + 'R' + '\\' + this.escapeCharacter + ')', result: this.fieldRepetitionSeparator},
-            {escapeSequence: '(\\' + this.escapeCharacter + 'S' + '\\' + this.escapeCharacter + ')', result: this.componentSeparator},
-            {escapeSequence: '(\\' + this.escapeCharacter + 'T' + '\\' + this.escapeCharacter + ')', result: this.subcomponentSeparator},
-            {escapeSequence: '(\\' + this.escapeCharacter + 'E' + '\\' + this.escapeCharacter + ')', result: this.escapeCharacter}
+            { escapeSequence: '(\\' + this.escapeCharacter + 'F' + '\\' + this.escapeCharacter + ')', result: this.fieldSeparator },
+            { escapeSequence: '(\\' + this.escapeCharacter + 'R' + '\\' + this.escapeCharacter + ')', result: this.fieldRepetitionSeparator },
+            { escapeSequence: '(\\' + this.escapeCharacter + 'S' + '\\' + this.escapeCharacter + ')', result: this.componentSeparator },
+            { escapeSequence: '(\\' + this.escapeCharacter + 'T' + '\\' + this.escapeCharacter + ')', result: this.subcomponentSeparator },
+            { escapeSequence: '(\\' + this.escapeCharacter + 'E' + '\\' + this.escapeCharacter + ')', result: this.escapeCharacter }
         ];
         let newRegex;
         escapeSequences.forEach(escapeChar => {
@@ -72,11 +72,15 @@ export class Parser {
         });
         hl7Message.hl7Segments = localSegments;
         if (hl7Message.hl7Segments.length > 0 && hl7Message.hl7Segments[0].segmentName === 'MSH') {
-            hl7Message.hl7MessageType = hl7Message.hl7Segments[0].hl7Fields[8].value;
-            hl7Message.hl7MessageControllerId = hl7Message.hl7Segments[0].hl7Fields[9].value;
-            hl7Message.hl7MessageDateTime = ConvertTime(hl7Message.hl7Segments[0].hl7Fields[6].value);
-            hl7Message.hl7Version = hl7Message.hl7Segments[0].hl7Fields[11].value;
-            this.messageVersion = hl7Message.hl7Version;
+            try {
+                hl7Message.hl7MessageType = hl7Message.hl7Segments[0].hl7Fields[8].value;
+                hl7Message.hl7MessageControllerId = hl7Message.hl7Segments[0].hl7Fields[9].value;
+                hl7Message.hl7MessageDateTime = ConvertTime(hl7Message.hl7Segments[0].hl7Fields[6].value);
+                hl7Message.hl7Version = hl7Message.hl7Segments[0].hl7Fields[11].value;
+            } catch (err) {
+                console.log(err);
+            }
+            this.messageVersion = '2.7.1';
         }
 
         return hl7Message;
@@ -102,7 +106,7 @@ export class Parser {
     }
 
     private segmentDesc(segmentHead: string): string {
-        if (typeof HL7Dict.definitions['2.7.1'].segments[segmentHead] === 'undefined' ) {
+        if (typeof HL7Dict.definitions['2.7.1'].segments[segmentHead] === 'undefined') {
             console.log(`Segment name not found: ${segmentHead}`); // TODO: Create Custom
         } else {
             return HL7Dict.definitions['2.7.1'].segments[segmentHead].desc;

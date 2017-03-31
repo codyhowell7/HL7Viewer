@@ -40,7 +40,7 @@ function removeSearchResult(state: Map<number, boolean>) {
     state.keySeq().forEach(id => newState = newState.set(id, true));
     return newState;
 }
-function removeMessageFromFilter(state, action: IRemoveMessageAction) {
-    let newState = state.set(action.payload.id, false);
+function removeMessageFromFilter(state: Map<number, boolean>, action: IRemoveMessageAction) {
+    let newState = state.delete(action.payload.id);
     return newState;
 }

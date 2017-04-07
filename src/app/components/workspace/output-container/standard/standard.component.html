@@ -1,6 +1,6 @@
 <div *ngIf='message'>
-    <div *ngFor='let segment of getSegments()'>
-        <button class='accordion' (click)='extendSegmentAccordion(segment.segmentIndex, getSegmentState(segment.segmentIndex))'>{{segment.segmentName}}</button>
+    <div *ngFor='let segment of getSegments(); let segIndex = index'>
+        <button class='accordion' (click)='extendSegmentAccordion(segment.segmentIndex, getSegmentState(segment.segmentIndex))'>{{getSegmentName(segIndex, segment)}}</button>
         <div *ngIf='getSegmentState(segment.segmentIndex)'>
             <div *ngFor='let field of getFields(segment.segmentIndex)'>
                 <button *ngIf='!fieldExtendable(segment.segmentIndex, field.index)' class='fieldaccordion' (click)='showFieldInMessage(segment.segmentName, field.index)'>

@@ -4,7 +4,7 @@ import { Router, ActivatedRoute, Params, NavigationExtras } from '@angular/route
 import { merge } from 'rxjs/observable/merge';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import { IMessage, IAppState, IAccordion } from '../../../../states/states';
 import {
   TOGGLE_SEGMENT_ACCORDION, DEFAULT_SEGMENT_ACCORDIONS, TOGGLE_FIELD_ACCORDION,
@@ -13,6 +13,7 @@ import {
   TOGGLE_REPEAT_COMPONENT_ACCORDION, HIGHLIGHT_FIELD, HIGHLIGHT_COMPONENT, HIGHLIGHT_SUBCOMPONENT,
   HIGHLIGHT_REPEAT_FIELD, HIGHLIGHT_REPEAT_COMPONENT, HIGHLIGHT_REPEAT_SUBCOMPONENT
 } from '../../../../constants/constants';
+import { HL7Segment } from '../../../../../parser/HL7Segment';
 
 
 @Component({
@@ -25,6 +26,7 @@ export class StandardComponent implements OnInit {
   message: IMessage;
   messageId: number;
   theState: boolean;
+  NameList: List<string>;
 
   @select(['messages']) messages$: Observable<Map<number, IMessage>>;
   @select(['currentMessage']) currentMessage$: Observable<number>;
@@ -400,6 +402,25 @@ export class StandardComponent implements OnInit {
         subComponentID: subComponentIndex
       }
     });
+  }
+
+  getSegmentName(segIndex: number, seg: HL7Segment) {
+    let nameList = List<string>();
+    let valueInField: number;
+    this.message.message.hl7Segments.forEach(header => nameList = nameList.push(header.segmentName));
+    let nameNumber = nameList.slice(0, segIndex).filter(segment => segment === seg.segmentName).size + 1;
+    if (seg.hl7Fields[0].value !== '') {
+      valueInField = +seg.hl7Fields[0].value;
+      if (valueInField !== nameNumber) {
+        nameNumber = valueInField;
+      }
+    }
+
+    if (isNaN(nameNumber) || (nameList.filter(checkList => checkList === seg.segmentName).size === 1) && nameNumber <= 1) {
+      return seg.segmentName;
+    } else {
+      return seg.segmentName + ' | ' + nameNumber;
+    }
   }
 
 }

@@ -12,6 +12,7 @@ import { AppComponent } from './app.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
 import { MessageComponent } from './components/workspace/message/message.component';
+import { MessageSegmentComponent } from './components/workspace/message/message-segment/message-segment.component';
 import { MenuToolbarComponent } from './components/menu/menu-toolbar/menu-toolbar.component';
 import { MenuItemComponent } from './components/menu/menu-item/menu-item.component';
 import { OutputContainerComponent } from './components/workspace/output-container/output-container.component';
@@ -28,6 +29,8 @@ import { reduceCurrentMessage, reduceMessages } from './reducers/messageReducer'
 import { reduceAccordion } from './reducers/accordionReducer';
 import { reduceDiscrepancies } from './reducers/discrepancyReducer';
 import { reduceJWT } from './reducers/jwtReducer';
+import { reduceFindAll, reduceFindAllUnique } from './reducers/findAllReducer';
+import { reduceMessageHighlight } from './reducers/messageHighlightReducer';
 
 import { ComparespaceComponent } from './components/comparespace/comparespace.component';
 import { QuickViewComponent } from './components/workspace/output-container/quick-view/quick-view.component';
@@ -54,6 +57,12 @@ import { QuickViewSelectComponent } from './components/workspace/output-containe
 import { QuickViewUseComponent } from './components/workspace/output-container/quick-view/quick-view-use/quick-view-use.component';
 import { SerializeHelper } from './backendCalls/serializationHelper';
 import { QuickViewEditComponent } from './components/workspace/output-container/quick-view/quick-view-edit/quick-view-edit.component';
+import { FindAllComponent } from './components/workspace/output-container/find-all/find-all.component';
+import { ClipboardModule } from 'ngx-clipboard';
+import { MessageComponentComponent } from './components/workspace/message/message-component/message-component.component';
+import { MessageSubcomponentComponent } from './components/workspace/message/message-subcomponent/message-subcomponent.component';
+import { MessageRepeatComponent } from './components/workspace/message/message-repeat/message-repeat.component';
+import { StandardMenuComponent } from './components/workspace/output-container/standard/standard-menu/standard-menu.component';
 
 enableProdMode();
 @NgModule({
@@ -62,6 +71,7 @@ enableProdMode();
     MenuComponent,
     WorkspaceComponent,
     MessageComponent,
+    MessageSegmentComponent,
     MenuToolbarComponent,
     MenuItemComponent,
     OutputContainerComponent,
@@ -80,7 +90,13 @@ enableProdMode();
     QuickViewSelectAllComponent,
     QuickViewSelectComponent,
     QuickViewUseComponent,
-    QuickViewEditComponent
+    QuickViewEditComponent,
+    FindAllComponent,
+    MessageSegmentComponent,
+    MessageComponentComponent,
+    MessageSubcomponentComponent,
+    MessageRepeatComponent,
+    StandardMenuComponent,
   ],
   imports: [
     BrowserModule,
@@ -90,6 +106,7 @@ enableProdMode();
     MaterialModule.forRoot(),
     RouterModule.forRoot(appRoutes),
     NgReduxModule,
+    ClipboardModule
   ],
   providers: [DragService],
   bootstrap: [AppComponent]
@@ -119,7 +136,10 @@ function rootReducer(state: IAppState, action: IAction): IAppState {
     searchFilter: reduceSearchResults(state.searchFilter, action),
     messagesToCompare: reduceMessagesToCompare(state.messagesToCompare, action),
     discrepancies: reduceDiscrepancies(state.discrepancies, action),
-    jwt: reduceJWT(state.jwt, action)
+    jwt: reduceJWT(state.jwt, action),
+    findAll: reduceFindAll(state.findAll, action),
+    findAllUnique: reduceFindAllUnique(state.findAllUnique, action),
+    messageHighlight: reduceMessageHighlight(state.messageHighlight, action)
   };
 }
 

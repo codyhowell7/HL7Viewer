@@ -7,7 +7,8 @@ import { Map } from 'immutable';
 
 import { IMessage, IAppState } from '../../states/states';
 import { WorkspaceMode } from '../../enums/enums';
-import { ADD_MESSAGE, SWITCH_MESSAGE, NEW_SEARCH_MESSAGE, REMOVE_SEARCH_FILTER, SAVE_COMPARE } from '../../constants/constants';
+import { ADD_MESSAGE, SWITCH_MESSAGE, NEW_SEARCH_MESSAGE, REMOVE_SEARCH_FILTER, SAVE_COMPARE, RESET_STATE } from '../../constants/constants';
+import * as Clipboard from 'clipboard';
 
 @Component({
   selector: 'hls-menu',
@@ -28,6 +29,8 @@ export class MenuComponent implements OnInit {
   checkBoxes = Map<number, boolean>();
   newMessageId: number;
   messagesSize: number;
+  activeMessage: number;
+  deleted: number;
   searched = false;
 
   constructor(private ngRedux: NgRedux<IAppState>, private router: Router) { }
@@ -65,6 +68,10 @@ export class MenuComponent implements OnInit {
     return !(numInFilter === this.messagesSize);
   }
 
+  updateColor(messageId: number) {
+    this.activeMessage = messageId;
+  }
+
   removeFilter() {
     this.ngRedux.dispatch({
       type: REMOVE_SEARCH_FILTER
@@ -93,4 +100,14 @@ export class MenuComponent implements OnInit {
     });
   }
 
+  resetSession() {
+    this.router.navigate(['workspace/0/standard']);
+    this.activeMessage = null;
+    this.ngRedux.dispatch({
+      type: RESET_STATE,
+    });
+    this.ngRedux.dispatch({
+      type: RESET_STATE,
+    });
+  }
 }

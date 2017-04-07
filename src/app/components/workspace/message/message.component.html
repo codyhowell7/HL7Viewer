@@ -1,1 +1,4 @@
-<textarea [formControl]="messageControl" [(ngModel)]="message"></textarea>
+<textarea *ngIf='!lockText()' [formControl]="messageControl" [(ngModel)]="message"></textarea>
+<div class='locked' *ngIf='lockText()'>
+        <hls-message-segment *ngFor='let segment of currentMessage.message.hl7Segments; let sIndex = index' [segment]='segment' [sIndex]='sIndex' [highlight]='highlight'></hls-message-segment>
+</div>

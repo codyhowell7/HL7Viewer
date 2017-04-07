@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { select, NgRedux } from 'ng2-redux';
@@ -7,7 +7,6 @@ import { IMessage, IAppState } from '../../../../states/states';
 import { QuickViewService } from '../../../../backendCalls/quickview.service';
 import { SerializeHelper } from '../../../../backendCalls/serializationHelper';
 import { SAVE_JWT } from '../../../../constants/constants';
-import { List } from 'immutable';
 import { JwtHelper } from 'angular2-jwt';
 
 
@@ -53,7 +52,10 @@ export class QuickViewComponent implements OnInit {
       }
     });
     this.jwt$.subscribe(jwt => this.jwt = jwt);
-    this.router.navigate([`/workspace/0/quick`], { queryParams: {} });
+    this.router.navigate([], { queryParams: {} });
+    if (this.message == null) {
+      this.router.navigate([`/workspace/0/quick`], { queryParams: {} });
+    }
 
   }
 

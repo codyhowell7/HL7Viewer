@@ -30,7 +30,7 @@ export class MessageReader {
     public generalSearch(messages: Map<number, IMessage>, searchValue: string) {
         let messageFilter = Map<number, boolean>().set(0, false);
         messages.forEach((message, messageNum) => {
-            if (message.message.hl7CorrectedMessage.search(searchValue) !== -1) {
+            if (message.message.hl7CorrectedMessage.toLocaleLowerCase().search(searchValue.toLocaleLowerCase()) !== -1) {
                 messageFilter = messageFilter.set(messageNum, true);
             } else {
                 messageFilter = messageFilter.set(messageNum, false);

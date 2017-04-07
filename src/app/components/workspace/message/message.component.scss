@@ -3,10 +3,20 @@
     background-color: #fff;
     margin-right: 5px;
     padding: 10px;
+        max-width: 40%;
 
     textarea {
         height: 100%;
         width: 100%;
         resize: none;
     }
+
+    .locked {
+    font-family: monospace;
+    height: 100%;
+    width: 100%;
+    word-wrap: break-word;
+    font-size: 14px;
 }
+}
+

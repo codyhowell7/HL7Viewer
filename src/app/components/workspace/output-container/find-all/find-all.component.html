@@ -1,0 +1,24 @@
+<div class='findAllContainer'>
+  <div class='inputArea'>
+    <input class='topSearch' (blur)='setInput($event.target.value)' [value]='identifier'>
+    <button (click)='getAllResults()'> Find All </button>
+  </div>
+  <div class='inputArea'>
+    <form>
+      <input class='radioButtons' type='radio' [(ngModel)]='unique' name='showall' value='false'>
+      <div class='radioText' (click)='setUnique(false)'> Show All </div>
+      <input class='radioButtons' type='radio' [(ngModel)]='unique' name='showunique' value='true'>
+      <div class='radioText' (click)='setUnique(true)'> Show Unique </div>
+    </form>
+    <div>
+      <button class='clip' ngxClipboard [cbContent]='getAllCurrentElements()'> Copy to clipboard </button>
+    </div>
+  </div>
+  <div class='aroundResults'>
+    <div class='results' *ngFor='let result of resultsArray; let i = index'>
+      <div class='messageNum' *ngIf='!isUnique()'> {{result[0]+1}}. </div>
+      <div class='value'> <b> {{result[1]}} </b> </div>
+      <div *ngIf='isUnique()' class='count'> Count: {{getCount(result[1])}} </div>
+    </div>
+  </div>
+</div>

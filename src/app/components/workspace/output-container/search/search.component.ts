@@ -37,7 +37,6 @@ export class SearchComponent implements OnInit {
   constructor(private ngRedux: NgRedux<IAppState>, private router: Router) { }
 
   ngOnInit() {
-    this.router.navigate([`/workspace/0/search`], { queryParams: {} });
     this.$searchConditions.subscribe(condtions => {
       this.localConditionGroups = condtions;
     });
@@ -49,6 +48,10 @@ export class SearchComponent implements OnInit {
     this.$messages.subscribe(message => {
       this.messages = message.filter(filteredMessage => !filteredMessage.deleted).toMap();
     });
+
+    if (this.messages.filter(message => message.message.hl7CorrectedMessage !== '').size === 0) {
+      this.router.navigate([`/workspace/0/search`], { queryParams: {} });
+    }
 
     if (this.localConditionGroups == null) {
       let defaultCondition: ICondition = {
@@ -223,7 +226,7 @@ export class SearchComponent implements OnInit {
     return this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).rightValue;
   }
 
-  updateFunctionModifier(value: '' | 'Length' , conditionId: number, groupId: number) {
+  updateFunctionModifier(value: '' | 'Length', conditionId: number, groupId: number) {
     let condition: ICondition = {
       leftValue: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).leftValue,
       rightValue: this.localConditionGroups.conditionGroups.get(groupId).conditions.get(conditionId).rightValue,

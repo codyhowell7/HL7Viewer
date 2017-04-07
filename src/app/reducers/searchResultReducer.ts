@@ -2,7 +2,7 @@ import { Map } from 'immutable';
 import { IAction, IAddSearchResults, IRemoveMessageAction } from '../actions/actions';
 import {
     DEFAULT_STATE, NEW_SEARCH_RESULT, NEW_SEARCH_MESSAGE, REMOVE_SEARCH_FILTER,
-    REMOVE_MESSAGE_FROM_FILTER
+    REMOVE_MESSAGE_FROM_FILTER, RESET_STATE
 } from '../constants/constants';
 
 export function reduceSearchResults(state: Map<number, boolean>, action: IAction): Map<number, boolean> {
@@ -19,6 +19,8 @@ export function reduceSearchResults(state: Map<number, boolean>, action: IAction
             if (state != null) {
                 return state;
             }
+            return defaultSearchResult(state);
+        case RESET_STATE:
             return defaultSearchResult(state);
         default:
             return state;

@@ -1,0 +1,66 @@
+:host {
+    background-color: #fff;
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
+input.topSearch {
+    width: 100%;
+    font-size: 20px;
+}
+
+input.radioButtons {
+    margin-left: 20px;
+}
+
+div.findAllContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    width: 100%;
+}
+
+div.inputArea {
+    min-height: 4%;
+    width: 100%;  
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-between;
+}
+
+div.results {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #ddd;
+}
+
+div.value {
+    background-color: #f0f0f0;
+    width: 100%;
+}
+
+div.count {
+    background-color: #ddd;
+    width: 100%;
+}
+
+div.aroundResults{
+    background-color: #f6f6f6;
+    overflow: auto;
+}
+
+div.messageNum {
+    margin-right: 10px;
+}
+
+div.radioText {
+    cursor: pointer;
+}
+
+form {
+    display: flex;
+}

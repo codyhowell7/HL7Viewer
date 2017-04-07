@@ -10,7 +10,8 @@ import {
   TOGGLE_SEGMENT_ACCORDION, DEFAULT_SEGMENT_ACCORDIONS, TOGGLE_FIELD_ACCORDION,
   DEFAULT_FIELD_ACCORDIONS, TOGGLE_COMPONENT_ACCORDION, DEFAULT_COMPONENT_ACCORDIONS,
   TOGGLE_REPEAT_FIELD_ACCORDION, DEFAULT_REPEAT_FIELD_ACCORDIONS, DEFAULT_REPEAT_COMPONENT_ACCORDIONS,
-  TOGGLE_REPEAT_COMPONENT_ACCORDION
+  TOGGLE_REPEAT_COMPONENT_ACCORDION, HIGHLIGHT_FIELD, HIGHLIGHT_COMPONENT, HIGHLIGHT_SUBCOMPONENT,
+  HIGHLIGHT_REPEAT_FIELD, HIGHLIGHT_REPEAT_COMPONENT, HIGHLIGHT_REPEAT_SUBCOMPONENT
 } from '../../../../constants/constants';
 
 
@@ -33,7 +34,6 @@ export class StandardComponent implements OnInit {
 
 
   ngOnInit() {
-    this.router.navigate(['/workspace/0/standard']);
     combineLatest(this.messages$, this.currentMessage$)
       .map(([messages, currentMessage]) => {
         let message = messages.get(currentMessage);
@@ -41,6 +41,9 @@ export class StandardComponent implements OnInit {
         return message;
       })
       .subscribe(message => { this.message = message; });
+    if (this.message == null) {
+      this.router.navigate(['/workspace/0/standard']);
+    }
   }
 
   getSegments() {
@@ -82,7 +85,7 @@ export class StandardComponent implements OnInit {
   getRepeatSubComponents(segmentIndex: number, fieldIndex: number, repeatIndex: number, componentIndex: number) {
     if (this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex]
       .hl7RepeatedFields[repeatIndex].hl7Components[componentIndex].hasSubComponents) {
-        let repeatSubComponents = this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex]
+      let repeatSubComponents = this.message.message.hl7Segments[segmentIndex].hl7Fields[fieldIndex]
         .hl7RepeatedFields[repeatIndex].hl7Components[componentIndex].hl7SubComponents;
       return repeatSubComponents;
     } else {
@@ -191,7 +194,7 @@ export class StandardComponent implements OnInit {
         });
       } else {
         let components = this.message.message.hl7Segments[segmentId].hl7Fields[fieldId].hl7Components;
-          components.forEach((component, componentIndex) => {
+        components.forEach((component, componentIndex) => {
           this.ngRedux.dispatch({
             type: DEFAULT_COMPONENT_ACCORDIONS,
             payload: {
@@ -318,6 +321,83 @@ export class StandardComponent implements OnInit {
         repeatToggleState: true,
         segmentToggleState: true,
         fieldToggleState: true
+      }
+    });
+  }
+
+  fieldExtendable(segmentIndex, fieldIndex) {
+    return this.hasRepeat(segmentIndex, fieldIndex) || this.hasComponents(segmentIndex, fieldIndex);
+  }
+
+  componentExtendable(segmentIndex, fieldIndex, componentIndex) {
+    return this.hasSubComponents(segmentIndex, fieldIndex, componentIndex);
+  }
+
+  showFieldInMessage(segmentName, fieldIndex) {
+    this.ngRedux.dispatch({
+      type: HIGHLIGHT_FIELD,
+      payload: {
+        segmentName: segmentName,
+        fieldID: fieldIndex,
+      }
+    });
+  }
+
+  showComponentInMessage(segmentName, fieldIndex, componentIndex) {
+    this.ngRedux.dispatch({
+      type: HIGHLIGHT_COMPONENT,
+      payload: {
+        segmentName: segmentName,
+        fieldID: fieldIndex,
+        componentID: componentIndex
+      }
+    });
+  }
+
+  showSubComponentInMessage(segmentName, fieldIndex, componentIndex, subComponentIndex) {
+    this.ngRedux.dispatch({
+      type: HIGHLIGHT_SUBCOMPONENT,
+      payload: {
+        segmentName: segmentName,
+        fieldID: fieldIndex,
+        componentID: componentIndex,
+        subComponentID: subComponentIndex
+      }
+    });
+  }
+
+  showRepeatFieldInMessage(segmentName, fieldIndex, repeatIndex) {
+    this.ngRedux.dispatch({
+      type: HIGHLIGHT_REPEAT_FIELD,
+      payload: {
+        segmentName: segmentName,
+        fieldID: fieldIndex,
+        repeatID: repeatIndex
+      }
+    });
+  }
+
+  showRepeatComponentInMessage(segmentName, fieldIndex, repeatIndex, componentIndex) {
+    this.ngRedux.dispatch({
+      type: HIGHLIGHT_REPEAT_COMPONENT,
+      payload: {
+        segmentName: segmentName,
+        fieldID: fieldIndex,
+        repeatID: repeatIndex,
+        componentID: componentIndex
+      }
+    });
+  }
+
+  showRepeatSubComponentInMessage(segmentName, fieldIndex, repeatIndex, componentIndex, subComponentIndex) {
+    this.ngRedux.dispatch({
+      type: HIGHLIGHT_REPEAT_SUBCOMPONENT,
+      payload: {
+        segmentName: segmentName,
+        fieldID: fieldIndex,
+        repeatID: repeatIndex,
+        componentID: componentIndex,
+        subComponentID: subComponentIndex
       }
     });
   }

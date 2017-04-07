@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 
 import { IAction, ISaveLeftCompareArea, ISaveRightCompareArea } from '../actions/actions';
-import { DEFAULT_STATE, SAVE_LEFT, SAVE_RIGHT } from '../constants/constants';
+import { DEFAULT_STATE, SAVE_LEFT, SAVE_RIGHT, RESET_STATE } from '../constants/constants';
 
 export function reduceMessagesToCompare(state: Map<number, number>, action: IAction) {
     switch (action.type) {
@@ -13,6 +13,8 @@ export function reduceMessagesToCompare(state: Map<number, number>, action: IAct
             if (state != null) {
                 return state;
             }
+            return defaultCompareState();
+        case RESET_STATE:
             return defaultCompareState();
         default:
             return state;

@@ -5,6 +5,7 @@ import { QuickViewComponent } from './components/workspace/output-container/quic
 import { SearchComponent } from './components/workspace/output-container/search/search.component';
 import { ComparespaceComponent } from './components/comparespace/comparespace.component';
 import { StandardComponent } from './components/workspace/output-container/standard/standard.component';
+import { FindAllComponent } from './components/workspace/output-container/find-all/find-all.component';
 
 export const appRoutes: Routes = [
     {
@@ -22,6 +23,10 @@ export const appRoutes: Routes = [
             {
                 path: 'standard',
                 component: StandardComponent
+            },
+            {
+                path: 'find',
+                component: FindAllComponent
             }
         ]
     },

@@ -121,7 +121,8 @@ export class Parser {
         }
         let hl7Field: HL7Field = new HL7Field(fieldValue, fieldIndex);
         let localRepeatedFields: HL7Field[] = hl7Field.hl7RepeatedFields;
-        if (hl7Field.fieldDesc = HL7Dict.definitions['2.7.1'].segments[currentSegmentName]) {
+        if (HL7Dict.definitions['2.7.1'].segments[currentSegmentName] &&
+            HL7Dict.definitions['2.7.1'].segments[currentSegmentName].fields[fieldIndex]) {
             hl7Field.fieldDesc = HL7Dict.definitions['2.7.1'].segments[currentSegmentName].fields[fieldIndex].desc;
         } else {
             hl7Field.fieldDesc = 'Custom Segment';

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { select, NgRedux } from 'ng2-redux';
@@ -9,7 +9,7 @@ import { HL7MultiMessage } from '../../../../parser/hl7MultiMessage';
 import { HL7Message } from '../../../../parser/HL7Message';
 import { HL7Segment } from '../../../../parser/hl7Segment';
 import { Map } from 'immutable';
-import 'rxjs/add/operator/debounceTime';
+import { IMessageHighlight } from '../../../states/states';
 
 import { IMessage, IAppState, IAccordion, ISegmentAccordion } from '../../../states/states';
 import {
@@ -22,27 +22,34 @@ import {
   templateUrl: './message.component.html',
   styleUrls: ['./message.component.scss']
 })
-export class MessageComponent implements OnInit {
+export class MessageComponent implements OnInit, OnDestroy {
 
   @select(['messages']) messages$: Observable<Map<number, IMessage>>;
   @select(['currentMessage']) currentMessage$: Observable<number>;
   @select(['accordion']) accordion$: Observable<IAccordion>;
+  @select(['messageHighlight']) messageHighlight$: Observable<Map<string, IMessageHighlight>>;
 
   messageId: number;
   message: string;
   messages: Map<number, IMessage>;
+  currentMessage: IMessage;
+  messagesSize: number;
   messageControl: FormControl = new FormControl();
+  highlight: Map<string, IMessageHighlight>;
+  ifAnychanges;
+  mHighlightSub;
 
   constructor(private ngRedux: NgRedux<IAppState>) { }
 
   ngOnInit() {
-    combineLatest(this.accordion$,
-      combineLatest(this.messages$, this.currentMessage$)
-        .map(([messages, currentMessage]) => {
-          this.messageId = currentMessage;
-          this.messages = messages;
-          return messages.get(currentMessage);
-        })
+      this.ifAnychanges = combineLatest(this.accordion$,
+        combineLatest(this.messages$, this.currentMessage$)
+          .map(([messages, currentMessage]) => {
+            this.messageId = currentMessage;
+            this.messages = messages;
+            this.currentMessage = messages.get(currentMessage);
+            return messages.get(currentMessage);
+          })
     )
       .subscribe(([accordion, message]) => {
         let hl7Segments: HL7Segment[];
@@ -69,15 +76,16 @@ export class MessageComponent implements OnInit {
           });
         }
         if (message) {
-          this.messageControl.setValue(message.message.hl7CorrectedMessage, { emitEvent: false });
-        }
-
+          this.message = message.message.hl7CorrectedMessage;
+        };
       });
 
+    this.mHighlightSub  = this.messageHighlight$.subscribe(highlight => {
+      this.highlight = highlight;
+    });
 
     this.messageControl
       .valueChanges
-      .debounceTime(200)
       .subscribe(value => {
         let parsedMessage = new HL7MultiMessage(this.message);
         let messages: HL7Message[] = parsedMessage.hl7Messages;
@@ -118,5 +126,20 @@ export class MessageComponent implements OnInit {
           });
         });
       });
+  }
+
+  ngOnDestroy() {
+    this.ifAnychanges.unsubscribe();
+    this.mHighlightSub.unsubscribe();
+  }
+
+  lockText() {
+    return this.message && this.currentMessage.message.hl7CorrectedMessage !== '';
+  }
+
+
+  makeColorful(segment: string) {
+    let colorPipe = segment.replace('|', '<mark>|</mark>');
+    return colorPipe;
   }
 }

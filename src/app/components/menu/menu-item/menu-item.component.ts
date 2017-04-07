@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
@@ -20,17 +20,17 @@ export class MenuItemComponent implements OnInit {
   @select(['messagesToCompare']) messagesToCompare$: Observable<Map<number, boolean>>;
 
   @Input() message: IMessage;
+  @Output() colorItem = new EventEmitter();
 
   isMessages$: Observable<boolean>;
   isCompare$: Observable<boolean>;
-
   messageCount$: Observable<number>;
+  deleted: number;
 
   constructor(private ngRedux: NgRedux<IAppState>, private router: ActivatedRoute) { }
 
   ngOnInit() {
     this.messageCount$ = this.messages$.map(messages => messages.filter(message => !message.deleted).size);
-
     this.isMessages$ = combineLatest(this.mode$, this.messageCount$)
       .map(([mode, messageCount]) => { return mode === WorkspaceMode.messages && messageCount > 1; });
     this.isCompare$ = combineLatest(this.mode$, this.messageCount$)
@@ -58,5 +58,9 @@ export class MenuItemComponent implements OnInit {
     let currentRoute;
     this.router.children[0].url.subscribe(route => currentRoute = route[0].path);
     return currentRoute;
+  }
+
+  highlightItem(messageId: number) {
+    this.colorItem.emit(messageId);
   }
 }

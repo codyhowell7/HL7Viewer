@@ -4,7 +4,7 @@ import { IAction, IAccordionToggleAction } from '../actions/actions';
 import {
     DEFAULT_STATE, TOGGLE_SEGMENT_ACCORDION, DEFAULT_SEGMENT_ACCORDIONS, DEFAULT_FIELD_ACCORDIONS, TOGGLE_FIELD_ACCORDION,
     DEFAULT_COMPONENT_ACCORDIONS, TOGGLE_COMPONENT_ACCORDION, DEFAULT_MESSAGE_ACCORDIONS, TOGGLE_REPEAT_FIELD_ACCORDION,
-    DEFAULT_REPEAT_FIELD_ACCORDIONS, DEFAULT_REPEAT_COMPONENT_ACCORDIONS, TOGGLE_REPEAT_COMPONENT_ACCORDION
+    DEFAULT_REPEAT_FIELD_ACCORDIONS, DEFAULT_REPEAT_COMPONENT_ACCORDIONS, TOGGLE_REPEAT_COMPONENT_ACCORDION, RESET_STATE
 } from '../constants/constants';
 
 
@@ -36,6 +36,8 @@ export function reduceAccordion(state: IAccordion, action: IAction): IAccordion 
             if (state != null) {
                 return state;
             }
+            return defaultAccordion();
+        case RESET_STATE:
             return defaultAccordion();
         default:
             return state;

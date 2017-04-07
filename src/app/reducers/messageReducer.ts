@@ -1,7 +1,10 @@
 import { Map } from 'immutable';
 import { IMessage } from '../states/states';
-import { IAction, ISwitchMessageAction, IMessageReceivedAction, IRemoveMessageAction } from '../actions/actions';
-import { DEFAULT_STATE, SWITCH_MESSAGE, ADD_MESSAGE, REMOVE_MESSAGE, MESSAGE_RECEIVED } from '../constants/constants';
+import { IAction, ISwitchMessageAction, IMessageReceivedAction, IRemoveMessageAction, IAllMessageReceivedAction } from '../actions/actions';
+import {
+    DEFAULT_STATE, SWITCH_MESSAGE, ADD_MESSAGE, REMOVE_MESSAGE, MESSAGE_RECEIVED, RESET_STATE,
+    All_MESSAGE_RECEIVED
+} from '../constants/constants';
 import { HL7Message } from '../../parser/HL7Message';
 
 
@@ -14,6 +17,8 @@ export function reduceCurrentMessage(state: number, action: IAction): number {
             if (state != null) {
                 return state;
             }
+            return 0;
+        case RESET_STATE:
             return 0;
         default:
             return state;
@@ -29,14 +34,22 @@ export function reduceMessages(state: Map<number, IMessage>, action: IAction): M
             return removeMessage(state, action as IRemoveMessageAction);
         case MESSAGE_RECEIVED:
             return messageReceived(state, action as IMessageReceivedAction);
+        case All_MESSAGE_RECEIVED:
+            return allMessageReceived(state, action as IAllMessageReceivedAction)
         case DEFAULT_STATE:
             if (state != null) {
                 return state;
             }
             return getMessageDefaultState();
+        case RESET_STATE:
+            return getMessageDefaultState();
         default:
             return state;
     }
+}
+
+function allMessageReceived(state: Map<number, IMessage>, action: IAllMessageReceivedAction): Map<number, IMessage> {
+    return action.payload.messages;
 }
 
 function messageReceived(state: Map<number, IMessage>, action: IMessageReceivedAction): Map<number, IMessage> {

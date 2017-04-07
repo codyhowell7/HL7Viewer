@@ -3,40 +3,51 @@
         <button class='accordion' (click)='extendSegmentAccordion(segment.segmentIndex, getSegmentState(segment.segmentIndex))'>{{segment.segmentName}}</button>
         <div *ngIf='getSegmentState(segment.segmentIndex)'>
             <div *ngFor='let field of getFields(segment.segmentIndex)'>
-                <button class='fieldaccordion' (click)='extendFieldAccordion(segment.segmentIndex, field.index, getFieldState(segment.segmentIndex, field.index))'> 
-                <div class='fieldFlexItem'> {{segment.segmentName}}.{{field.index+1}} </div>
-                <div class='fieldFlexItem'> {{field.fieldDesc}} </div>
-                <div class='accordionValue'> {{field.value}} </div>
-                <div class='plusAtTheEnd' *ngIf='hasRepeat(segment.segmentIndex, field.index) && !getFieldState(segment.segmentIndex, field.index)'> + </div>
-                <div class='plusAtTheEnd' *ngIf='hasRepeat(segment.segmentIndex, field.index) && getFieldState(segment.segmentIndex, field.index)'> - </div>
-                <div class='plusAtTheEnd' *ngIf='hasComponents(segment.segmentIndex, field.index) && !getFieldState(segment.segmentIndex, field.index)'> + </div>
-                <div class='plusAtTheEnd' *ngIf='hasComponents(segment.segmentIndex, field.index) && getFieldState(segment.segmentIndex, field.index)'> - </div>
-            </button>
+                <button *ngIf='!fieldExtendable(segment.segmentIndex, field.index)' class='fieldaccordion' (click)='showFieldInMessage(segment.segmentName, field.index)'>
+                    <div class='fieldFlexItem'> {{segment.segmentName}}.{{field.index+1}} </div>
+                    <div class='fieldFlexItem'> {{field.fieldDesc}} </div>
+                    <div class='accordionValue'> {{field.value}} </div>
+                </button>
+                <button *ngIf='fieldExtendable(segment.segmentIndex, field.index)' class='fieldaccordion' (click)='extendFieldAccordion(segment.segmentIndex, field.index, getFieldState(segment.segmentIndex, field.index))'> 
+                    <div class='fieldFlexItem'> {{segment.segmentName}}.{{field.index+1}} </div>
+                    <div class='fieldFlexItem'> {{field.fieldDesc}} </div>
+                    <div class='accordionValue'> {{field.value}} </div>
+                    <div class='plusAtTheEnd' *ngIf='hasRepeat(segment.segmentIndex, field.index) && !getFieldState(segment.segmentIndex, field.index)'> + </div>
+                    <div class='plusAtTheEnd' *ngIf='hasRepeat(segment.segmentIndex, field.index) && getFieldState(segment.segmentIndex, field.index)'> - </div>
+                    <div class='plusAtTheEnd' *ngIf='hasComponents(segment.segmentIndex, field.index) && !getFieldState(segment.segmentIndex, field.index)'> + </div>
+                    <div class='plusAtTheEnd' *ngIf='hasComponents(segment.segmentIndex, field.index) && getFieldState(segment.segmentIndex, field.index)'> - </div>
+                </button>
                 <div *ngIf='getFieldState(segment.segmentIndex, field.index)'>
                     <div *ngIf='hasRepeat(segment.segmentIndex, field.index)'>
                         <div *ngFor='let repeatField of getRepeat(segment.segmentIndex, field.index); let repeatIndex = index'>
-                            <button class='repeatField' (click)='extendRepeatFieldAccordion(segment.segmentIndex, field.index, repeatIndex, getRepeatFieldState(segment.segmentIndex, field.index, repeatIndex))'>
-                            <div class='repeatFieldFlexItem'> {{segment.segmentName}}.{{field.index+1}}.[{{repeatIndex}}] </div>
-                            <div class='accordionValue'> {{repeatField.value}} </div>
-                            <div class='plusAtTheEnd' *ngIf='hasRepeatComponents(segment.segmentIndex, field.index, repeatIndex) && !getRepeatFieldState(segment.segmentIndex, field.index, repeatIndex)'> + </div>
-                            <div class='plusAtTheEnd' *ngIf='hasRepeatComponents(segment.segmentIndex, field.index, repeatIndex)&& getRepeatFieldState(segment.segmentIndex, field.index, repeatIndex)'> - </div>
-                        </button>
+                            <button class='repeatField' *ngIf='!hasRepeatComponents(segment.segmentIndex, field.index, repeatIndex)' (click)='showRepeatFieldInMessage(segment.segmentName, field.index, repeatIndex)'>
+                                <div class='repeatFieldFlexItem'> {{segment.segmentName}}.{{field.index+1}}.[{{repeatIndex}}] </div>
+                                <div class='accordionValue'> {{repeatField.value}} </div>
+                            </button>
+                            <button class='repeatField' *ngIf='hasRepeatComponents(segment.segmentIndex, field.index, repeatIndex)' (click)='extendRepeatFieldAccordion(segment.segmentIndex, field.index, repeatIndex, getRepeatFieldState(segment.segmentIndex, field.index, repeatIndex))'>
+                                <div class='repeatFieldFlexItem'> {{segment.segmentName}}.{{field.index+1}}.[{{repeatIndex}}] </div>
+                                <div class='accordionValue'> {{repeatField.value}} </div>
+                                <div class='plusAtTheEnd' *ngIf='hasRepeatComponents(segment.segmentIndex, field.index, repeatIndex) && !getRepeatFieldState(segment.segmentIndex, field.index, repeatIndex)'> + </div>
+                                <div class='plusAtTheEnd' *ngIf='hasRepeatComponents(segment.segmentIndex, field.index, repeatIndex) && getRepeatFieldState(segment.segmentIndex, field.index, repeatIndex)'> - </div>
+                            </button>
                             <div *ngIf='getRepeatFieldState(segment.segmentIndex, field.index, repeatIndex)'>
                                 <div *ngFor='let repeatComponent of getRepeatComponents(segment.segmentIndex, field.index, repeatIndex)'>
-                                    <button class='componentaccordion' (click)='extendRepeatComponentAccordion(segment.segmentIndex, field.index, repeatIndex, repeatComponent.index, getRepeatComponentState(segment.segmentIndex, field.index, repeatIndex, repeatComponent.index))'>
-                                    <div class='componentFlexItem'> {{segment.segmentName}}.{{field.index+1}}.[{{repeatIndex}}].{{repeatComponent.index+1}} </div>
-                                    <div class='accordionValue'> {{repeatComponent.value}} </div>
-                                    <div class='plusAtTheEnd' *ngIf='hasRepeatSubComponents(segment.segmentIndex, field.index, repeatComponent.index, repeatIndex ) && !getRepeatComponentState(segment.segmentIndex, field.index, repeatIndex, repeatComponent.index)'> + </div>
-                                    <div class='plusAtTheEnd' *ngIf='hasRepeatSubComponents(segment.segmentIndex, field.index, repeatComponent.index, repeatIndex ) && getRepeatComponentState(segment.segmentIndex, field.index, repeatIndex, repeatComponent.index)'> - </div>
-                                </button>
+                                    <button class='componentaccordion' *ngIf='!hasRepeatSubComponents(segment.segmentIndex, field.index, repeatComponent.index, repeatIndex )' (click)='showRepeatComponentInMessage(segment.segmentName, field.index, repeatIndex, repeatComponent.index)'>
+                                        <div class='componentFlexItem'> {{segment.segmentName}}.{{field.index+1}}.[{{repeatIndex}}].{{repeatComponent.index+1}} </div>
+                                        <div class='accordionValue'> {{repeatComponent.value}} </div>
+                                    </button>
+                                    <button class='componentaccordion' *ngIf='hasRepeatSubComponents(segment.segmentIndex, field.index, repeatComponent.index, repeatIndex )' (click)='extendRepeatComponentAccordion(segment.segmentIndex, field.index, repeatIndex, repeatComponent.index, getRepeatComponentState(segment.segmentIndex, field.index, repeatIndex, repeatComponent.index))'>
+                                        <div class='componentFlexItem'> {{segment.segmentName}}.{{field.index+1}}.[{{repeatIndex}}].{{repeatComponent.index+1}} </div>
+                                        <div class='accordionValue'> {{repeatComponent.value}} </div>
+                                        <div class='plusAtTheEnd' *ngIf='hasRepeatSubComponents(segment.segmentIndex, field.index, repeatComponent.index, repeatIndex ) && !getRepeatComponentState(segment.segmentIndex, field.index, repeatIndex, repeatComponent.index)'> + </div>
+                                        <div class='plusAtTheEnd' *ngIf='hasRepeatSubComponents(segment.segmentIndex, field.index, repeatComponent.index, repeatIndex ) && getRepeatComponentState(segment.segmentIndex, field.index, repeatIndex, repeatComponent.index)'> - </div>
+                                    </button>
                                     <div *ngIf='getRepeatComponentState(segment.segmentIndex, field.index, repeatIndex, repeatComponent.index)'>
                                         <div *ngFor='let repeatSubComponent of getRepeatSubComponents(segment.segmentIndex, field.index, repeatIndex, repeatComponent.index)'>
-                                            <div class='subComponent'>
-                                                <div class='subComponentFlexItem'> {{segment.segmentName}}.{{field.index+1}}.[{{repeatIndex}}].{{repeatComponent.index+1}}.{{repeatComponent.index+1}}
-                                                    </div>
-                                                <div class='accordionValue'> {{repeatSubComponent.value}}
-                                                </div>
-                                            </div>
+                                            <button class='subComponent' (click)='showRepeatSubComponentInMessage(segment.segmentName, field.index, repeatIndex, repeatComponent.index, repeatSubComponent.index)'>
+                                                <div class='subComponentFlexItem'> {{segment.segmentName}}.{{field.index+1}}.[{{repeatIndex}}].{{repeatComponent.index+1}}.{{repeatComponent.index+1}}</div>
+                                                <div class='accordionValue'> {{repeatSubComponent.value}}</div>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -45,19 +56,22 @@
                     </div>
                     <div *ngIf='!hasRepeat(segment.segmentIndex, field.index)'>
                         <div *ngFor='let component of getComponents(segment.segmentIndex, field.index)'>
-                            <button class='componentaccordion' (click)='extendComponentAccordion(segment.segmentIndex, field.index, component.index, getComponentState(segment.segmentIndex, field.index, component.index))'>
-                            <div class='componentFlexItem'> {{segment.segmentName}}.{{field.index+1}}.{{component.index+1}} </div>
-                            <div class='accordionValue'> {{component.value}} </div>
-                            <div class='plusAtTheEnd' *ngIf='hasSubComponents(segment.segmentIndex, field.index, component.index) && !getComponentState(segment.segmentIndex, field.index, component.index)'> + </div>
-                            <div class='plusAtTheEnd' *ngIf='hasSubComponents(segment.segmentIndex, field.index, component.index) && getComponentState(segment.segmentIndex, field.index, component.index)'> - </div>
-                        </button>
+                            <button  *ngIf='!componentExtendable(segment.segmentIndex, field.index, component.index)' class='componentaccordion' (click)='showComponentInMessage(segment.segmentName, field.index, component.index)'>
+                                <div class='componentFlexItem'> {{segment.segmentName}}.{{field.index+1}}.{{component.index+1}} </div>
+                                <div class='accordionValue'> {{component.value}} </div>
+                            </button>
+                            <button *ngIf='componentExtendable(segment.segmentIndex, field.index, component.index)' class='componentaccordion' (click)='extendComponentAccordion(segment.segmentIndex, field.index, component.index, getComponentState(segment.segmentIndex, field.index, component.index))'>
+                                <div class='componentFlexItem'> {{segment.segmentName}}.{{field.index+1}}.{{component.index+1}} </div>
+                                <div class='accordionValue'> {{component.value}} </div>
+                                <div class='plusAtTheEnd' *ngIf='hasSubComponents(segment.segmentIndex, field.index, component.index) && !getComponentState(segment.segmentIndex, field.index, component.index)'> + </div>
+                                <div class='plusAtTheEnd' *ngIf='hasSubComponents(segment.segmentIndex, field.index, component.index) && getComponentState(segment.segmentIndex, field.index, component.index)'> - </div>
+                            </button>
                             <div *ngIf='getComponentState(segment.segmentIndex, field.index, component.index)'>
                                 <div *ngFor='let subComponent of getSubComponents(segment.segmentIndex, field.index, component.index)'>
-                                    <div class='subComponent'>
-                                        <div class='subComponentFlexItem'> {{segment.segmentName}}.{{field.index+1}}.{{component.index+1}}.{{subComponent.index}}
-                                            </div>
+                                    <button class='subComponent' (click)='showSubComponentInMessage(segment.segmentName, field.index, component.index, subComponent.index)'> 
+                                        <div class='subComponentFlexItem'> {{segment.segmentName}}.{{field.index+1}}.{{component.index+1}}.{{subComponent.index}} </div>
                                         <div class='accordionValue'> {{subComponent.value}} </div>
-                                    </div>
+                                    </button>
                                 </div>
                             </div>
                         </div>

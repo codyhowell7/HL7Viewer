@@ -1,9 +1,9 @@
 import { WorkspaceMode } from '../enums/enums';
 import { HL7Message } from '../../parser/hl7Message';
 import { HL7Segment } from '../../parser/hl7Segment';
-import { Map } from 'immutable';
-import { ISearchConditions } from  '../states/states';
-import { IMessageDiscrepancies } from '../../messageReader/IMessageDiscrepancies';
+import { Map, List } from 'immutable';
+import { ISearchConditions, IMessage } from  '../states/states';
+import { IMessageDiscrepancies } from '../../messageReader/compareMessages/IMessageDiscrepancies';
 
 
 export interface IWorkspaceModeChangedPayload {
@@ -16,6 +16,10 @@ export interface IIdPayload {
 
 export interface IMessageReceivedPayload extends IIdPayload {
     message: HL7Message;
+}
+
+export interface IAllMessageReceivedPayload {
+    messages: Map<number, IMessage>;
 }
 
 export interface IAccordionToggledPayload {
@@ -65,4 +69,22 @@ export interface IDiscrepancyPayload {
 
 export interface IJWTPayload {
     JWT: string;
+}
+
+export interface IFindAllPayload {
+    FindAllSearch: List<[number, string]>;
+    uniqueSearch: string;
+    searchValue: string;
+}
+
+export interface IFindAllUniquePayload {
+    FindAllSearchUnique: Map<string, number>;
+}
+
+export interface IHighlightMessagePayload {
+    segmentName: string;
+    fieldID: number;
+    repeatID?: number;
+    componentID?: number;
+    subComponentID?: number;
 }

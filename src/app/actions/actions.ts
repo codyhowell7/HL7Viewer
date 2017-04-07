@@ -1,7 +1,8 @@
 import {
     IWorkspaceModeChangedPayload, IMessageReceivedPayload, ISaveSearchPayload,
     IIdPayload, IAccordionToggledPayload, IAddConditionPayload, IAddConditionGroupPayload,
-    ISaveLeftComparePayload, ISaveRightComparePayload, IDiscrepancyPayload, IJWTPayload
+    ISaveLeftComparePayload, ISaveRightComparePayload, IDiscrepancyPayload, IJWTPayload, IFindAllPayload,
+    IFindAllUniquePayload, IAllMessageReceivedPayload, IHighlightMessagePayload
 } from '../payloads/payloads';
 
 export interface IAction {
@@ -23,6 +24,10 @@ export interface IRemoveMessageAction extends IAction {
 
 export interface IMessageReceivedAction extends IAction {
     payload: IMessageReceivedPayload;
+}
+
+export interface IAllMessageReceivedAction extends IAction {
+    payload: IAllMessageReceivedPayload;
 }
 
 export interface IAccordionToggleAction extends IAction {
@@ -53,6 +58,18 @@ export interface ISaveDiscrepancies extends IAction {
 
 export interface ISaveJWT extends IAction {
     payload: IJWTPayload;
+}
+
+export interface ISaveFindAll extends IAction {
+    payload: IFindAllPayload;
+}
+
+export interface ISaveFindAllUnique extends IAction {
+    payload: IFindAllUniquePayload;
+}
+
+export interface IHighlightMessage extends IAction {
+    payload: IHighlightMessagePayload;
 }
 
 

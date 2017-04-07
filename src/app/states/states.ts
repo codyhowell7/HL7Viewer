@@ -16,6 +16,9 @@ export interface IAppState {
     messagesToCompare: Map<number, number>;
     discrepancies: IMessageDiscrepancies;
     jwt: string;
+    findAll: IFindAll;
+    findAllUnique: IUniqueFindAll;
+    messageHighlight: Map<string, IMessageHighlight>;
 }
 
 export interface IMenuState { }
@@ -65,4 +68,21 @@ export interface ICondition {
     rightValue: string;
     conditionOperand: '==' | '!=' | 'Like' | 'Contains' | '>' | '<' | '>=' | '<=';
     functionModifier: '' | 'Length';
+}
+
+export interface IFindAll {
+    findAllResults: List<[number, string]>;
+    uniqueSearch: string;
+    searchValue: string;
+}
+
+export interface IUniqueFindAll {
+    findAllResults: Map<string, number>;
+}
+
+export interface IMessageHighlight {
+    fieldID: number;
+    repeatID: number;
+    componentID: number;
+    subComponentID: number;
 }

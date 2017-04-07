@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import { IConditionGroup, ICondition, ISearchConditions } from '../states/states';
 import { IAction, IAddConditionGroup, IAddSearchResults } from '../actions/actions';
-import { DEFAULT_STATE, ADD_SEARCH_CONDITION, ADD_CONDITION_SIZE, ADD_GROUP_SIZE, SAVE_SEARCH } from '../constants/constants';
+import { DEFAULT_STATE, ADD_SEARCH_CONDITION, ADD_CONDITION_SIZE, ADD_GROUP_SIZE, SAVE_SEARCH, RESET_STATE } from '../constants/constants';
 
 export function reduceSearchCondition(state: ISearchConditions, action: IAction): ISearchConditions {
     switch (action.type) {
@@ -27,6 +27,8 @@ export function reduceSearchConditionSize(state: Map<number, number>, action: IA
             if (state != null) {
                 return state;
             }
+            return defaultSearchSize(state);
+        case RESET_STATE:
             return defaultSearchSize(state);
         default:
             return state;

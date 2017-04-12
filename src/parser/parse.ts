@@ -78,7 +78,6 @@ export class Parser {
                 hl7Message.hl7MessageDateTime = ConvertTime(hl7Message.hl7Segments[0].hl7Fields[6].value);
                 hl7Message.hl7Version = hl7Message.hl7Segments[0].hl7Fields[11].value;
             } catch (err) {
-                console.log(err);
             }
             this.messageVersion = '2.7.1';
         }
@@ -151,7 +150,6 @@ export class Parser {
         hl7Field.hasHL7Components = hl7Field.hl7Components.length > 0;
         return hl7Field;
     }
-
     private parseHL7Component(componentValue: string, componentIndex: number) {
         let subComponentSplitter = new RegExp('[\\' + this.subcomponentSeparator + ']');
         let subComponentArray = componentValue.split(subComponentSplitter);

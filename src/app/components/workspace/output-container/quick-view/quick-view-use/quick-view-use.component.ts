@@ -17,8 +17,8 @@ let HL7Dict = require('hl7-dictionary');
 })
 export class QuickViewUseComponent implements OnInit {
 
-  @select(['messages']) messages$: Observable<Map<number, IMessage>>;
-  @select(['currentMessage']) currentMessage$: Observable<number>;
+  @Input() messages$: Observable<Map<number, IMessage>>;
+  @Input() currentMessage$: Observable<number>;
 
   @Input() quickViewId: string;
   @Input() jwt: string;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
@@ -18,7 +18,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
 
   @select(['searchConditions']) $searchConditions: Observable<ISearchConditions>;
   @select(['searchConditionSize']) $searchConditionSize: Observable<Map<number, number>>;
@@ -33,19 +33,23 @@ export class SearchComponent implements OnInit {
   messages: Map<number, IMessage>;
   localConditionGroups: ISearchConditions;
   generalSearch: string;
+  advanced = false;
+  mSub;
+  scSub;
+  scsSub;
 
   constructor(private ngRedux: NgRedux<IAppState>, private router: Router) { }
 
   ngOnInit() {
-    this.$searchConditions.subscribe(condtions => {
+    this.scSub = this.$searchConditions.subscribe(condtions => {
       this.localConditionGroups = condtions;
     });
 
-    this.$searchConditionSize.subscribe(size => {
+    this.scsSub = this.$searchConditionSize.subscribe(size => {
       this.searchSize = size;
     });
 
-    this.$messages.subscribe(message => {
+    this.mSub = this.$messages.subscribe(message => {
       this.messages = message.filter(filteredMessage => !filteredMessage.deleted).toMap();
     });
 
@@ -72,15 +76,24 @@ export class SearchComponent implements OnInit {
       };
     }
   }
+
+  ngOnDestroy() {
+    this.scSub.unsubscribe();
+    this.scsSub.unsubscribe();
+    this.mSub.unsubscribe();
+  }
+
   mainSearch() {
     let generalMessageSearch = new MessageReader();
-
+    let results = generalMessageSearch.generalSearch(this.messages, this.generalSearch)
     this.ngRedux.dispatch({
       type: NEW_SEARCH_RESULT,
       payload: {
-        messageFilterMap: generalMessageSearch.generalSearch(this.messages, this.generalSearch)
+        messageFilterMap: results
       }
     });
+    let firstResult = results.filter(result => result.includedInMess === true).keySeq().first();
+    this.router.navigate([`/workspace/${firstResult}/standard`]);
   }
 
   getConditionGroups() {
@@ -305,5 +318,9 @@ export class SearchComponent implements OnInit {
           searchResults(this.messages.filter(message => message.deleted === false).toMap(), this.localConditionGroups)
       }
     });
+  }
+
+  showAdvanced() {
+    this.advanced = !this.advanced;
   }
 }

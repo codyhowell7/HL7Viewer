@@ -2,7 +2,7 @@ import {
     IWorkspaceModeChangedPayload, IMessageReceivedPayload, ISaveSearchPayload,
     IIdPayload, IAccordionToggledPayload, IAddConditionPayload, IAddConditionGroupPayload,
     ISaveLeftComparePayload, ISaveRightComparePayload, IDiscrepancyPayload, IJWTPayload, IFindAllPayload,
-    IFindAllUniquePayload, IAllMessageReceivedPayload, IHighlightMessagePayload
+    IFindAllUniquePayload, IAllMessageReceivedPayload, IHighlightMessagePayload, ICreateSearchBySizePayload
 } from '../payloads/payloads';
 
 export interface IAction {
@@ -70,6 +70,10 @@ export interface ISaveFindAllUnique extends IAction {
 
 export interface IHighlightMessage extends IAction {
     payload: IHighlightMessagePayload;
+}
+
+export interface ICreateSearchBySize extends IAction {
+    payload: ICreateSearchBySizePayload;
 }
 
 

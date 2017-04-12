@@ -1,9 +1,10 @@
 <hls-menu-toolbar></hls-menu-toolbar>
-<button md-raised-button *ngIf="isMessages$ | async" (click)="addMessage()">Add Message</button>
+<input #fileInput *ngIf="(isMessages$ | async) && !fileLoaded && messagesSize === 1" id="the-file-input" type="file" (change)='fileChanged($event)'>
+<button md-raised-button *ngIf="(isMessages$ | async) && !fileLoaded" (click)="addMessage()">Add Message</button>
 <button md-raised-button (click)="resetSession()">Reset Session</button>
-<div *ngIf='isSorted()' class='filter'> Filtered By Search 
+<div *ngIf='isSorted()' class='filter'> Filtered By Search
     <md-icon (click)='removeFilter()'>clear</md-icon>
 </div>
-<div class='container'>
-    <hls-menu-item *ngFor="let message of (getMessages() | async)" [message]="message" (colorItem)='updateColor($event)' [ngClass]="{'active' : activeMessage === message.id}"></hls-menu-item>
+<div *ngIf='!fileLoaded' class='container'>
+    <hls-menu-item *ngFor="let message of (getMessages() | async)" [messages$]='messages$' [mode$]='mode$' [message]="message" [ngClass]="{'active' : updateColor(message.id)}"></hls-menu-item>
 </div>

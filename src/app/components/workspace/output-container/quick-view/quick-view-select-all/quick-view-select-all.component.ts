@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { QuickViewService } from '../../../../../backendCalls/quickview.service';
 import { List, Map } from 'immutable';
+import { IMessage } from '../../../../../states/states';
+import { Observable } from 'rxjs/Observable';
 import { JwtHelper } from 'angular2-jwt';
 
 @Component({
@@ -11,6 +13,8 @@ import { JwtHelper } from 'angular2-jwt';
 export class QuickViewSelectAllComponent implements OnInit {
 
   @Input() jwt: string;
+  @Input() messages$: Observable<Map<number, IMessage>>;
+  @Input() currentMessage$: Observable<number>;
   @Output() switchBack = new EventEmitter;
 
   allViews;

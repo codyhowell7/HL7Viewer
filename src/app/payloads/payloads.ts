@@ -2,7 +2,7 @@ import { WorkspaceMode } from '../enums/enums';
 import { HL7Message } from '../../parser/hl7Message';
 import { HL7Segment } from '../../parser/hl7Segment';
 import { Map, List } from 'immutable';
-import { ISearchConditions, IMessage } from  '../states/states';
+import { ISearchConditions, IMessage, ISearchFilter } from  '../states/states';
 import { IMessageDiscrepancies } from '../../messageReader/compareMessages/IMessageDiscrepancies';
 
 
@@ -52,7 +52,7 @@ export interface IAddConditionGroupPayload extends IIdPayload {
 
 export interface ISaveSearchPayload {
     search: ISearchConditions;
-    messageFilterMap: Map<number, boolean>;
+    messageFilterMap: Map<number, ISearchFilter>;
 }
 
 export interface ISaveLeftComparePayload {
@@ -87,4 +87,8 @@ export interface IHighlightMessagePayload {
     repeatID?: number;
     componentID?: number;
     subComponentID?: number;
+}
+
+export interface ICreateSearchBySizePayload {
+    messageSize: number;
 }

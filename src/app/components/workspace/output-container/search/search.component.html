@@ -1,43 +1,46 @@
 <div class='mainForm'>
     <div class='searchForm'>
-        <input  class='mainSearchInput' [(ngModel)]='generalSearch'>
+        <input class='mainSearchInput' [(ngModel)]='generalSearch' (keyup.enter)='mainSearch()'>
         <button class='searchButton' (click)='mainSearch()'> Search  </button>
     </div>
-    <div class='addButtons'>
-        <button class='addConditionGroupButton' (click)='addConditionGroup()'> Add Condition Group </button>
-    </div>
-    <div class='searchWrapper'>
-        <div class='conditionGroupClass' *ngFor='let conditionGroup of getConditionGroups(); let groupIdIndex = index; let lastGroupIndex = last; trackBy: trackGroup'>
-            <div class='border' >
-                <div class='singleCondition' *ngFor='let condition of getConditions(conditionGroup.groupID); let conditionIdIndex = index; let lastConditionIndex = last; trackBy: trackCondition' >
-                    <md-icon class='deleteIcon' (click)='deleteSingleCondition(conditionGroup.groupID,condition.conditionID)'>clear</md-icon>
-                    <select (change)='updateFunctionModifier($event.target.value, condition.conditionID, conditionGroup.groupID)'>
+    <button *ngIf='!advanced' class='addConditionGroupButton' (click)='showAdvanced()'>Show Advanced Search</button>
+    <div *ngIf='advanced'>
+        <div class='addButtons'>
+            <button class='addConditionGroupButton' (click)='addConditionGroup()'> Add Condition Group </button>
+        </div>
+        <div class='searchWrapper'>
+            <div class='conditionGroupClass' *ngFor='let conditionGroup of getConditionGroups(); let groupIdIndex = index; let lastGroupIndex = last; trackBy: trackGroup'>
+                <div class='border'>
+                    <div class='singleCondition' *ngFor='let condition of getConditions(conditionGroup.groupID); let conditionIdIndex = index; let lastConditionIndex = last; trackBy: trackCondition'>
+                        <md-icon class='deleteIcon' (click)='deleteSingleCondition(conditionGroup.groupID,condition.conditionID)'>clear</md-icon>
+                        <select (change)='updateFunctionModifier($event.target.value, condition.conditionID, conditionGroup.groupID)'>
                         <option *ngFor='let functions of functionOptions' [selected]='functions === getFunctionModifier(condition.conditionID, conditionGroup.groupID)'>{{functions}}</option>
                     </select>
-                    <input class='conditionInput' type='text' [value]='getLeftValue(condition.conditionID, conditionGroup.groupID)' (blur)='updateLeftValue($event.target.value, condition.conditionID, conditionGroup.groupID)'>
-                    <select class='operationDropdown' (change)='updateConidtionOperand($event.target.value, condition.conditionID, conditionGroup.groupID)'>
+                        <input class='conditionInput' type='text' [value]='getLeftValue(condition.conditionID, conditionGroup.groupID)' (blur)='updateLeftValue($event.target.value, condition.conditionID, conditionGroup.groupID)'>
+                        <select class='operationDropdown' (change)='updateConidtionOperand($event.target.value, condition.conditionID, conditionGroup.groupID)'>
                         <option *ngFor='let operand of conditionOperands' [selected]='operand === getConditionOperand(conditionGroup.groupID, condition.conditionID)'>{{operand}}</option>
                     </select>
-                    <input class='conditionInput' type='text' [value]='getRightValue(condition.conditionID,conditionGroup.groupID)' (blur)='updateRightValue($event.target.value, condition.conditionID, conditionGroup.groupID)'>
-                    <div class='betweenCondition'>
-                        <select *ngIf='!lastConditionIndex' class='operationDropdown' (change)='updateGroupOperand($event.target.value, conditionGroup.groupID)'>
+                        <input class='conditionInput' type='text' [value]='getRightValue(condition.conditionID,conditionGroup.groupID)' (blur)='updateRightValue($event.target.value, condition.conditionID, conditionGroup.groupID)'>
+                        <div class='betweenCondition'>
+                            <select *ngIf='!lastConditionIndex' class='operationDropdown' (change)='updateGroupOperand($event.target.value, conditionGroup.groupID)'>
                             <option *ngFor='let groupOperand of groupOperands' [selected]='getGroupOperand(conditionGroup.groupID) === groupOperand'>{{groupOperand}}</option>
                         </select>
-                        <div *ngIf='lastConditionIndex' class='lastCondition'></div>
+                            <div *ngIf='lastConditionIndex' class='lastCondition'></div>
+                        </div>
+                    </div>
+                    <div class='bottomRow'>
+                        <button class='addConditionButton' (click)='addCondition(conditionGroup.groupID)'> Add Condition </button>
                     </div>
                 </div>
-                <div class='bottomRow'>
-                    <button class='addConditionButton' (click)='addCondition(conditionGroup.groupID)'> Add Condition </button>
-                </div>
-            </div>
-            <div class='betweenGroup' *ngIf='!lastGroupIndex'>
-                <select class='groupOptional' (change)='updateSearchOperand($event.target.value)'>
+                <div class='betweenGroup' *ngIf='!lastGroupIndex'>
+                    <select class='groupOptional' (change)='updateSearchOperand($event.target.value)'>
                     <option *ngFor='let searchOperand of searchOperands' [selected]='getSearchOperand() === searchOperand'>{{searchOperand}}</option>
                 </select>
+                </div>
             </div>
-        </div>
-        <div class='bottomButton'>
-            <button class='finalSearch' (click)='search()'>Search</button>
+            <div class='bottomButton'>
+                <button class='finalSearch' (click)='search()'>Search</button>
+            </div>
         </div>
     </div>
 </div>

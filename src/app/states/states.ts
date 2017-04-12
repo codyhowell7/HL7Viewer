@@ -12,7 +12,7 @@ export interface IAppState {
     accordion: IAccordion;
     searchConditions: ISearchConditions;
     searchConditionSize: Map<number, number>;
-    searchFilter: Map<number, boolean>;
+    searchFilter: Map<number, ISearchFilter>;
     messagesToCompare: Map<number, number>;
     discrepancies: IMessageDiscrepancies;
     jwt: string;
@@ -85,4 +85,9 @@ export interface IMessageHighlight {
     repeatID: number;
     componentID: number;
     subComponentID: number;
+}
+
+export interface ISearchFilter {
+    includedInMess: boolean;
+    searchConditions: string[];
 }

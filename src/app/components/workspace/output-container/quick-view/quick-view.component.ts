@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { select, NgRedux } from 'ng2-redux';
@@ -16,7 +16,8 @@ import { JwtHelper } from 'angular2-jwt';
   selector: 'hls-quick-view',
   templateUrl: './quick-view.component.html',
   styleUrls: ['./quick-view.component.scss'],
-  providers: [QuickViewService]
+  providers: [QuickViewService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QuickViewComponent implements OnInit {
 

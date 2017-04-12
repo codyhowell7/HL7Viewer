@@ -17,6 +17,6 @@
 
 
 <hls-quick-view-create *ngIf='createView && !isTokenExpired()' [jwt]='jwt' (switchBack)=updateCreateView($event)> </hls-quick-view-create>
-<hls-quick-view-select-all *ngIf='searchAllViews && !isTokenExpired()' [jwt]='jwt' (switchBack)=updateCreateView($event)>  </hls-quick-view-select-all>
-<hls-quick-view-select *ngIf='useView && !isTokenExpired()' [jwt]='jwt' (switchBack)=updateCreateView($event)>  </hls-quick-view-select>
+<hls-quick-view-select-all *ngIf='searchAllViews && !isTokenExpired()' [jwt]='jwt' (switchBack)=updateCreateView($event) [messages$]='messages$' [currentMessage$]='currentMessage$'>  </hls-quick-view-select-all>
+<hls-quick-view-select *ngIf='useView && !isTokenExpired()' [jwt]='jwt' (switchBack)=updateCreateView($event) [messages$]='messages$' [currentMessage$]='currentMessage$'>  </hls-quick-view-select>
 

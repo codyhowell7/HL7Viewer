@@ -1,12 +1,11 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
-import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Map } from 'immutable';
 import { IMessage, IAppState } from '../../../states/states';
 import { WorkspaceMode } from '../../../enums/enums';
 import { REMOVE_MESSAGE, REMOVE_MESSAGE_FROM_FILTER } from '../../../constants/constants';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute, Params, UrlSegment } from '@angular/router';
 
 @Component({
   selector: 'hls-menu-item',
@@ -15,27 +14,21 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 })
 export class MenuItemComponent implements OnInit {
 
-  @select(['workspace', 'workspaceMode']) mode$: Observable<WorkspaceMode>;
-  @select(['messages']) messages$: Observable<Map<number, IMessage>>;
-  @select(['messagesToCompare']) messagesToCompare$: Observable<Map<number, boolean>>;
-
+  @Input() messagesToCompare$: Observable<Map<number, boolean>>;
+  @Input() mode$: Observable<WorkspaceMode>;
+  @Input() messages$: Observable<Map<string, IMessage>>;
   @Input() message: IMessage;
-  @Output() colorItem = new EventEmitter();
 
-  isMessages$: Observable<boolean>;
-  isCompare$: Observable<boolean>;
-  messageCount$: Observable<number>;
-  deleted: number;
+  isMessages: boolean;
+  isCompare: boolean;
+  messageCount: number;
 
   constructor(private ngRedux: NgRedux<IAppState>, private router: ActivatedRoute) { }
 
   ngOnInit() {
-    this.messageCount$ = this.messages$.map(messages => messages.filter(message => !message.deleted).size);
-    this.isMessages$ = combineLatest(this.mode$, this.messageCount$)
-      .map(([mode, messageCount]) => { return mode === WorkspaceMode.messages && messageCount > 1; });
-    this.isCompare$ = combineLatest(this.mode$, this.messageCount$)
-      .map(([mode, messageCount]) => { return mode === WorkspaceMode.compare && messageCount > 1; });
-
+    this.messages$.subscribe(messages => this.messageCount = messages.filter(message => !message.deleted).size);
+    this.mode$.subscribe(mode => { this.isMessages = mode === WorkspaceMode.messages && this.messageCount > 1; });
+    this.mode$.subscribe(mode => { this.isCompare = mode === WorkspaceMode.compare && this.messageCount > 1; });
   }
 
   removeItem() {
@@ -58,9 +51,5 @@ export class MenuItemComponent implements OnInit {
     let currentRoute;
     this.router.children[0].url.subscribe(route => currentRoute = route[0].path);
     return currentRoute;
-  }
-
-  highlightItem(messageId: number) {
-    this.colorItem.emit(messageId);
   }
 }

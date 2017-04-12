@@ -13,7 +13,7 @@ import { IMessageDiscrepancies, ISegmentDiscrepancies } from '../../../../messag
   templateUrl: './comparespace-workspace.component.html',
   styleUrls: ['./comparespace-workspace.component.scss']
 })
-export class ComparespaceWorkspaceComponent implements OnInit {
+export class ComparespaceWorkspaceComponent implements OnInit, OnDestroy {
 
   @select(['discrepancies']) discrepancies$: Observable<IMessageDiscrepancies>;
   @select(['messages']) messages$: Observable<Map<number, IMessage>>;
@@ -45,8 +45,6 @@ export class ComparespaceWorkspaceComponent implements OnInit {
       });
     this.discrepSub1 = this.discrepancies$.subscribe(discrepancies => this.discrep1 = discrepancies.message1);
     this.discrepSub2 = this.discrepancies$.subscribe(discrepancies => this.discrep2 = discrepancies.message2);
-    console.log(this.discrep1)
-    console.log(this.discrep2)
   }
 
   ngOnDestroy() {

@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { QuickViewService } from '../../../../../backendCalls/quickview.service';
 import { IMessage } from '../../../../../states/states';
 import { List, Map } from 'immutable';
+import { Observable } from 'rxjs/Observable';
 import { JwtHelper } from 'angular2-jwt';
 
 @Component({
@@ -12,6 +13,8 @@ import { JwtHelper } from 'angular2-jwt';
 export class QuickViewSelectComponent implements OnInit {
 
   @Input() jwt: string;
+  @Input() messages$: Observable<Map<number, IMessage>>;
+  @Input() currentMessage$: Observable<number>;
   @Output() switchBack = new EventEmitter;
 
   jwtHelper: JwtHelper = new JwtHelper();

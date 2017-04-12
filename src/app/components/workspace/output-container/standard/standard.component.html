@@ -1,14 +1,14 @@
 <div *ngIf='message'>
     <div *ngFor='let segment of getSegments(); let segIndex = index'>
-        <button class='accordion' (click)='extendSegmentAccordion(segment.segmentIndex, getSegmentState(segment.segmentIndex))'>{{getSegmentName(segIndex, segment)}}</button>
+        <button class='accordion' (click)='extendSegmentAccordion(segment.segmentIndex, getSegmentState(segment.segmentIndex))' [ngClass]="{'highlighted': isSegmentHighlighted(segment.segmentName) }">{{getSegmentName(segIndex, segment)}}</button>
         <div *ngIf='getSegmentState(segment.segmentIndex)'>
             <div *ngFor='let field of getFields(segment.segmentIndex)'>
-                <button *ngIf='!fieldExtendable(segment.segmentIndex, field.index)' class='fieldaccordion' (click)='showFieldInMessage(segment.segmentName, field.index)'>
+                <button *ngIf='!fieldExtendable(segment.segmentIndex, field.index)' class='fieldaccordion' [ngClass]="{'highlighted': isFieldHighlighted(segment.segmentName, field.index)}" (click)='showFieldInMessage(segment.segmentName, field.index)'>
                     <div class='fieldFlexItem'> {{segment.segmentName}}.{{field.index+1}} </div>
                     <div class='fieldFlexItem'> {{field.fieldDesc}} </div>
                     <div class='accordionValue'> {{field.value}} </div>
                 </button>
-                <button *ngIf='fieldExtendable(segment.segmentIndex, field.index)' class='fieldaccordion' (click)='extendFieldAccordion(segment.segmentIndex, field.index, getFieldState(segment.segmentIndex, field.index))'> 
+                <button *ngIf='fieldExtendable(segment.segmentIndex, field.index)' class='fieldaccordion' [ngClass]="{'highlighted': isFieldHighlighted(segment.segmentName, field.index)}" (click)='extendFieldAccordion(segment.segmentIndex, field.index, getFieldState(segment.segmentIndex, field.index))'> 
                     <div class='fieldFlexItem'> {{segment.segmentName}}.{{field.index+1}} </div>
                     <div class='fieldFlexItem'> {{field.fieldDesc}} </div>
                     <div class='accordionValue'> {{field.value}} </div>

@@ -1,12 +1,12 @@
-<div *ngIf='!(isMessages$ | async) && !(isCompare$ | async)' >
+<div *ngIf='!isMessages && !isCompare' >
     <span>Message {{message.id + 1}}</span>
 </div>
-<div *ngIf="isMessages$ | async">
-    <div [routerLink]="['/workspace', message.id, keepLastRoute()]" routerLinkActive="active" class='message' (click)='highlightItem(message.id)'>
+<div *ngIf="isMessages">
+    <div [routerLink]="['/workspace', message.id, keepLastRoute()]" routerLinkActive="active" class='message'>
         <span>Message {{message.id + 1}}</span>
         <md-icon (click)="removeItem()">clear</md-icon>
     </div>
 </div>
-<div *ngIf="isCompare$ | async" class='compare' [myDraggable]='{data: message.id + 1}'>
+<div *ngIf="isCompare" class='compare' [myDraggable]='{data: message.id + 1}'>
     <span>Message {{message.id + 1}}</span>
 </div>

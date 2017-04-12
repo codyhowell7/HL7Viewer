@@ -23,6 +23,8 @@ export function reduceMessageHighlight(state: Map<string, IMessageHighlight>, ac
             return highlightRepeatComponent(action as IHighlightMessage);
         case HIGHLIGHT_REPEAT_SUBCOMPONENT:
             return highlightRepeatSubComponent(action as IHighlightMessage);
+        case RESET_STATE:
+            return defaultMessageHighlight();
         default:
             return state;
     }

@@ -1,4 +1,4 @@
-import { IMessage, ISearchConditions } from '../app/states/states';
+import { IMessage, ISearchConditions, ISearchFilter } from '../app/states/states';
 import { HL7Message } from '../parser/hl7Message';
 import { HL7Segment } from '../parser/hl7Segment';
 import { HL7Field } from '../parser/hl7Field';
@@ -28,39 +28,124 @@ export class MessageReader {
     }
 
     public generalSearch(messages: Map<number, IMessage>, searchValue: string) {
-        let messageFilter = Map<number, boolean>().set(0, false);
+        let messageFilter = Map<number, ISearchFilter>().set(0, {
+            includedInMess: false,
+            searchConditions: []
+        });
         messages.forEach((message, messageNum) => {
-            if (message.message.hl7CorrectedMessage.toLocaleLowerCase().search(searchValue.toLocaleLowerCase()) !== -1) {
-                messageFilter = messageFilter.set(messageNum, true);
-            } else {
-                messageFilter = messageFilter.set(messageNum, false);
+            let foundSearches: string[] = [];
+            message.message.hl7Segments.forEach(segment => {
+                segment.hl7Fields.forEach(field => {
+                    if (field.value.toLowerCase() === searchValue.toLowerCase()) {
+                        foundSearches.push(segment.segmentName + '.' + field.index);
+                        messageFilter = messageFilter.set(messageNum, {
+                            includedInMess: true,
+                            searchConditions: foundSearches
+                        });
+                    } else if (field.hasRepetition) {
+                        field.hl7RepeatedFields.forEach((repeat, rIndex) => {
+                            if (repeat.value.toLowerCase() === searchValue.toLowerCase()) {
+                                foundSearches.push(segment.segmentName + field.index + '.[' + rIndex + ']');
+                                messageFilter = messageFilter.set(messageNum, {
+                                    includedInMess: true,
+                                    searchConditions: foundSearches
+                                });
+                            } else {
+                                if (repeat.hasHL7Components) {
+                                    repeat.hl7Components.forEach(repeatComponent => {
+                                        if (repeatComponent.value.toLowerCase() === searchValue.toLowerCase()) {
+                                            foundSearches.push(segment.segmentName + field.index + '.[' + rIndex + '].' + repeatComponent.index);
+                                            messageFilter = messageFilter.set(messageNum, {
+                                                includedInMess: true,
+                                                searchConditions: foundSearches
+                                            });
+                                        } else {
+                                            if (repeatComponent.hasSubComponents) {
+                                                repeatComponent.hl7SubComponents.forEach(repeatSub => {
+                                                    if(repeatSub.value.toLowerCase() === searchValue.toLowerCase()) {
+                                                        foundSearches.push(segment.segmentName + field.index + '.[' + rIndex + '].' + repeatComponent.index + '.' + repeatSub.value);
+                                                        messageFilter = messageFilter.set(messageNum, {
+                                                            includedInMess: true,
+                                                            searchConditions: foundSearches
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    } else {
+                        if (field.hasHL7Components) {
+                            field.hl7Components.forEach(component => {
+                                if (component.value.toLowerCase() === searchValue.toLowerCase()) {
+                                    foundSearches.push(segment.segmentName + '.' + field.index + '.' + component.index);
+                                    messageFilter = messageFilter.set(messageNum, {
+                                        includedInMess: true,
+                                        searchConditions: foundSearches
+                                    });
+                                } else {
+                                    if (component.hasSubComponents) {
+                                        component.hl7SubComponents.forEach(subComponent => {
+                                            if (subComponent.value.toLowerCase() === searchValue.toLowerCase()) {
+                                                foundSearches.push(segment.segmentName + '.' + field.index + '.' + component.index + '.' + subComponent.index);
+                                                messageFilter = messageFilter.set(messageNum, {
+                                                    includedInMess: true,
+                                                    searchConditions: foundSearches
+                                                });
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+
+
+            if (!messageFilter.has(messageNum)) {
+                messageFilter = messageFilter.set(messageNum, {
+                    includedInMess: false,
+                    searchConditions: []
+                });
             }
         });
         return messageFilter;
     }
 
 
-    public searchResults(messages: Map<number, IMessage>, search: ISearchConditions): Map<number, boolean> {
-        let messageBooleanMap = Map<number, boolean>().set(0, true);
+    public searchResults(messages: Map<number, IMessage>, search: ISearchConditions): Map<number, ISearchFilter> {
+        let messageBooleanMap = Map<number, ISearchFilter>().set(0, {
+            includedInMess: false,
+            searchConditions: []
+        });
         let searchResults: string[];
+        let searchConditions: string[] = [];
         messages.forEach((message, messageIndex) => {
             let groupBooleanArray: boolean[] = [];
             search.conditionGroups.forEach(group => {
                 let conditionBooleanArray: boolean[] = [];
                 group.conditions.forEach(condition => {
+                    searchConditions.push(condition.leftValue);
                     if (message.message.hl7CorrectedMessage !== '') {
                         searchResults =
                             this.evalFunctionModifers(message.message, search.conditionGroups
                                 .get(group.groupID).conditions
                                 .get(condition.conditionID).leftValue, condition.functionModifier);
                         conditionBooleanArray = this.evalConditions(condition, conditionBooleanArray, searchResults);
+
                     } else {
                         conditionBooleanArray.push(false);
                     }
                 });
                 groupBooleanArray = this.evalGroup(group, conditionBooleanArray, groupBooleanArray);
             });
-            messageBooleanMap = messageBooleanMap.set(messageIndex, this.evalSearch(search, groupBooleanArray));
+            messageBooleanMap = messageBooleanMap.set(messageIndex, {
+                includedInMess: (this.evalSearch(search, groupBooleanArray)),
+                searchConditions: searchConditions
+            });
         });
         return messageBooleanMap;
     }

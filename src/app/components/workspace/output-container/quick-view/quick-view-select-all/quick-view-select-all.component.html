@@ -31,4 +31,4 @@
     <button class='logoutButton' (click)='backToMain()'> Back </button>
   </div>
 </div>
-<hls-quick-view-use *ngIf='useQV && showUse' [jwt]='jwt' [quickViewId]='useQV' (switchBack)=changeView($event) > </hls-quick-view-use>
+<hls-quick-view-use *ngIf='useQV && showUse' [jwt]='jwt' [quickViewId]='useQV' (switchBack)='changeView($event)' [messages$]='messages$' [currentMessage$]='currentMessage$' > </hls-quick-view-use>

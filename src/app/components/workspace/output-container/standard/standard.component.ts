@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Router, ActivatedRoute, Params, NavigationExtras } from '@angular/router';
 import { merge } from 'rxjs/observable/merge';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
 import { Map, List } from 'immutable';
-import { IMessage, IAppState, IAccordion } from '../../../../states/states';
+import { IMessage, IAppState, IAccordion, ISearchFilter } from '../../../../states/states';
 import {
   TOGGLE_SEGMENT_ACCORDION, DEFAULT_SEGMENT_ACCORDIONS, TOGGLE_FIELD_ACCORDION,
   DEFAULT_FIELD_ACCORDIONS, TOGGLE_COMPONENT_ACCORDION, DEFAULT_COMPONENT_ACCORDIONS,
@@ -21,22 +21,26 @@ import { HL7Segment } from '../../../../../parser/HL7Segment';
   templateUrl: './standard.component.html',
   styleUrls: ['./standard.component.scss']
 })
-export class StandardComponent implements OnInit {
+export class StandardComponent implements OnInit, OnDestroy {
 
   message: IMessage;
   messageId: number;
   theState: boolean;
   NameList: List<string>;
+  searchResults: Map<number, ISearchFilter>;
+  searchSub;
+  mSub;
 
   @select(['messages']) messages$: Observable<Map<number, IMessage>>;
   @select(['currentMessage']) currentMessage$: Observable<number>;
   @select(['accordion']) accordion$: Observable<IAccordion>;
+  @select(['searchFilter']) searchFilter$: Observable<Map<number, ISearchFilter>>;
 
   constructor(private ngRedux: NgRedux<IAppState>, private router: Router) { }
 
 
   ngOnInit() {
-    combineLatest(this.messages$, this.currentMessage$)
+    this.mSub = combineLatest(this.messages$, this.currentMessage$)
       .map(([messages, currentMessage]) => {
         let message = messages.get(currentMessage);
         this.messageId = currentMessage;
@@ -46,6 +50,13 @@ export class StandardComponent implements OnInit {
     if (this.message == null) {
       this.router.navigate(['/workspace/0/standard']);
     }
+    this.searchSub = this.searchFilter$.subscribe(search => this.searchResults = search);
+
+  }
+
+  ngOnDestroy() {
+    this.mSub.unsubscribe();
+    this.searchSub.unsubscribe();
   }
 
   getSegments() {
@@ -420,6 +431,36 @@ export class StandardComponent implements OnInit {
       return seg.segmentName;
     } else {
       return seg.segmentName + ' | ' + nameNumber;
+    }
+  }
+
+  isSegmentHighlighted(segmentName: string) {
+    let resultsArray: boolean[] = [];
+    this.searchResults.get(this.messageId).searchConditions.forEach(searchCondition => {
+      if (searchCondition.substr(0, 3) === segmentName) {
+        resultsArray.push(true);
+      }
+    });
+    if (resultsArray.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  isFieldHighlighted(segmentName: string, fieldIndex: number) {
+    let resultsArray: boolean[] = [];
+    this.searchResults.get(this.messageId).searchConditions.forEach(searchCondition => {
+      if (searchCondition.substr(0, 3) === segmentName) {
+        if (+searchCondition.substring(4, searchCondition.indexOf('.', 4)) === fieldIndex) {
+          resultsArray.push(true);
+        }
+      }
+    });
+    if (resultsArray.length > 0) {
+      return true;
+    } else {
+      return false;
     }
   }
 

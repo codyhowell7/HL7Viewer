@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Router, ActivatedRoute, Params, NavigationExtras } from '@angular/router';
 import { merge } from 'rxjs/observable/merge';
@@ -14,6 +14,8 @@ import {
   HIGHLIGHT_REPEAT_FIELD, HIGHLIGHT_REPEAT_COMPONENT, HIGHLIGHT_REPEAT_SUBCOMPONENT
 } from '../../../../constants/constants';
 import { HL7Segment } from '../../../../../parser/HL7Segment';
+import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
+import { Clipboard } from 'ts-clipboard';
 
 
 @Component({
@@ -36,8 +38,9 @@ export class StandardComponent implements OnInit, OnDestroy {
   @select(['accordion']) accordion$: Observable<IAccordion>;
   @select(['searchFilter']) searchFilter$: Observable<Map<number, ISearchFilter>>;
 
-  constructor(private ngRedux: NgRedux<IAppState>, private router: Router) { }
+  @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
 
+  constructor(private ngRedux: NgRedux<IAppState>, private router: Router, private contextMenuService: ContextMenuService) { }
 
   ngOnInit() {
     this.mSub = combineLatest(this.messages$, this.currentMessage$)
@@ -157,6 +160,9 @@ export class StandardComponent implements OnInit, OnDestroy {
       payload: {
         messageID: this.messageId,
         segmentID: segmentIndex,
+        fieldID: -1,
+        repeatID: -1,
+        componentID: -1,
         segmentToggleState: segmentAccoridonState
       }
     });
@@ -416,31 +422,23 @@ export class StandardComponent implements OnInit, OnDestroy {
   }
 
   getSegmentName(segIndex: number, seg: HL7Segment) {
-    let nameList = List<string>();
-    let valueInField: number;
-    this.message.message.hl7Segments.forEach(header => nameList = nameList.push(header.segmentName));
-    let nameNumber = nameList.slice(0, segIndex).filter(segment => segment === seg.segmentName).size + 1;
-    if (seg.hl7Fields[0].value !== '') {
-      valueInField = +seg.hl7Fields[0].value;
-      if (valueInField !== nameNumber) {
-        nameNumber = valueInField;
-      }
-    }
-
-    if (isNaN(nameNumber) || (nameList.filter(checkList => checkList === seg.segmentName).size === 1) && nameNumber <= 1) {
+    let num = this.getSegments().filter(segment => segment.segmentName === seg.segmentName).length;
+    if (num === 1) {
       return seg.segmentName;
     } else {
-      return seg.segmentName + ' | ' + nameNumber;
+      return seg.segmentName + ' | ' + seg.segmentSetId;
     }
   }
 
-  isSegmentHighlighted(segmentName: string) {
+  isSegmentHighlighted(segmentName: string, setID: number) {
     let resultsArray: boolean[] = [];
-    this.searchResults.get(this.messageId).searchConditions.forEach(searchCondition => {
-      if (searchCondition.substr(0, 3) === segmentName) {
-        resultsArray.push(true);
-      }
-    });
+    if (this.searchResults.get(this.messageId)) {
+      this.searchResults.get(this.messageId).searchConditions.forEach(searchCondition => {
+        if (searchCondition.substr(0, 3) === segmentName && (this.searchResults.get(this.messageId).segmentSetID) === setID) {
+          resultsArray.push(true);
+        }
+      });
+    }
     if (resultsArray.length > 0) {
       return true;
     } else {
@@ -448,11 +446,18 @@ export class StandardComponent implements OnInit, OnDestroy {
     }
   }
 
-  isFieldHighlighted(segmentName: string, fieldIndex: number) {
+  isFieldHighlighted(segmentName: string, fieldIndex: number, setID: number) {
+    if (setID == null) {
+      setID = 1;
+    }
     let resultsArray: boolean[] = [];
     this.searchResults.get(this.messageId).searchConditions.forEach(searchCondition => {
       if (searchCondition.substr(0, 3) === segmentName) {
-        if (+searchCondition.substring(4, searchCondition.indexOf('.', 4)) === fieldIndex) {
+        if (+searchCondition.substring(4, searchCondition.indexOf('.', 4)) === fieldIndex
+          && searchCondition.match('.').length > 1
+          && (this.searchResults.get(this.messageId).segmentSetID) === setID) {
+          resultsArray.push(true);
+        } else if (+searchCondition.substring(4) === fieldIndex && (this.searchResults.get(this.messageId).segmentSetID) === setID) {
           resultsArray.push(true);
         }
       }
@@ -462,6 +467,10 @@ export class StandardComponent implements OnInit, OnDestroy {
     } else {
       return false;
     }
+  }
+
+  copyValue(valueToCopy: string) {
+    Clipboard.copy(valueToCopy);
   }
 
 }

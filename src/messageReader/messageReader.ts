@@ -30,43 +30,53 @@ export class MessageReader {
     public generalSearch(messages: Map<number, IMessage>, searchValue: string) {
         let messageFilter = Map<number, ISearchFilter>().set(0, {
             includedInMess: false,
-            searchConditions: []
+            searchConditions: [],
+            segmentSetID: 0,
+            searchTerm: searchValue
         });
         messages.forEach((message, messageNum) => {
             let foundSearches: string[] = [];
             message.message.hl7Segments.forEach(segment => {
                 segment.hl7Fields.forEach(field => {
-                    if (field.value.toLowerCase() === searchValue.toLowerCase()) {
+                    if (field.value.toLowerCase().includes(searchValue.toLowerCase())) {
                         foundSearches.push(segment.segmentName + '.' + field.index);
                         messageFilter = messageFilter.set(messageNum, {
                             includedInMess: true,
-                            searchConditions: foundSearches
+                            searchConditions: foundSearches,
+                            segmentSetID: segment.segmentSetId,
+                            searchTerm: searchValue
                         });
                     } else if (field.hasRepetition) {
                         field.hl7RepeatedFields.forEach((repeat, rIndex) => {
-                            if (repeat.value.toLowerCase() === searchValue.toLowerCase()) {
+                            if (repeat.value.toLowerCase().includes(searchValue.toLowerCase())) {
                                 foundSearches.push(segment.segmentName + field.index + '.[' + rIndex + ']');
                                 messageFilter = messageFilter.set(messageNum, {
                                     includedInMess: true,
-                                    searchConditions: foundSearches
+                                    searchConditions: foundSearches,
+                                    segmentSetID: segment.segmentSetId,
+                                    searchTerm: searchValue
                                 });
                             } else {
                                 if (repeat.hasHL7Components) {
                                     repeat.hl7Components.forEach(repeatComponent => {
-                                        if (repeatComponent.value.toLowerCase() === searchValue.toLowerCase()) {
+                                        if (repeatComponent.value.toLowerCase().includes(searchValue.toLowerCase())) {
                                             foundSearches.push(segment.segmentName + field.index + '.[' + rIndex + '].' + repeatComponent.index);
                                             messageFilter = messageFilter.set(messageNum, {
                                                 includedInMess: true,
-                                                searchConditions: foundSearches
+                                                searchConditions: foundSearches,
+                                                segmentSetID: segment.segmentSetId,
+                                                searchTerm: searchValue
                                             });
                                         } else {
                                             if (repeatComponent.hasSubComponents) {
                                                 repeatComponent.hl7SubComponents.forEach(repeatSub => {
-                                                    if(repeatSub.value.toLowerCase() === searchValue.toLowerCase()) {
+                                                    if(repeatSub.value.toLowerCase().includes(searchValue.toLowerCase())) {
                                                         foundSearches.push(segment.segmentName + field.index + '.[' + rIndex + '].' + repeatComponent.index + '.' + repeatSub.value);
                                                         messageFilter = messageFilter.set(messageNum, {
                                                             includedInMess: true,
-                                                            searchConditions: foundSearches
+                                                            searchConditions: foundSearches,
+                                                            segmentSetID: segment.segmentSetId,
+                                                            searchTerm: searchValue
                                                         });
                                                     }
                                                 });
@@ -83,7 +93,9 @@ export class MessageReader {
                                     foundSearches.push(segment.segmentName + '.' + field.index + '.' + component.index);
                                     messageFilter = messageFilter.set(messageNum, {
                                         includedInMess: true,
-                                        searchConditions: foundSearches
+                                        searchConditions: foundSearches,
+                                        segmentSetID: segment.segmentSetId,
+                                        searchTerm: searchValue
                                     });
                                 } else {
                                     if (component.hasSubComponents) {
@@ -92,7 +104,9 @@ export class MessageReader {
                                                 foundSearches.push(segment.segmentName + '.' + field.index + '.' + component.index + '.' + subComponent.index);
                                                 messageFilter = messageFilter.set(messageNum, {
                                                     includedInMess: true,
-                                                    searchConditions: foundSearches
+                                                    searchConditions: foundSearches,
+                                                    segmentSetID: segment.segmentSetId,
+                                                    searchTerm: searchValue
                                                 });
                                             }
                                         });
@@ -108,7 +122,9 @@ export class MessageReader {
             if (!messageFilter.has(messageNum)) {
                 messageFilter = messageFilter.set(messageNum, {
                     includedInMess: false,
-                    searchConditions: []
+                    searchConditions: [],
+                    segmentSetID: 0,
+                    searchTerm: searchValue
                 });
             }
         });
@@ -119,7 +135,9 @@ export class MessageReader {
     public searchResults(messages: Map<number, IMessage>, search: ISearchConditions): Map<number, ISearchFilter> {
         let messageBooleanMap = Map<number, ISearchFilter>().set(0, {
             includedInMess: false,
-            searchConditions: []
+            searchConditions: [],
+            segmentSetID: 0,
+            searchTerm: 'Advanced'
         });
         let searchResults: string[];
         let searchConditions: string[] = [];
@@ -144,7 +162,8 @@ export class MessageReader {
             });
             messageBooleanMap = messageBooleanMap.set(messageIndex, {
                 includedInMess: (this.evalSearch(search, groupBooleanArray)),
-                searchConditions: searchConditions
+                searchConditions: searchConditions,
+                searchTerm: 'Advanced'
             });
         });
         return messageBooleanMap;

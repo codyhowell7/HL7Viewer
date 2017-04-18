@@ -5,7 +5,7 @@ import {
     DEFAULT_STATE, SWITCH_MESSAGE, ADD_MESSAGE, REMOVE_MESSAGE, MESSAGE_RECEIVED, RESET_STATE,
     All_MESSAGE_RECEIVED
 } from '../constants/constants';
-import { HL7Message } from '../../parser/HL7Message';
+import { HL7Message } from '../../parser/hl7Message';
 
 
 export function reduceCurrentMessage(state: number, action: IAction): number {

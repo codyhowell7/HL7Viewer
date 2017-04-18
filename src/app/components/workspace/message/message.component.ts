@@ -69,7 +69,10 @@ export class MessageComponent implements OnInit, OnDestroy {
               type: DEFAULT_SEGMENT_ACCORDIONS,
               payload: {
                 messageID: this.messageId,
-                segmentID: segmentIndex
+                segmentID: segmentIndex,
+                fieldID: -1,
+                repeatID: -1,
+                componentID: -1
               }
             });
           });
@@ -113,7 +116,10 @@ export class MessageComponent implements OnInit, OnDestroy {
             type: DEFAULT_SEGMENT_ACCORDIONS,
             payload: {
               messageID: this.messageId,
-              segmentID: segmentIndex
+              segmentID: segmentIndex,
+              fieldID: -1,
+              repeatID: -1,
+              componentID: -1
             }
           });
         });

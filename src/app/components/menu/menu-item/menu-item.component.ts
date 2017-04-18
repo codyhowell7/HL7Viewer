@@ -6,6 +6,8 @@ import { IMessage, IAppState } from '../../../states/states';
 import { WorkspaceMode } from '../../../enums/enums';
 import { REMOVE_MESSAGE, REMOVE_MESSAGE_FROM_FILTER } from '../../../constants/constants';
 import { Router, ActivatedRoute, Params, UrlSegment } from '@angular/router';
+import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
+import { Clipboard } from 'ts-clipboard';
 
 @Component({
   selector: 'hls-menu-item',
@@ -22,8 +24,10 @@ export class MenuItemComponent implements OnInit {
   isMessages: boolean;
   isCompare: boolean;
   messageCount: number;
+  crtlClicked = false;
+  shiftClicked = false;
 
-  constructor(private ngRedux: NgRedux<IAppState>, private router: ActivatedRoute) { }
+  constructor(private ngRedux: NgRedux<IAppState>, private aRouter: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     this.messages$.subscribe(messages => this.messageCount = messages.filter(message => !message.deleted).size);
@@ -49,7 +53,11 @@ export class MenuItemComponent implements OnInit {
 
   keepLastRoute() {
     let currentRoute;
-    this.router.children[0].url.subscribe(route => currentRoute = route[0].path);
+    this.aRouter.children[0].url.subscribe(route => currentRoute = route[0].path);
     return currentRoute;
+  }
+
+  copyValue(valueToCopy: string) {
+    Clipboard.copy(valueToCopy);
   }
 }

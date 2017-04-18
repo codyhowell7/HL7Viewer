@@ -3,7 +3,9 @@
         <input class='mainSearchInput' [(ngModel)]='generalSearch' (keyup.enter)='mainSearch()'>
         <button class='searchButton' (click)='mainSearch()'> Search  </button>
     </div>
-    <button *ngIf='!advanced' class='addConditionGroupButton' (click)='showAdvanced()'>Show Advanced Search</button>
+    <div class='advancedWrapper'>
+        <button *ngIf='!advanced' class='addConditionGroupButton' (click)='showAdvanced()'>Show Advanced Search</button>
+    </div>
     <div *ngIf='advanced'>
         <div class='addButtons'>
             <button class='addConditionGroupButton' (click)='addConditionGroup()'> Add Condition Group </button>

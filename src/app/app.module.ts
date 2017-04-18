@@ -62,7 +62,7 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { MessageComponentComponent } from './components/workspace/message/message-component/message-component.component';
 import { MessageSubcomponentComponent } from './components/workspace/message/message-subcomponent/message-subcomponent.component';
 import { MessageRepeatComponent } from './components/workspace/message/message-repeat/message-repeat.component';
-import { StandardMenuComponent } from './components/workspace/output-container/standard/standard-menu/standard-menu.component';
+import { ContextMenuModule } from 'ngx-contextmenu';
 
 enableProdMode();
 @NgModule({
@@ -95,8 +95,7 @@ enableProdMode();
     MessageSegmentComponent,
     MessageComponentComponent,
     MessageSubcomponentComponent,
-    MessageRepeatComponent,
-    StandardMenuComponent,
+    MessageRepeatComponent
   ],
   imports: [
     BrowserModule,
@@ -106,7 +105,8 @@ enableProdMode();
     MaterialModule.forRoot(),
     RouterModule.forRoot(appRoutes),
     NgReduxModule,
-    ClipboardModule
+    ClipboardModule,
+    ContextMenuModule
   ],
   providers: [DragService],
   bootstrap: [AppComponent]

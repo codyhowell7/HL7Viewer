@@ -85,7 +85,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   mainSearch() {
     let generalMessageSearch = new MessageReader();
-    let results = generalMessageSearch.generalSearch(this.messages, this.generalSearch)
+    let results = generalMessageSearch.generalSearch(this.messages, this.generalSearch);
     this.ngRedux.dispatch({
       type: NEW_SEARCH_RESULT,
       payload: {

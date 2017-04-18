@@ -12,12 +12,13 @@ export class HL7Message {
         this._hl7Segments = segments;
     }
 
-    hl7MessageType: string = '';
-    hl7MessageControllerId: string = '';
-    hl7MessageDateTime: Date = new Date();
-    hl7Version: string = '';
-    hl7MessageId: number = 0;
-    hl7CorrectedMessage: string = '';
+    hl7MessageType: string;
+    hl7MessageControllerId: string;
+    hl7MessageDateTime: Date;
+    hl7Version: string;
+    hl7MessageId: number;
+    hl7CorrectedMessage: string;
+    hl7MessageNoPHI = '';
 
     constructor(private value: string) { }
 }

@@ -1,10 +1,14 @@
 <hls-menu-toolbar></hls-menu-toolbar>
 <input #fileInput *ngIf="(isMessages$ | async) && !fileLoaded && messagesSize === 1" id="the-file-input" type="file" (change)='fileChanged($event)'>
-<button md-raised-button *ngIf="(isMessages$ | async) && !fileLoaded" (click)="addMessage()">Add Message</button>
+<!--<button md-raised-button *ngIf="(isMessages$ | async) && !fileLoaded" (click)="addMessage()">Add Message</button>-->
 <button md-raised-button (click)="resetSession()">Reset Session</button>
-<div *ngIf='isSorted()' class='filter'> Filtered By Search
+<div *ngIf='isSorted()' class='filter'> Results For: "{{searchFilter.get(0).searchTerm}}"
     <md-icon (click)='removeFilter()'>clear</md-icon>
 </div>
 <div *ngIf='!fileLoaded' class='container'>
-    <hls-menu-item *ngFor="let message of (getMessages() | async)" [messages$]='messages$' [mode$]='mode$' [message]="message" [ngClass]="{'active' : updateColor(message.id)}"></hls-menu-item>
+    <hls-menu-item *ngFor="let message of (getMessages() | async)" [messages$]='messages$' [mode$]='mode$' [message]="message"></hls-menu-item>
+</div>
+<div class='messageNum' *ngIf='fileLoaded'> 
+    Number of messages: <br>
+    {{messagesSize}} 
 </div>

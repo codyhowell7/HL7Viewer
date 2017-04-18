@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { QuickViewService } from '../../../../../backendCalls/quickview.service';
 import { List } from 'immutable';
-const uuidV1 = require('uuid/v1');
+import * as uuidV1 from 'uuid/v1';
 
 @Component({
   selector: 'hls-quick-view-create',

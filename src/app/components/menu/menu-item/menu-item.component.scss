@@ -3,14 +3,21 @@ $iconHeight: 14px;
 :host {
     margin-bottom: 1px;
     cursor: pointer;
-    padding: 10px;
     background-color: #fff;
     user-select: none;
     
     div {      
+        span {
+            line-height: $iconHeight;
+            align-self: center;
+            margin-left: 10px;
+        }
         div {
             span {
                 line-height: $iconHeight;
+                align-self: center;
+                margin-left: 10px;
+
             }
             input {
                 line-height: $iconHeight;
@@ -36,8 +43,13 @@ $iconHeight: 14px;
     display: flex;
     justify-content: space-between;
     user-select: none;
+    height: 38px;
+    
 }
 
+.active {
+    background-color: #7ec0ee;
+}
 
 div.dnd-drag-start {
     border: 1px dashed black;

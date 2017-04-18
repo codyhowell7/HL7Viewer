@@ -14,6 +14,7 @@ export class HL7Segment {
 
     segmentName: string;
     segmentDesc: string;
+    segmentSetId: number;
     isInQuickView: boolean = false;
 
     constructor(public value: string, public segmentIndex: number) { }

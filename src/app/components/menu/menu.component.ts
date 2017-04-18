@@ -74,14 +74,11 @@ export class MenuComponent implements OnInit {
   }
 
   isSorted() {
-    let filterActive = false;
-    let deletedNum: number;
-    filterActive = this.searchFilter.some(value => value.includedInMess === false);
-    return filterActive;
-  }
-
-  updateColor(messageId: number) {
-    return this.currentRoute === messageId;
+    if ( this.searchFilter.get(0).searchTerm !== '') {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   removeFilter() {

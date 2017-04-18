@@ -14,7 +14,7 @@ export class MessageRepeatComponent implements OnInit {
   @Input() cIndex: number;
   @Input() fIndex: number;
   @Input() rIndex: number;
-  @Input() repeat: boolean;
+  @Input() repeat: HL7Field;
   @Input() segName: string;
   @Input() highlight: Map<string, IMessageHighlight>;
 

@@ -7,7 +7,7 @@ import { select, NgRedux } from 'ng2-redux';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Observable } from 'rxjs/Observable';
 import { IMessage, IAppState } from '../../../../../states/states';
-let HL7Dict = require('hl7-dictionary');
+import * as HL7Dict from 'hl7-dictionary';
 
 
 @Component({

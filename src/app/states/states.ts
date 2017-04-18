@@ -88,6 +88,8 @@ export interface IMessageHighlight {
 }
 
 export interface ISearchFilter {
+    searchTerm: string;
     includedInMess: boolean;
     searchConditions: string[];
+    segmentSetID?: number;
 }

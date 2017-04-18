@@ -5,7 +5,7 @@ import { HL7Component } from '../../parser/hl7Component';
 import { HL7SubComponent } from '../../parser/hl7SubComponent';
 import { select, NgRedux } from 'ng2-redux';
 import { IMessage, IAppState } from '../states/states';
-let transitJS = require('transit-immutable-js');
+import * as transitJS from 'transit-immutable-js';
 
 export class SerializeHelper {
 
@@ -43,7 +43,7 @@ export class SerializeHelper {
                     class: HL7Segment,
                     write: function (v, h) {
                         return [v.hl7Fields, v.segmentName, v.segmentDesc,
-                        v.isInQuickView, v.value, v.segmentIndex];
+                        v.isInQuickView, v.value, v.segmentIndex, v.segmentSetId];
                     },
                     read: function (rep) {
                         let segment = new HL7Segment(rep[4], rep[5]);
@@ -51,6 +51,7 @@ export class SerializeHelper {
                         segment.segmentName = rep[1];
                         segment.segmentDesc = rep[2];
                         segment.isInQuickView = rep[3];
+                        segment.segmentSetId = rep[6];
                         return segment;
                     }
                 },

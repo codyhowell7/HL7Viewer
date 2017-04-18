@@ -1,8 +1,9 @@
-<div *ngIf='!isMessages && !isCompare' >
+<div *ngIf='!isMessages && !isCompare' routerLinkActive="active" class='message' [contextMenu]='copyMenu' [contextMenuSubject]='message'>
     <span>Message {{message.id + 1}}</span>
 </div>
 <div *ngIf="isMessages">
-    <div [routerLink]="['/workspace', message.id, keepLastRoute()]" routerLinkActive="active" class='message'>
+    <div [routerLink]="['/workspace', message.id, keepLastRoute()]" routerLinkActive="active" class='message' [contextMenu]='copyMenu'
+        [contextMenuSubject]='message'>
         <span>Message {{message.id + 1}}</span>
         <md-icon (click)="removeItem()">clear</md-icon>
     </div>
@@ -10,3 +11,11 @@
 <div *ngIf="isCompare" class='compare' [myDraggable]='{data: message.id + 1}'>
     <span>Message {{message.id + 1}}</span>
 </div>
+<context-menu #copyMenu>
+    <ng-template contextMenuItem (execute)='copyValue($event.item.message.hl7CorrectedMessage)'>
+        Copy
+    </ng-template>
+    <ng-template contextMenuItem (execute)='copyValue($event.item.message.hl7MessageNoPHI)'>
+        Copy W/O PHI
+    </ng-template>
+</context-menu>

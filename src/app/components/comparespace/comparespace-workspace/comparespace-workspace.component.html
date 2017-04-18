@@ -1,19 +1,19 @@
 <div class='compareWorkspace'>
     <div class='headers'>
-        <div *ngIf='getLeftID()' class='header1'> Message: {{getLeftID()}} </div>
-        <div *ngIf='getLeftID() && !getRightID()' class='fakeheader2'></div>
-        <div *ngIf='!getLeftID() && getRightID()' class='fakeheader1'></div>
-        <div *ngIf='getRightID()' class='header2'> Message: {{getRightID()}} </div>
+        <div *ngIf='getLeftID() != null' class='header1'> Message: {{getLeftID()}} </div>
+        <div *ngIf='getLeftID() != null && !getRightID() != null' class='fakeheader2'></div>
+        <div *ngIf='!getLeftID() != null && getRightID() != null' class='fakeheader1'></div>
+        <div *ngIf='getRightID() != null' class='header2'> Message: {{getRightID()}} </div>
     </div>
     <div class='compareOutput'>
         <div class='draggable1' myDropTarget (myDrop)='saveLeftCompare($event)' [scrollLeft]='divScrollLeft' (scroll)=onScroll($event.target.scrollLeft)>
                 <hls-comparespace-highlighting [discrepancies]='discrep1' [messageID]='getLeftID()' [messages]='messages' [oppositeDiscrepancies]='discrep2'
                     (sendToBottom)='sendLeftLineToBottom($event)' [fieldDiscrepancies]='discrep1' myDropTarget (myDrop)='saveLeftCompare($event)' 
-                    [scrollLeft]='divScrollLeft' (scroll)='onScroll($event.target.scrollLeft)' class='comparespaceHighlighting' *ngIf='getLeftID() ' ></hls-comparespace-highlighting>
+                    [scrollLeft]='divScrollLeft' (scroll)='onScroll($event.target.scrollLeft)' class='comparespaceHighlighting' *ngIf='getLeftID() != null' ></hls-comparespace-highlighting>
         </div>
         <div class='draggable2' myDropTarget (myDrop)='saveRightCompare($event)' [scrollLeft]='divScrollLeft' (scroll)=onScroll($event.target.scrollLeft)>
                 <hls-comparespace-highlighting [discrepancies]='discrep2' [messageID]='getRightID()'  [messages]='messages' [oppositeDiscrepancies]='discrep1' 
-                    (sendToBottom)='sendRightLineToBottom($event)' [fieldDiscrepancies]='discrep1' class='comparespaceHighlighting' *ngIf='getRightID()'> </hls-comparespace-highlighting>
+                    (sendToBottom)='sendRightLineToBottom($event)' [fieldDiscrepancies]='discrep1' class='comparespaceHighlighting' *ngIf='getRightID() != null'> </hls-comparespace-highlighting>
         </div>
     </div>
     <!--<div *ngIf='displayBottom()' class='bottomSection'>

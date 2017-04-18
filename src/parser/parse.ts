@@ -4,7 +4,8 @@ import { HL7Field } from './hl7Field';
 import { HL7Component } from './hl7Component';
 import { HL7SubComponent } from './hl7SubComponent';
 import { ConvertTime } from './convertTime';
-let HL7Dict = require('hl7-dictionary');
+import { List } from 'immutable';
+import * as HL7Dict from 'hl7-dictionary';
 
 export class Parser {
     fieldSeparator: string;
@@ -66,9 +67,35 @@ export class Parser {
         let segmentSplitter = new RegExp('[\\s](?=[A-Z][A-Z][A-Z,0-9][\\\\' + this.fieldSeparator + '])');
         let segmentArray = strMessage.split(segmentSplitter);
         hl7Message.hl7CorrectedMessage = segmentArray.join('\n');
+        let nameList = List<string>();
         segmentArray.forEach((segmentElement, segmentIndex) => {
             segmentElement = segmentElement.trim();
-            localSegments.push(this.parseHL7Segment(segmentElement, segmentIndex));
+            let currentSegment = this.parseHL7Segment(segmentElement, segmentIndex)
+            localSegments.push(currentSegment);
+
+            if (!['PID', 'GT1', 'PD1', 'NK1', 'IN1'].includes(currentSegment.segmentName)) { // TODO: Make configurable
+                hl7Message.hl7MessageNoPHI += currentSegment.value + '\n';
+            } else {
+                hl7Message.hl7MessageNoPHI += currentSegment.segmentName + '|REDACTED\n';
+            }
+
+            // Generate set ID's or use whatever is in XXX.1
+            nameList = nameList.push(segmentElement.substr(0, 3));
+            let valueInField: number;
+            let nameNumber = nameList.slice(0, segmentIndex).filter(segment => segment ===
+                localSegments[localSegments.length - 1].segmentName).size + 1;
+            if (localSegments[localSegments.length - 1].hl7Fields[0].value !== '') {
+                valueInField = +localSegments[localSegments.length - 1].hl7Fields[0].value;
+                if (valueInField !== nameNumber) {
+                    nameNumber = valueInField;
+                }
+            }
+            if (!isNaN(nameNumber)) {
+                localSegments[localSegments.length - 1].segmentSetId = nameNumber;
+            } else {
+                localSegments[localSegments.length - 1].segmentSetId = 1;
+            }
+
         });
         hl7Message.hl7Segments = localSegments;
         if (hl7Message.hl7Segments.length > 0 && hl7Message.hl7Segments[0].segmentName === 'MSH') {

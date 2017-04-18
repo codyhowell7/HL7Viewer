@@ -32,19 +32,22 @@ export function reduceSearchResults(state: Map<number, ISearchFilter>, action: I
 function defaultSearchResult() {
     return Map<number, ISearchFilter>().set(0, {
         includedInMess: true,
-        searchConditions: []
+        searchConditions: [],
+        searchTerm: ''
     });
 }
 
 function createDefaultSearchBySize(action: ICreateSearchBySize) {
     let createSearchResults = Map<number, ISearchFilter>().set(0, {
         includedInMess: true,
-        searchConditions: []
+        searchConditions: [],
+        searchTerm: ''
     });
     for (let i = 0; i <= action.payload.messageSize; i++) {
         createSearchResults = createSearchResults.set(i, {
             includedInMess: true,
-            searchConditions: []
+            searchConditions: [],
+            searchTerm: ''
         });
     }
     return createSearchResults;
@@ -53,7 +56,8 @@ function createDefaultSearchBySize(action: ICreateSearchBySize) {
 function defaultNewMessage(state: Map<number, ISearchFilter>) {
     return state.set(state.size, {
         includedInMess: true,
-        searchConditions: []
+        searchConditions: [],
+        searchTerm: ''
     });
 }
 
@@ -63,11 +67,13 @@ function newSearchResult(state: Map<number, ISearchFilter>, action: IAddSearchRe
 function removeSearchResult(state: Map<number, ISearchFilter>) {
     let newState = Map<number, ISearchFilter>().set(0, {
         includedInMess: true,
-        searchConditions: []
+        searchConditions: [],
+        searchTerm: ''
     });
     state.keySeq().forEach(id => newState = newState.set(id, {
         includedInMess: true,
-        searchConditions: []
+        searchConditions: [],
+        searchTerm: ''
     }));
     return newState;
 }

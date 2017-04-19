@@ -7,13 +7,15 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class AddMessageComponent implements OnInit {
 
-  @Input() isMessages: boolean;
-  @Input() fileLoaded: boolean;
-  @Input() messagesSize: number;
+  addMessageScreen = false;
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  addMessage() {
+    this.addMessageScreen = true;
   }
 
 }

@@ -1,8 +1,8 @@
 <hls-menu-toolbar></hls-menu-toolbar>
-<input #fileInput *ngIf="isMessages && !fileLoaded && messagesSize === 1" id="the-file-input" type="file" (change)='fileChanged($event)'>
-<hls-add-message [isMessages]='isMessages' [fileLoaded]='fileLoaded' [messagesSize]='messagesSize'></hls-add-message>
+<input #fileInput *ngIf="isMessages && !fileLoaded && !checkMessageOne()" id="the-file-input" type="file" (change)='fileChanged($event)'>
+<button md-raised-button *ngIf="isMessages && !fileLoaded && checkMessageOne()" (click)="addMessage()">Add Message</button>
 <button md-raised-button (click)="resetSession()">Reset Session</button>
-<button *ngIf='isMessages && !fileLoaded && messagesSize > 1 && !copyOption' md-raised-button (click)="copyMessages()">Copy Messages</button>
+<button *ngIf='isMessages && !fileLoaded && checkMessageOne() && !copyOption' md-raised-button (click)="copyMessages()">Copy Messages</button>
 <div class='copyOption1'>
     <button *ngIf='copyOption && !copyListOption && !copySelectOption' md-raised-button (click)="copyList()">Copy List</button>
     <button class='rightButton' *ngIf='copyOption && !copyListOption && !copySelectOption' md-raised-button (click)="copySelect()">Select</button>

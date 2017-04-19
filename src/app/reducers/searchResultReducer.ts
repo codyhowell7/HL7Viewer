@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { IAction, IAddSearchResults, IRemoveMessageAction, ICreateSearchBySize } from '../actions/actions';
+import { IAction, IAddSearchResults, IRemoveMessageAction, ICreateSearchBySize, IAddSearchSize } from '../actions/actions';
 import {
     DEFAULT_STATE, NEW_SEARCH_RESULT, NEW_SEARCH_MESSAGE, REMOVE_SEARCH_FILTER,
     REMOVE_MESSAGE_FROM_FILTER, RESET_STATE, CREATE_DEAFULT_SEARCH_BY_SIZE
@@ -11,7 +11,7 @@ export function reduceSearchResults(state: Map<number, ISearchFilter>, action: I
         case NEW_SEARCH_RESULT:
             return newSearchResult(state, action as IAddSearchResults);
         case NEW_SEARCH_MESSAGE:
-            return defaultNewMessage(state);
+            return defaultNewMessage(state, action as IAddSearchSize);
         case REMOVE_SEARCH_FILTER:
             return removeSearchResult(state);
         case REMOVE_MESSAGE_FROM_FILTER:
@@ -53,8 +53,8 @@ function createDefaultSearchBySize(action: ICreateSearchBySize) {
     return createSearchResults;
 }
 
-function defaultNewMessage(state: Map<number, ISearchFilter>) {
-    return state.set(state.size, {
+function defaultNewMessage(state: Map<number, ISearchFilter>, action: IAddSearchSize) {
+    return state.set(action.payload.searchId, {
         includedInMess: true,
         searchConditions: [],
         searchTerm: ''

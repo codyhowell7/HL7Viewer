@@ -45,6 +45,7 @@ export class MenuComponent implements OnInit {
   copyOption = false;
   copyListOption = false;
   copySelectOption = false;
+  maxMess: number;
 
   constructor(private ngRedux: NgRedux<IAppState>, private router: Router, private aRouter: ActivatedRoute,
     private _service: NotificationsService) { }
@@ -53,6 +54,7 @@ export class MenuComponent implements OnInit {
     this.searchFilter$.subscribe(filter => this.searchFilter = filter);
     this.messages$.subscribe(messages => {
       this.messagesSize = messages.filter(message => (!message.deleted)).size;
+      this.maxMess = messages.size;
       this.getMessages(messages);
     });
     this.mode$.subscribe(mode => {
@@ -68,12 +70,19 @@ export class MenuComponent implements OnInit {
 
   getMessages(messages: Map<string, IMessage>) {
     this.formattedMessages = messages.filter(message => {
-      console.log('test')
-      return !message.deleted && this.searchFilter.get(message.id).includedInMess
+      return !message.deleted && this.searchFilter.get(message.id).includedInMess;
     })
       .toArray()
       .sort(function (a, b) { return a.id - b.id; });
   };
+
+  checkMessageOne() {
+    if (this.formattedMessages[0].message.hl7CorrectedMessage != null || this.formattedMessages.length > 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   checkBoxToggle(compareId) {
     this.checkBoxes = this.checkBoxes.set(compareId, !this.checkBoxes.get(compareId));
@@ -87,13 +96,14 @@ export class MenuComponent implements OnInit {
     }
   }
 
-  removeFilter() {
-    this.ngRedux.dispatch({
-      type: REMOVE_SEARCH_FILTER
-    });
-  }
+  addMessage() {
 
-  addMessage = () => {
+    this.ngRedux.dispatch({
+      type: NEW_SEARCH_MESSAGE,
+      payload: {
+        searchId: this.maxMess
+      }
+    });
     this.ngRedux.dispatch({
       type: ADD_MESSAGE,
       payload: {
@@ -101,9 +111,12 @@ export class MenuComponent implements OnInit {
       }
     });
     this.ngRedux.dispatch({
-      type: NEW_SEARCH_MESSAGE
+      type: SWITCH_MESSAGE,
+      payload: {
+        id: this.maxMess - 1
+      }
     });
-    this.router.navigate([`/workspace/${this.messagesSize - 1}/standard`]);
+    this.router.navigate([`/workspace/${this.maxMess - 1}/standard`]);
   }
 
   compareMessages() {
@@ -124,9 +137,9 @@ export class MenuComponent implements OnInit {
     this.ngRedux.dispatch({
       type: RESET_STATE,
     });
-    // this.ngRedux.dispatch({
-    //   type: RESET_STATE,
-    // });
+    this.ngRedux.dispatch({
+      type: RESET_STATE,
+    });
     this.router.navigate(['workspace/0/standard']);
   }
 
@@ -136,7 +149,7 @@ export class MenuComponent implements OnInit {
     let file: File = event.srcElement.files[0];
     let parsedMessage;
     fileReader.onloadend = () => {
-      parsedMessage = new HL7MultiMessage(fileReader.result).hl7Messages;
+      parsedMessage = new HL7MultiMessage(fileReader.result, 0).hl7Messages;
 
       this.ngRedux.dispatch({
         type: CREATE_DEAFULT_SEARCH_BY_SIZE,
@@ -171,7 +184,6 @@ export class MenuComponent implements OnInit {
   allFullCopy() {
     let allMessage = '';
     this.formattedMessages.forEach(message => {
-      console.log('Test2');
       allMessage += message.message.hl7CorrectedMessage + '\n';
     });
     Clipboard.copy(allMessage);
@@ -182,7 +194,7 @@ export class MenuComponent implements OnInit {
 
   allPHICopy() {
     let allMessage = '';
-    this.messages.forEach(message => {
+    this.formattedMessages.forEach(message => {
       allMessage += message.message.hl7MessageNoPHI + '\n';
     });
     Clipboard.copy(allMessage);

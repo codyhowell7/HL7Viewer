@@ -35,7 +35,7 @@ export function reduceMessages(state: Map<number, IMessage>, action: IAction): M
         case MESSAGE_RECEIVED:
             return messageReceived(state, action as IMessageReceivedAction);
         case All_MESSAGE_RECEIVED:
-            return allMessageReceived(state, action as IAllMessageReceivedAction)
+            return allMessageReceived(state, action as IAllMessageReceivedAction);
         case DEFAULT_STATE:
             if (state != null) {
                 return state;

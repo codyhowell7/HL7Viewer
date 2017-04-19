@@ -5,7 +5,7 @@
     <div [routerLink]="['/workspace', message.id, keepLastRoute()]" routerLinkActive="active" class='message' [contextMenu]='copyMenu'
         [contextMenuSubject]='message'>
         <span>Message {{message.id + 1}}</span>
-        <md-icon (click)="removeItem()">clear</md-icon>
+        <md-icon *ngIf='messageCount > 1' (click)="removeItem()">clear</md-icon>
     </div>
 </div>
 <div *ngIf="isCompare" class='compare' [myDraggable]='{data: message.id + 1}'>

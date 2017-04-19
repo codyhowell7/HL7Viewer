@@ -52,7 +52,7 @@ export class MessageComponent implements OnInit, OnDestroy {
     )
       .subscribe(([accordion, message]) => {
         let hl7Segments: HL7Segment[];
-        if (this.messages.get(this.messageId)) {
+        if (this.currentMessage) {
           hl7Segments = this.messages.get(this.messageId).message.hl7Segments;
         } else {
           hl7Segments = this.messages.get(0).message.hl7Segments;
@@ -89,22 +89,47 @@ export class MessageComponent implements OnInit, OnDestroy {
     this.messageControl
       .valueChanges
       .subscribe(value => {
-        let parsedMessage = new HL7MultiMessage(this.message).hl7Messages;
+        if (this.messageId !== 0) {
+          if (value != null) {
+            let parsedMessage = new HL7MultiMessage(this.message, this.messageId).hl7Messages;
+            parsedMessage.forEach((message, mIndex = 0) => {
+              if (message.id !== 0) {
 
-        this.ngRedux.dispatch({
-          type: CREATE_DEAFULT_SEARCH_BY_SIZE,
-          payload: {
-            messageSize: parsedMessage.size
+                this.ngRedux.dispatch({
+                  type: NEW_SEARCH_MESSAGE,
+                  payload: {
+                    searchId: message.id
+                  }
+                });
+                this.ngRedux.dispatch({
+                  type: MESSAGE_RECEIVED,
+                  payload: {
+                    id: mIndex,
+                    message: message.message
+                  }
+                });
+              }
+            });
           }
-        });
+        } else {
+          if (value != null) {
+            let parsedMessage = new HL7MultiMessage(this.message, this.messageId).hl7Messages;
 
-        this.ngRedux.dispatch({
-          type: All_MESSAGE_RECEIVED,
-          payload: {
-            messages: parsedMessage
+            this.ngRedux.dispatch({
+              type: CREATE_DEAFULT_SEARCH_BY_SIZE,
+              payload: {
+                messageSize: parsedMessage.size
+              }
+            });
+
+            this.ngRedux.dispatch({
+              type: All_MESSAGE_RECEIVED,
+              payload: {
+                messages: parsedMessage
+              }
+            });
           }
-        });
-
+        }
         let hl7Segments: HL7Segment[];
         if (this.messages.get(this.messageId)) {
           hl7Segments = this.messages.get(this.messageId).message.hl7Segments;

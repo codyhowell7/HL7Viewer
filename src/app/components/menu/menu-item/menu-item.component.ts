@@ -28,8 +28,8 @@ export class MenuItemComponent implements OnInit {
   crtlClicked = false;
   shiftClicked = false;
 
-  constructor(private ngRedux: NgRedux<IAppState>, private aRouter: ActivatedRoute, private router: Router, 
-  private _service: NotificationsService) { }
+  constructor(private ngRedux: NgRedux<IAppState>, private aRouter: ActivatedRoute, private router: Router,
+    private _service: NotificationsService) { }
 
   ngOnInit() {
     this.messages$.subscribe(messages => this.messageCount = messages.filter(message => !message.deleted).size);
@@ -38,12 +38,14 @@ export class MenuItemComponent implements OnInit {
   }
 
   removeItem() {
-    this.ngRedux.dispatch({
-      type: REMOVE_MESSAGE,
-      payload: {
-        id: this.message.id
-      }
-    });
+    if (this.messageCount > 1) {
+      this.ngRedux.dispatch({
+        type: REMOVE_MESSAGE,
+        payload: {
+          id: this.message.id
+        }
+      });
+    }
 
     this.ngRedux.dispatch({
       type: REMOVE_MESSAGE_FROM_FILTER,
@@ -65,7 +67,7 @@ export class MenuItemComponent implements OnInit {
   }
 
   copyNoPHIValue(valueToCopy) {
-      Clipboard.copy(valueToCopy.message.hl7MessageNoPHI);
-      this._service.success('Copy Successful!',  `Copied Message ${valueToCopy.id + 1}, without PHI`);
+    Clipboard.copy(valueToCopy.message.hl7MessageNoPHI);
+    this._service.success('Copy Successful!', `Copied Message ${valueToCopy.id + 1}, without PHI`);
   }
 }

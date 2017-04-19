@@ -92,3 +92,7 @@ export interface IHighlightMessagePayload {
 export interface ICreateSearchBySizePayload {
     messageSize: number;
 }
+
+export interface IAddSearchSizePayload {
+    searchId: number;
+}

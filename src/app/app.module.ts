@@ -63,8 +63,7 @@ import { MessageSubcomponentComponent } from './components/workspace/message/mes
 import { MessageRepeatComponent } from './components/workspace/message/message-repeat/message-repeat.component';
 import { ContextMenuModule } from 'ngx-contextmenu';
 import { SimpleNotificationsModule, NotificationsService } from 'angular2-notifications';
-import { AddComponent } from './components/menu/add/add.component';
-import { AddMessageComponent } from './components/menu/add-message/add-message.component';
+import { AddMessageComponent } from './components/add-message/add-message.component';
 
 enableProdMode();
 @NgModule({
@@ -98,7 +97,6 @@ enableProdMode();
     MessageComponentComponent,
     MessageSubcomponentComponent,
     MessageRepeatComponent,
-    AddComponent,
     AddMessageComponent
   ],
   imports: [

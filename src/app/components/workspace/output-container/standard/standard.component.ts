@@ -16,6 +16,8 @@ import {
 import { HL7Segment } from '../../../../../parser/HL7Segment';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
 import { Clipboard } from 'ts-clipboard';
+import { NotificationsService } from 'angular2-notifications';
+
 
 
 @Component({
@@ -40,7 +42,8 @@ export class StandardComponent implements OnInit, OnDestroy {
 
   @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
 
-  constructor(private ngRedux: NgRedux<IAppState>, private router: Router, private contextMenuService: ContextMenuService) { }
+  constructor(private ngRedux: NgRedux<IAppState>, private router: Router, private contextMenuService: ContextMenuService,
+    private _service: NotificationsService) { }
 
   ngOnInit() {
     this.mSub = combineLatest(this.messages$, this.currentMessage$)
@@ -49,7 +52,9 @@ export class StandardComponent implements OnInit, OnDestroy {
         this.messageId = currentMessage;
         return message;
       })
-      .subscribe(message => { this.message = message; });
+      .subscribe(message => {
+        this.message = message;
+      });
     if (this.message == null) {
       this.router.navigate(['/workspace/0/standard']);
     }
@@ -150,11 +155,27 @@ export class StandardComponent implements OnInit, OnDestroy {
       } else {
         state = false;
       }
-    });
+    }).unsubscribe();
     return state;
   }
 
   extendSegmentAccordion(segmentIndex: number, segmentAccoridonState: boolean): void {
+    this.accordion$.subscribe(accordionState => {
+      if (accordionState.segment.get(this.messageId).get(segmentIndex).segmentAccordionState == null) {
+        let fields = this.message.message.hl7Segments[segmentIndex].hl7Fields;
+        fields.forEach((field, fieldIndex) => {
+          this.ngRedux.dispatch({
+            type: DEFAULT_FIELD_ACCORDIONS,
+            payload: {
+              messageID: this.messageId,
+              segmentID: segmentIndex,
+              fieldID: fieldIndex,
+              segmentToggleState: true
+            }
+          });
+        });
+      }
+    }).unsubscribe();
     this.ngRedux.dispatch({
       type: TOGGLE_SEGMENT_ACCORDION,
       payload: {
@@ -166,20 +187,6 @@ export class StandardComponent implements OnInit, OnDestroy {
         segmentToggleState: segmentAccoridonState
       }
     });
-    this.accordion$.subscribe(accordionState => {
-      let fields = this.message.message.hl7Segments[segmentIndex].hl7Fields;
-      fields.forEach((field, fieldIndex) => {
-        this.ngRedux.dispatch({
-          type: DEFAULT_FIELD_ACCORDIONS,
-          payload: {
-            messageID: this.messageId,
-            segmentID: segmentIndex,
-            fieldID: fieldIndex,
-            segmentToggleState: accordionState.segment.get(this.messageId).get(segmentIndex).segmentAccordionState
-          }
-        });
-      });
-    }).unsubscribe();
   }
 
   getFieldState(segmentId: number, fieldId: number) {
@@ -469,8 +476,9 @@ export class StandardComponent implements OnInit, OnDestroy {
     }
   }
 
-  copyValue(valueToCopy: string) {
-    Clipboard.copy(valueToCopy);
+  copyValue(valueToCopy) {
+    Clipboard.copy(valueToCopy.value);
+    this._service.success('Copy Successful!');
   }
 
 }

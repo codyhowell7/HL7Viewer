@@ -8,6 +8,7 @@ import { REMOVE_MESSAGE, REMOVE_MESSAGE_FROM_FILTER } from '../../../constants/c
 import { Router, ActivatedRoute, Params, UrlSegment } from '@angular/router';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
 import { Clipboard } from 'ts-clipboard';
+import { NotificationsService } from 'angular2-notifications';
 
 @Component({
   selector: 'hls-menu-item',
@@ -27,7 +28,8 @@ export class MenuItemComponent implements OnInit {
   crtlClicked = false;
   shiftClicked = false;
 
-  constructor(private ngRedux: NgRedux<IAppState>, private aRouter: ActivatedRoute, private router: Router) { }
+  constructor(private ngRedux: NgRedux<IAppState>, private aRouter: ActivatedRoute, private router: Router, 
+  private _service: NotificationsService) { }
 
   ngOnInit() {
     this.messages$.subscribe(messages => this.messageCount = messages.filter(message => !message.deleted).size);
@@ -57,7 +59,13 @@ export class MenuItemComponent implements OnInit {
     return currentRoute;
   }
 
-  copyValue(valueToCopy: string) {
-    Clipboard.copy(valueToCopy);
+  copyValue(valueToCopy) {
+    Clipboard.copy(valueToCopy.message.hl7CorrectedMessage);
+    this._service.success('Copy Successful!', `Copied Message ${valueToCopy.id + 1}`);
+  }
+
+  copyNoPHIValue(valueToCopy) {
+      Clipboard.copy(valueToCopy.message.hl7MessageNoPHI);
+      this._service.success('Copy Successful!',  `Copied Message ${valueToCopy.id + 1}, without PHI`);
   }
 }

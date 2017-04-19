@@ -49,7 +49,6 @@ import {
 import { DragService } from '../drag/drag.service';
 import { DraggableDirective } from '../drag/draggable-directive';
 import { DropTargetDirective } from '../drag/drop-target.directive';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { isDevMode } from '@angular/core';
 import { QuickViewCreateComponent } from './components/workspace/output-container/quick-view/quick-view-create/quick-view-create.component';
 import { QuickViewSelectAllComponent } from './components/workspace/output-container/quick-view/quick-view-select-all/quick-view-select-all.component';
@@ -63,6 +62,9 @@ import { MessageComponentComponent } from './components/workspace/message/messag
 import { MessageSubcomponentComponent } from './components/workspace/message/message-subcomponent/message-subcomponent.component';
 import { MessageRepeatComponent } from './components/workspace/message/message-repeat/message-repeat.component';
 import { ContextMenuModule } from 'ngx-contextmenu';
+import { SimpleNotificationsModule, NotificationsService } from 'angular2-notifications';
+import { AddComponent } from './components/menu/add/add.component';
+import { AddMessageComponent } from './components/menu/add-message/add-message.component';
 
 enableProdMode();
 @NgModule({
@@ -95,7 +97,9 @@ enableProdMode();
     MessageSegmentComponent,
     MessageComponentComponent,
     MessageSubcomponentComponent,
-    MessageRepeatComponent
+    MessageRepeatComponent,
+    AddComponent,
+    AddMessageComponent
   ],
   imports: [
     BrowserModule,
@@ -106,7 +110,8 @@ enableProdMode();
     RouterModule.forRoot(appRoutes),
     NgReduxModule,
     ClipboardModule,
-    ContextMenuModule
+    ContextMenuModule,
+    SimpleNotificationsModule.forRoot()
   ],
   providers: [DragService],
   bootstrap: [AppComponent]

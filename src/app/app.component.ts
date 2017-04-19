@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NotificationsService } from 'angular2-notifications';
 
 @Component({
     selector: 'app-root',
@@ -8,4 +9,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 
+    public options = {
+        timeOut: 5000,
+        showProgressBar: false
+    };
+
+    constructor(private _service: NotificationsService) { }
 }

@@ -12,10 +12,10 @@
     <span>Message {{message.id + 1}}</span>
 </div>
 <context-menu #copyMenu>
-    <ng-template contextMenuItem (execute)='copyValue($event.item.message.hl7CorrectedMessage)'>
+    <ng-template contextMenuItem (execute)='copyValue($event.item)'>
         Copy
     </ng-template>
-    <ng-template contextMenuItem (execute)='copyValue($event.item.message.hl7MessageNoPHI)'>
+    <ng-template contextMenuItem (execute)='copyNoPHIValue($event.item)'>
         Copy W/O PHI
     </ng-template>
 </context-menu>

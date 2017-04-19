@@ -12,7 +12,8 @@ import {
   ADD_MESSAGE, SWITCH_MESSAGE, NEW_SEARCH_MESSAGE, REMOVE_SEARCH_FILTER, SAVE_COMPARE, RESET_STATE,
   CREATE_DEAFULT_SEARCH_BY_SIZE, All_MESSAGE_RECEIVED
 } from '../../constants/constants';
-import * as Clipboard from 'clipboard';
+import { Clipboard } from 'ts-clipboard';
+import { NotificationsService } from 'angular2-notifications';
 
 @Component({
   selector: 'hls-menu',
@@ -26,33 +27,38 @@ export class MenuComponent implements OnInit {
   @select(['messages']) messages$: Observable<Map<string, IMessage>>;
   @select(['searchFilter']) searchFilter$: Observable<Map<number, ISearchFilter>>;
 
-  isMessages$: Observable<boolean>;
-  isCompare$: Observable<boolean>;
-  messageCount$: Observable<number>;
+  isMessages: boolean;
+  isCompare: boolean;
+  messageCount: number;
 
   searchFilter: Map<number, ISearchFilter>;
   checkBoxes = Map<number, boolean>();
   newMessageId: number;
   messagesSize: number;
+  messages: Map<string, IMessage>;
+  formattedMessages: IMessage[];
   activeMessage: number;
   deleted: number;
   searched = false;
   fileLoaded = false;
   currentRoute = 0;
+  copyOption = false;
+  copyListOption = false;
+  copySelectOption = false;
 
-  constructor(private ngRedux: NgRedux<IAppState>, private router: Router, private aRouter: ActivatedRoute) { }
+  constructor(private ngRedux: NgRedux<IAppState>, private router: Router, private aRouter: ActivatedRoute,
+    private _service: NotificationsService) { }
 
   ngOnInit() {
-    this.messageCount$ = this.messages$.map(messages => {
-      this.messagesSize = messages.filter(message => (!message.deleted)).size;
-      return messages.filter(message => !message.deleted).size;
-    });
-    this.isMessages$ = combineLatest(this.mode$, this.messageCount$)
-      .map(([mode, messageCount]) => { return mode === WorkspaceMode.messages; });
-    this.isCompare$ = combineLatest(this.mode$, this.messageCount$)
-      .map(([mode, messageCount]) => { return mode === WorkspaceMode.compare; });
-
     this.searchFilter$.subscribe(filter => this.searchFilter = filter);
+    this.messages$.subscribe(messages => {
+      this.messagesSize = messages.filter(message => (!message.deleted)).size;
+      this.getMessages(messages);
+    });
+    this.mode$.subscribe(mode => {
+      this.isMessages = mode === WorkspaceMode.messages;
+      this.isCompare = mode === WorkspaceMode.compare;
+    });
     this.aRouter.url.subscribe(aurl => {
       if (aurl[1]) {
         this.currentRoute = +aurl[1].path;
@@ -60,13 +66,13 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  getMessages() {
-    return this.messages$.map(messages =>
-      messages.slice(0, 100)
-        .filter(message =>
-          !message.deleted && this.searchFilter.get(message.id).includedInMess)
-        .toArray()
-        .sort(function (a, b) { return a.id - b.id; }));
+  getMessages(messages: Map<string, IMessage>) {
+    this.formattedMessages = messages.filter(message => {
+      console.log('test')
+      return !message.deleted && this.searchFilter.get(message.id).includedInMess
+    })
+      .toArray()
+      .sort(function (a, b) { return a.id - b.id; });
   };
 
   checkBoxToggle(compareId) {
@@ -74,7 +80,7 @@ export class MenuComponent implements OnInit {
   }
 
   isSorted() {
-    if ( this.searchFilter.get(0).searchTerm !== '') {
+    if (this.searchFilter.first().searchTerm !== '') {
       return true;
     } else {
       return false;
@@ -110,15 +116,18 @@ export class MenuComponent implements OnInit {
   }
 
   resetSession() {
-    this.router.navigate(['workspace/0/standard']);
     this.activeMessage = null;
     this.fileLoaded = false;
+    this.copyOption = false;
+    this.copyListOption = false;
+    this.copySelectOption = false;
     this.ngRedux.dispatch({
       type: RESET_STATE,
     });
-    this.ngRedux.dispatch({
-      type: RESET_STATE,
-    });
+    // this.ngRedux.dispatch({
+    //   type: RESET_STATE,
+    // });
+    this.router.navigate(['workspace/0/standard']);
   }
 
   fileChanged(event) {
@@ -145,6 +154,46 @@ export class MenuComponent implements OnInit {
     };
     fileReader.readAsText(file);
     this.router.navigate(['workspace', '0', 'find']);
+  }
+
+  copyMessages() {
+    this.copyOption = true;
+  }
+
+  copyList() {
+    this.copyListOption = true;
+  }
+
+  copySelect() {
+    this.copySelectOption = true;
+  }
+
+  allFullCopy() {
+    let allMessage = '';
+    this.formattedMessages.forEach(message => {
+      console.log('Test2');
+      allMessage += message.message.hl7CorrectedMessage + '\n';
+    });
+    Clipboard.copy(allMessage);
+    this.copyListOption = false;
+    this.copyOption = false;
+    this._service.success('Copy Successful!', 'Copied current list of messages.');
+  }
+
+  allPHICopy() {
+    let allMessage = '';
+    this.messages.forEach(message => {
+      allMessage += message.message.hl7MessageNoPHI + '\n';
+    });
+    Clipboard.copy(allMessage);
+    this.copyListOption = false;
+    this.copyOption = false;
+    this._service.success('Copy Successful!', 'Copied current list of messages, without PHI.');
+
+  }
+
+  selectFullCopy() {
+
   }
 
 }

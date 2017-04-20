@@ -3,7 +3,7 @@ import {
     IIdPayload, IAccordionToggledPayload, IAddConditionPayload, IAddConditionGroupPayload,
     ISaveLeftComparePayload, ISaveRightComparePayload, IDiscrepancyPayload, IJWTPayload, IFindAllPayload,
     IFindAllUniquePayload, IAllMessageReceivedPayload, IHighlightMessagePayload, ICreateSearchBySizePayload,
-    IAddSearchSizePayload
+    IAddSearchSizePayload, IAddToCopyListPayload
 } from '../payloads/payloads';
 
 export interface IAction {
@@ -81,5 +81,8 @@ export interface IAddSearchSize extends IAction {
     payload: IAddSearchSizePayload;
 }
 
+export interface IAddToCopy extends IAction {
+    payload: IAddToCopyListPayload;
+}
 
 

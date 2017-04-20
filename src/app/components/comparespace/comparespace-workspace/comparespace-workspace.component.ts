@@ -43,7 +43,7 @@ export class ComparespaceWorkspaceComponent implements OnInit, OnDestroy {
         this.messagesToCompare = messagesToCompare;
         this.messages = messages;
       });
-    this.discrepSub1 = this.discrepancies$.subscribe(discrepancies => this.discrep1 = discrepancies.message1);
+    this.discrepSub1 = this.discrepancies$.subscribe(discrepancies => { console.log(discrepancies); this.discrep1 = discrepancies.message1;});
     this.discrepSub2 = this.discrepancies$.subscribe(discrepancies => this.discrep2 = discrepancies.message2);
   }
 

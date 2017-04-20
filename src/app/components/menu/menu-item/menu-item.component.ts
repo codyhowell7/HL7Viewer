@@ -1,10 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import { IMessage, IAppState } from '../../../states/states';
 import { WorkspaceMode } from '../../../enums/enums';
-import { REMOVE_MESSAGE, REMOVE_MESSAGE_FROM_FILTER } from '../../../constants/constants';
+import { REMOVE_MESSAGE, REMOVE_MESSAGE_FROM_FILTER, ADD_TO_COPY_LIST } from '../../../constants/constants';
 import { Router, ActivatedRoute, Params, UrlSegment } from '@angular/router';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
 import { Clipboard } from 'ts-clipboard';
@@ -21,6 +21,10 @@ export class MenuItemComponent implements OnInit {
   @Input() mode$: Observable<WorkspaceMode>;
   @Input() messages$: Observable<Map<string, IMessage>>;
   @Input() message: IMessage;
+  @Input() highlightFullCopy: boolean;
+  @Input() higlightSelectCopy: boolean;
+  @Input() finished: boolean;
+  @Input() copyList: Map<number, string>;
 
   isMessages: boolean;
   isCompare: boolean;
@@ -70,4 +74,23 @@ export class MenuItemComponent implements OnInit {
     Clipboard.copy(valueToCopy.message.hl7MessageNoPHI);
     this._service.success('Copy Successful!', `Copied Message ${valueToCopy.id + 1}, without PHI`);
   }
+
+  addToCopyList(message: string, id: number) {
+    this.ngRedux.dispatch({
+      type: ADD_TO_COPY_LIST,
+      payload: {
+        hl7Message: message,
+        messageId: id
+      }
+    });
+  }
+
+  elementInList(id: number) {
+    if (this.copyList.has(id)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 }

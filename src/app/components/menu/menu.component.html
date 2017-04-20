@@ -8,15 +8,17 @@
     <button class='rightButton' *ngIf='copyOption && !copyListOption && !copySelectOption' md-raised-button (click)="copySelect()">Select</button>
     <button *ngIf='copyListOption' md-raised-button (click)="allFullCopy()">Full</button>
     <button class='rightButton' *ngIf='copyListOption' md-raised-button (click)="allPHICopy()">W/O PHI</button>
-    <button *ngIf='copySelectOption' md-raised-button (click)="selectFullCopy()">Full</button>
-    <button class='rightButton' *ngIf='copySelectOption' md-raised-button (click)="selectPHICopy()">W/O PHI</button>
+    <button *ngIf='copySelectOption && !highlightFullCopy && !higlightSelectCopy' md-raised-button (click)="selectFullCopy()">Full</button>
+    <button class='rightButton' *ngIf='copySelectOption && !higlightSelectCopy && !highlightFullCopy' md-raised-button (click)="selectPHICopy()">W/O PHI</button>
+    <button *ngIf='finish()' md-raised-button (click)="finishCopy()">Finish Copy</button>
 </div>
 
 <div *ngIf='isSorted()' class='filter'> Results For: "{{searchFilter.get(0).searchTerm}}"
     <md-icon (click)='removeFilter()'>clear</md-icon>
 </div>
 <div *ngIf='!fileLoaded' class='container'>
-    <hls-menu-item *ngFor="let message of formattedMessages" [messages$]='messages$' [mode$]='mode$' [message]="message"></hls-menu-item>
+    <hls-menu-item *ngFor="let message of formattedMessages" [messages$]='messages$' [mode$]='mode$' [message]="message" [highlightFullCopy]='highlightFullCopy' [higlightSelectCopy]='higlightSelectCopy' [finished]='finished'
+    [copyList]='selectCopy'></hls-menu-item>
 </div>
 <div class='messageNum' *ngIf='fileLoaded'>
     Number of messages: <br> {{messagesSize}}

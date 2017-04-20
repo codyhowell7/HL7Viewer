@@ -3,14 +3,14 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import { HL7MultiMessage } from '../../../parser/hl7MultiMessage';
 
 import { IMessage, IAppState, ISearchFilter } from '../../states/states';
 import { WorkspaceMode } from '../../enums/enums';
 import {
   ADD_MESSAGE, SWITCH_MESSAGE, NEW_SEARCH_MESSAGE, REMOVE_SEARCH_FILTER, SAVE_COMPARE, RESET_STATE,
-  CREATE_DEAFULT_SEARCH_BY_SIZE, All_MESSAGE_RECEIVED
+  CREATE_DEAFULT_SEARCH_BY_SIZE, All_MESSAGE_RECEIVED, CLEAR_COPY_LIST
 } from '../../constants/constants';
 import { Clipboard } from 'ts-clipboard';
 import { NotificationsService } from 'angular2-notifications';
@@ -26,6 +26,7 @@ export class MenuComponent implements OnInit {
   @select(['workspace', 'workspaceMode']) mode$: Observable<WorkspaceMode>;
   @select(['messages']) messages$: Observable<Map<string, IMessage>>;
   @select(['searchFilter']) searchFilter$: Observable<Map<number, ISearchFilter>>;
+  @select(['selectCopy']) selectCopy$: Observable<Map<number, string>>;
 
   isMessages: boolean;
   isCompare: boolean;
@@ -46,6 +47,11 @@ export class MenuComponent implements OnInit {
   copyListOption = false;
   copySelectOption = false;
   maxMess: number;
+  highlightFullCopy: boolean;
+  higlightSelectCopy: boolean;
+  selectCopy: Map<number, string>;
+  finished = false;
+
 
   constructor(private ngRedux: NgRedux<IAppState>, private router: Router, private aRouter: ActivatedRoute,
     private _service: NotificationsService) { }
@@ -66,6 +72,7 @@ export class MenuComponent implements OnInit {
         this.currentRoute = +aurl[1].path;
       }
     });
+    this.selectCopy$.subscribe(selectCopy => this.selectCopy = selectCopy);
   }
 
   getMessages(messages: Map<string, IMessage>) {
@@ -131,15 +138,17 @@ export class MenuComponent implements OnInit {
   resetSession() {
     this.activeMessage = null;
     this.fileLoaded = false;
-    this.copyOption = false;
-    this.copyListOption = false;
+    this.highlightFullCopy = false;
+    this.higlightSelectCopy = false;
     this.copySelectOption = false;
+    this.copyOption = false;
     this.ngRedux.dispatch({
       type: RESET_STATE,
     });
     this.ngRedux.dispatch({
       type: RESET_STATE,
     });
+    this._service.success('Reset Successful');
     this.router.navigate(['workspace/0/standard']);
   }
 
@@ -184,7 +193,7 @@ export class MenuComponent implements OnInit {
   allFullCopy() {
     let allMessage = '';
     this.formattedMessages.forEach(message => {
-      allMessage += message.message.hl7CorrectedMessage + '\n';
+      allMessage += message.message.hl7CorrectedMessage + '\n\n';
     });
     Clipboard.copy(allMessage);
     this.copyListOption = false;
@@ -195,7 +204,7 @@ export class MenuComponent implements OnInit {
   allPHICopy() {
     let allMessage = '';
     this.formattedMessages.forEach(message => {
-      allMessage += message.message.hl7MessageNoPHI + '\n';
+      allMessage += message.message.hl7MessageNoPHI + '\n\n';
     });
     Clipboard.copy(allMessage);
     this.copyListOption = false;
@@ -205,7 +214,33 @@ export class MenuComponent implements OnInit {
   }
 
   selectFullCopy() {
+    this.highlightFullCopy = true;
+  }
 
+  selectPHICopy() {
+    this.higlightSelectCopy = true;
+  }
+
+  finish() {
+    return this.highlightFullCopy || this.higlightSelectCopy;
+  }
+
+  finishCopy() {
+    let allMessage = '';
+    this.selectCopy.forEach(selectedMessages => {
+      allMessage += selectedMessages + '\n\n';
+    });
+    Clipboard.copy(allMessage);
+
+    this.ngRedux.dispatch({
+      type: CLEAR_COPY_LIST
+    });
+    this._service.success('Copy Successful!', 'Copied selected list of messages');
+    this.highlightFullCopy = false;
+    this.higlightSelectCopy = false;
+    this.copySelectOption = false;
+    this.copyOption = false;
   }
 
 }
+

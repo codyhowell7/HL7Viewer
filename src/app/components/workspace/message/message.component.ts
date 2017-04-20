@@ -16,6 +16,7 @@ import {
   MESSAGE_RECEIVED, ADD_MESSAGE, DEFAULT_SEGMENT_ACCORDIONS, DEFAULT_MESSAGE_ACCORDIONS,
   NEW_SEARCH_MESSAGE, CREATE_DEAFULT_SEARCH_BY_SIZE, All_MESSAGE_RECEIVED
 } from '../../../constants/constants';
+import { NotificationsService } from 'angular2-notifications';
 
 @Component({
   selector: 'hls-message',
@@ -38,7 +39,7 @@ export class MessageComponent implements OnInit, OnDestroy {
   ifAnychanges;
   mHighlightSub;
 
-  constructor(private ngRedux: NgRedux<IAppState>) { }
+  constructor(private ngRedux: NgRedux<IAppState>, private _service: NotificationsService) { }
 
   ngOnInit() {
     this.ifAnychanges = combineLatest(this.accordion$,
@@ -92,7 +93,7 @@ export class MessageComponent implements OnInit, OnDestroy {
         if (this.messageId !== 0) {
           if (value != null) {
             let parsedMessage = new HL7MultiMessage(this.message, this.messageId).hl7Messages;
-            parsedMessage.forEach((message, mIndex = 0) => {
+            parsedMessage.forEach((message, mIndex) => {
               if (message.id !== 0) {
 
                 this.ngRedux.dispatch({
@@ -110,6 +111,7 @@ export class MessageComponent implements OnInit, OnDestroy {
                 });
               }
             });
+            this._service.success('Success', `Added ${parsedMessage.size - 1} message(s).`);
           }
         } else {
           if (value != null) {
@@ -128,6 +130,7 @@ export class MessageComponent implements OnInit, OnDestroy {
                 messages: parsedMessage
               }
             });
+            this._service.success('Success', `Parsed ${parsedMessage.size} message(s).`);
           }
         }
         let hl7Segments: HL7Segment[];

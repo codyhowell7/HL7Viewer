@@ -63,7 +63,7 @@ import { MessageSubcomponentComponent } from './components/workspace/message/mes
 import { MessageRepeatComponent } from './components/workspace/message/message-repeat/message-repeat.component';
 import { ContextMenuModule } from 'ngx-contextmenu';
 import { SimpleNotificationsModule, NotificationsService } from 'angular2-notifications';
-import { AddMessageComponent } from './components/add-message/add-message.component';
+import { reduceSelectCopy } from './reducers/selectCopyReducer';
 
 enableProdMode();
 @NgModule({
@@ -96,8 +96,7 @@ enableProdMode();
     MessageSegmentComponent,
     MessageComponentComponent,
     MessageSubcomponentComponent,
-    MessageRepeatComponent,
-    AddMessageComponent
+    MessageRepeatComponent
   ],
   imports: [
     BrowserModule,
@@ -142,7 +141,8 @@ function rootReducer(state: IAppState, action: IAction): IAppState {
     jwt: reduceJWT(state.jwt, action),
     findAll: reduceFindAll(state.findAll, action),
     findAllUnique: reduceFindAllUnique(state.findAllUnique, action),
-    messageHighlight: reduceMessageHighlight(state.messageHighlight, action)
+    messageHighlight: reduceMessageHighlight(state.messageHighlight, action),
+    selectCopy: reduceSelectCopy(state.selectCopy, action)
   };
 }
 

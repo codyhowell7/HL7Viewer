@@ -1,8 +1,8 @@
 <div class='compareWorkspace'>
     <div class='headers'>
         <div *ngIf='getLeftID() != null' class='header1'> Message: {{getLeftID()}} </div>
-        <div *ngIf='getLeftID() != null && !getRightID() != null' class='fakeheader2'></div>
-        <div *ngIf='!getLeftID() != null && getRightID() != null' class='fakeheader1'></div>
+        <div *ngIf='getLeftID() != null && !(getRightID() != null)' class='fakeheader2'></div>
+        <div *ngIf='!(getLeftID() != null) && getRightID() != null' class='fakeheader1'></div>
         <div *ngIf='getRightID() != null' class='header2'> Message: {{getRightID()}} </div>
     </div>
     <div class='compareOutput'>

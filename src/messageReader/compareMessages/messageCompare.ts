@@ -84,7 +84,7 @@ export class MessageCompare extends MessageCompareHelper {
             } else if (match[0] > 0) {
                 return this.combSegments(message1Segs.slice(match[0] + 1), message2Segs.slice(1));
             } else {
-                return this.combSegments(message1Segs.slice(match[1]), message2Segs.slice(match[1] + 1));
+                return this.combSegments(message1Segs.slice(1), message2Segs.slice(match[1] + 1));
             }
 
         }

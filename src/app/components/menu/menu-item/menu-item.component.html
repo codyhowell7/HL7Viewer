@@ -1,13 +1,24 @@
 <div *ngIf='!isMessages && !isCompare' routerLinkActive="active" class='message' [contextMenu]='copyMenu' [contextMenuSubject]='message'>
     <span>Message {{message.id + 1}}</span>
 </div>
-<div *ngIf="isMessages">
+
+<div *ngIf="isMessages && !higlightSelectCopy && !highlightFullCopy">
     <div [routerLink]="['/workspace', message.id, keepLastRoute()]" routerLinkActive="active" class='message' [contextMenu]='copyMenu'
         [contextMenuSubject]='message'>
         <span>Message {{message.id + 1}}</span>
         <md-icon *ngIf='messageCount > 1' (click)="removeItem()">clear</md-icon>
     </div>
 </div>
+
+<div *ngIf="isMessages">
+    <div *ngIf='highlightFullCopy && !higlightSelectCopy' class='message' (click)='addToCopyList(message.message.hl7CorrectedMessage, message.id)' [ngClass]="{'copyColor': elementInList(message.id)}">
+        <span>Message {{message.id + 1}}</span>
+    </div>
+    <div *ngIf='higlightSelectCopy && !highlightFullCopy' class='message' (click)='addToCopyList(message.message.hl7MessageNoPHI, message.id)' [ngClass]="{'copyColor': elementInList(message.id)}">
+        <span>Message {{message.id + 1}}</span>
+    </div>
+</div>
+
 <div *ngIf="isCompare" class='compare' [myDraggable]='{data: message.id + 1}'>
     <span>Message {{message.id + 1}}</span>
 </div>

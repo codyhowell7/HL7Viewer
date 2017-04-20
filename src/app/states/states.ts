@@ -19,6 +19,7 @@ export interface IAppState {
     findAll: IFindAll;
     findAllUnique: IUniqueFindAll;
     messageHighlight: Map<string, IMessageHighlight>;
+    selectCopy: Map<number, string>;
 }
 
 export interface IMenuState { }

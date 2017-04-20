@@ -38,6 +38,7 @@ $iconHeight: 14px;
     display: flex;
     justify-content: space-between;
     user-select: none;
+    height: 38px;
 }
 .message {
     display: flex;
@@ -53,4 +54,8 @@ $iconHeight: 14px;
 
 div.dnd-drag-start {
     border: 1px dashed black;
+}
+
+div.copyColor {
+    background-color: #8BC34A;
 }

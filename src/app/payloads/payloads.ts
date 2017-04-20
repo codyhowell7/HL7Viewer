@@ -96,3 +96,8 @@ export interface ICreateSearchBySizePayload {
 export interface IAddSearchSizePayload {
     searchId: number;
 }
+
+export interface IAddToCopyListPayload {
+    hl7Message: string;
+    messageId: number;
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
@@ -51,7 +51,6 @@ export class MenuComponent implements OnInit {
   higlightSelectCopy: boolean;
   selectCopy: Map<number, string>;
   finished = false;
-
 
   constructor(private ngRedux: NgRedux<IAppState>, private router: Router, private aRouter: ActivatedRoute,
     private _service: NotificationsService) { }

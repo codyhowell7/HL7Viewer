@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { select, NgRedux } from 'ng2-redux';
 import { Observable } from 'rxjs/Observable';
 import { Map, List } from 'immutable';
@@ -15,7 +15,7 @@ import { NotificationsService } from 'angular2-notifications';
   templateUrl: './menu-item.component.html',
   styleUrls: ['./menu-item.component.scss']
 })
-export class MenuItemComponent implements OnInit {
+export class MenuItemComponent implements  OnChanges {
 
   @Input() messagesToCompare$: Observable<Map<number, boolean>>;
   @Input() mode$: Observable<WorkspaceMode>;
@@ -35,10 +35,10 @@ export class MenuItemComponent implements OnInit {
   constructor(private ngRedux: NgRedux<IAppState>, private aRouter: ActivatedRoute, private router: Router,
     private _service: NotificationsService) { }
 
-  ngOnInit() {
-    this.messages$.subscribe(messages => this.messageCount = messages.filter(message => !message.deleted).size);
-    this.mode$.subscribe(mode => { this.isMessages = mode === WorkspaceMode.messages && this.messageCount > 1; });
-    this.mode$.subscribe(mode => { this.isCompare = mode === WorkspaceMode.compare && this.messageCount > 1; });
+  ngOnChanges() {
+    this.messages$.subscribe(messages => this.messageCount = messages.filter(message => !message.deleted).size).unsubscribe();
+    this.mode$.subscribe(mode => { this.isMessages = mode === WorkspaceMode.messages && this.messageCount > 1; }).unsubscribe();
+    this.mode$.subscribe(mode => { this.isCompare = mode === WorkspaceMode.compare && this.messageCount > 1; }).unsubscribe();
   }
 
   removeItem() {

@@ -5,27 +5,20 @@ This project was generated with [angular-cli](https://github.com/angular/angular
 ## Development server
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
+## Production Server
+Hosted locally at UTS-HL7-Viewer (10.72.9.130)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive/pipe/service/class/module`.
+To Deploy:
+ - Run `ng build --prod`
+ - Copy the contents of the `dist` folder
+ - Remote in the production server
+ - Naviagate to `C:\inetpub\wwwroot`
+ - Copy contents of `dist` into folder
+ - Restart the `UTS-HL7-VIEWER` ISS Server on the production server
 
-## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
-
-## Deploying to Github Pages
-
-Run `ng github-pages:deploy` to deploy to Github Pages.
-
-## Further help
-
-To get more help on the `angular-cli` use `ng help` or go check out the [Angular-CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+## Features/Releases
+ - All information regarding features and releases prior to 7/7/2017 can be found at `https://trello.com/b/HHvc3rVo/hl7-viewer-project`
+ 
+## Wiki
+ - Please check out the Wiki for more in depth technical information.
